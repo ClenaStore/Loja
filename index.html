@@ -27,7 +27,7 @@
 
   document.getElementById("checkout-btn").addEventListener("click", async () => {
     try {
-      const response = await fetch("https://loja-rosy-six.vercel.app/api/create_preference", {
+      const response = await fetch("https://www.clena.com.br/api/create_preference", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: "Produto Teste", price: 50 })
