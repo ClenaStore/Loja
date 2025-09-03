@@ -21,10 +21,11 @@
     <button id="checkout-btn">Comprar</button>
   </div>
 
-  <script>
-    const mp = new MercadoPago("APP_USR-72f857eb-f2a2-48fe-ac2d-ab2fc2df9fbe", { locale: "pt-BR" }); // troque pela sua PUBLIC_KEY
+ <script>
+  const mp = new MercadoPago("APP_USR-72f857eb-f2a2-48fe-ac2d-ab2fc2df9fbe", { locale: "pt-BR" });
 
-    document.getElementById("checkout-btn").addEventListener("click", async () => {
+  document.getElementById("checkout-btn").addEventListener("click", async () => {
+    try {
       const response = await fetch("/api/create_preference", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,15 +33,19 @@
       });
 
       const data = await response.json();
+      console.log("👉 Resposta do backend:", data); // DEBUG
 
       if (data.id) {
-        // Redireciona para o checkout seguro do Mercado Pago
         window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${data.id}`;
       } else {
-        alert("Erro ao criar preferência. Verifique os logs da Vercel.");
-        console.error(data);
+        alert("⚠️ Erro: backend não retornou ID de preferência.");
       }
-    });
-  </script>
+    } catch (err) {
+      console.error("❌ Erro na requisição:", err);
+      alert("Erro na requisição ao backend.");
+    }
+  });
+</script>
+
 </body>
 </html>
