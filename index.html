@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Minha Loja</title>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:20px; }
+    .product { background:#fff; padding:20px; margin:20px auto; max-width:400px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    button { background:#009ee3; color:#fff; border:none; padding:15px; width:100%; font-size:16px; border-radius:8px; cursor:pointer; }
+    button:hover { background:#007bbd; }
+  </style>
+</head>
+<body>
+  <h1>🛒 Minha Loja</h1>
+
+  <div class="product">
+    <h2>Produto Teste</h2>
+    <p>R$ 50,00</p>
+    <button id="checkout-btn">Comprar</button>
+  </div>
+
+  <script>
+    const mp = new MercadoPago("SUA_PUBLIC_KEY", { locale: "pt-BR" });
+
+    document.getElementById("checkout-btn").addEventListener("click", async () => {
+      const response = await fetch("/api/create_preference", {
+        method: "POST",
+        body: JSON.stringify({ title: "Produto Teste", price: 50 })
+      });
+      const data = await response.json();
+
+      mp.checkout({
+        preference: { id: data.id },
+        autoOpen: true,
+      });
+    });
+  </script>
+</body>
+</html>
