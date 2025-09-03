@@ -21,32 +21,32 @@
     <button id="checkout-btn">Comprar</button>
   </div>
 
-  <script>
-    // 👉 Coloque sua PUBLIC_KEY de TESTE aqui
-    const mp = new MercadoPago("APP_USR-72f857eb-f2a2-48fe-ac2d-ab2fc2df9fbe", { locale: "pt-BR" });
+ <script>
+  // USE sua PUBLIC KEY DE TESTE aqui (a que aparece no painel de “credenciais de teste”)
+  const mp = new MercadoPago("APP_USR-72f857eb-f2a2-48fe-ac2d-ab2fc2df9fbe", { locale: "pt-BR" });
 
-    document.getElementById("checkout-btn").addEventListener("click", async () => {
-      try {
-        const response = await fetch("/api/create_preference", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: "Produto Teste", price: 50 })
-        });
+  document.getElementById("checkout-btn").addEventListener("click", async () => {
+    try {
+      const response = await fetch("https://loja-rosy-six.vercel.app/api/create_preference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: "Produto Teste", price: 50 })
+      });
 
-        const data = await response.json();
-        console.log("👉 Resposta do backend:", data);
+      const data = await response.json();
+      console.log("👉 Resposta do backend:", data);
 
-        if (data.id) {
-          // redireciona para o checkout de teste
-          window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${data.id}`;
-        } else {
-          alert("⚠️ Erro: backend não retornou ID de preferência.");
-        }
-      } catch (err) {
-        console.error("❌ Erro na requisição:", err);
-        alert("Erro na requisição ao backend.");
+      if (data.id) {
+        window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${data.id}`;
+      } else {
+        alert("⚠️ Backend não retornou ID. Veja o Console para detalhes.");
       }
-    });
-  </script>
+    } catch (err) {
+      console.error("❌ Erro na requisição:", err);
+      alert("Erro na requisição ao backend.");
+    }
+  });
+</script>
+
 </body>
 </html>
