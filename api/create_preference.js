@@ -6,7 +6,7 @@ export default async function handler(req, res) {
       const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.MP_ACCESS_TOKEN}`, // configurado na Vercel
+          "Authorization": `Bearer ${process.env.MP_ACCESS_TOKEN}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -19,16 +19,23 @@ export default async function handler(req, res) {
             }
           ],
           back_urls: {
-            success: "https://seusite.com/sucesso",
-            failure: "https://seusite.com/falha",
-            pending: "https://seusite.com/pendente"
+            success: "https://loja-rosy-six.vercel.app/sucesso",
+            failure: "https://loja-rosy-six.vercel.app/falha",
+            pending: "https://loja-rosy-six.vercel.app/pendente"
           },
           auto_return: "approved"
         })
       });
 
       const data = await response.json();
-      res.status(200).json({ id: data.id });
+      console.log("Resposta do Mercado Pago:", data);
+
+      if (data.id) {
+        res.status(200).json({ id: data.id });
+      } else {
+        // Retorna erro detalhado para você ver no console do navegador
+        res.status(400).json({ error: "Erro do Mercado Pago", details: data });
+      }
     } catch (error) {
       res.status(500).json({ error: "Erro interno", details: error.message });
     }
