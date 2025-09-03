@@ -22,7 +22,7 @@
   </div>
 
   <script>
-    const mp = new MercadoPago("SUA_PUBLIC_KEY", { locale: "pt-BR" }); // troque pela sua PUBLIC_KEY
+    const mp = new MercadoPago("APP_USR-72f857eb-f2a2-48fe-ac2d-ab2fc2df9fbe", { locale: "pt-BR" }); // troque pela sua PUBLIC_KEY
 
     document.getElementById("checkout-btn").addEventListener("click", async () => {
       const response = await fetch("/api/create_preference", {
