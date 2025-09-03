@@ -28,13 +28,15 @@ export default async function handler(req, res) {
       });
 
       const data = await response.json();
-      console.log("Resposta do Mercado Pago:", data);
+      console.log("📌 Resposta Mercado Pago:", data);
 
       if (data.id) {
         res.status(200).json({ id: data.id });
       } else {
-        // Retorna erro detalhado para você ver no console do navegador
-        res.status(400).json({ error: "Erro do Mercado Pago", details: data });
+        res.status(400).json({
+          error: "Erro do Mercado Pago",
+          details: data // aqui devolve a mensagem de erro completa
+        });
       }
     } catch (error) {
       res.status(500).json({ error: "Erro interno", details: error.message });
