@@ -22,19 +22,24 @@
   </div>
 
   <script>
-    const mp = new MercadoPago("APP_USR-72f857eb-f2a2-48fe-ac2d-ab2fc2df9fbe", { locale: "pt-BR" });
+    const mp = new MercadoPago("SUA_PUBLIC_KEY", { locale: "pt-BR" }); // troque pela sua PUBLIC_KEY
 
     document.getElementById("checkout-btn").addEventListener("click", async () => {
       const response = await fetch("/api/create_preference", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: "Produto Teste", price: 50 })
       });
+
       const data = await response.json();
 
-      mp.checkout({
-        preference: { id: data.id },
-        autoOpen: true,
-      });
+      if (data.id) {
+        // Redireciona para o checkout seguro do Mercado Pago
+        window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${data.id}`;
+      } else {
+        alert("Erro ao criar preferência. Verifique os logs da Vercel.");
+        console.error(data);
+      }
     });
   </script>
 </body>
