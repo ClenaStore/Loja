@@ -6,7 +6,7 @@ export default async function handler(req, res) {
       const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.MP_ACCESS_TOKEN}`, // 👉 precisa ser o TEST_ACCESS_TOKEN
+          "Authorization": `Bearer ${process.env.MP_ACCESS_TOKEN}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -28,12 +28,16 @@ export default async function handler(req, res) {
       });
 
       const data = await response.json();
-      console.log("📌 Resposta Mercado Pago:", data);
 
       if (data.id) {
         res.status(200).json({ id: data.id });
       } else {
-        res.status(response.status).json({ error: "Erro do Mercado Pago", details: data });
+        // 🔎 Mostra exatamente o erro do Mercado Pago
+        res.status(response.status).json({
+          error: "Erro do Mercado Pago",
+          status: response.status,
+          details: data
+        });
       }
     } catch (error) {
       res.status(500).json({ error: "Erro interno", details: error.message });
