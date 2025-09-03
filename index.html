@@ -115,13 +115,14 @@
 <script>
   const mp = new MercadoPago("APP_USR-14a860ed-37e2-4831-be80-66d2044b8cbe", { locale: "pt-BR" });
 
+  // TODOS os produtos por R$ 1,00
   const products = [
-    {id:1, name:"Whey Protein 1kg", price:1, category:"suplementos", img:"https://via.placeholder.com/250x180?text=Whey+Protein"},
-    {id:2, name:"Creatina Monohidratada", price:120, category:"suplementos", img:"https://via.placeholder.com/250x180?text=Creatina"},
-    {id:3, name:"BCAA 120 caps", price:90, category:"suplementos", img:"https://via.placeholder.com/250x180?text=BCAA"},
-    {id:4, name:"Luvas de Treino", price:70, category:"acessorios", img:"https://via.placeholder.com/250x180?text=Luvas"},
-    {id:5, name:"Camiseta Dry Fit", price:100, category:"roupas", img:"https://via.placeholder.com/250x180?text=Camiseta"},
-    {id:6, name:"Shorts Fitness", price:80, category:"roupas", img:"https://via.placeholder.com/250x180?text=Shorts"},
+    {id:1, name:"Whey Protein 1kg",        price:1, category:"suplementos", img:"https://via.placeholder.com/250x180?text=Whey+Protein"},
+    {id:2, name:"Creatina Monohidratada",  price:1, category:"suplementos", img:"https://via.placeholder.com/250x180?text=Creatina"},
+    {id:3, name:"BCAA 120 caps",           price:1, category:"suplementos", img:"https://via.placeholder.com/250x180?text=BCAA"},
+    {id:4, name:"Luvas de Treino",         price:1, category:"acessorios",  img:"https://via.placeholder.com/250x180?text=Luvas"},
+    {id:5, name:"Camiseta Dry Fit",        price:1, category:"roupas",      img:"https://via.placeholder.com/250x180?text=Camiseta"},
+    {id:6, name:"Shorts Fitness",          price:1, category:"roupas",      img:"https://via.placeholder.com/250x180?text=Shorts"},
   ];
 
   let cart = [];
