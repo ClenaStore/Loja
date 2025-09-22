@@ -64,8 +64,30 @@
     .modal-content iframe{width:100%;height:250px;border:none;border-radius:.8rem;margin-bottom:1rem;}
     .close{position:absolute;top:10px;right:15px;font-size:1.5rem;cursor:pointer;color:var(--muted);}
     .contact-btn{display:inline-block;background:var(--highlight);color:#fff;padding:.7rem 1.2rem;border-radius:.6rem;text-decoration:none;font-weight:700;}
-
     @keyframes fadeIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+
+    /* Logos */
+    .logos{background:#fff;color:#000;padding:2rem;text-align:center;overflow-x:auto;}
+    .logos h2{margin-bottom:1rem;}
+    .slider{display:flex;gap:2rem;min-width:max-content;}
+    .slider img{height:40px;filter:grayscale(100%);opacity:.7;}
+    .slider img:hover{filter:none;opacity:1;}
+
+    /* Steps */
+    .steps{padding:3rem 1rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;}
+    .steps img{max-width:100%;border-radius:1rem;}
+    .step-list{display:flex;flex-direction:column;gap:1.5rem;}
+    .step{background:#111;border-radius:.8rem;padding:1rem;}
+    .step h3{color:var(--brand);}
+    @media(max-width:768px){.steps{grid-template-columns:1fr;text-align:center;}}
+
+    /* Contact */
+    .contact{padding:3rem 1rem;background:#111;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;}
+    .contact h2{color:var(--highlight);margin-bottom:1rem;}
+    .form{background:rgba(255,255,255,.05);padding:1.5rem;border-radius:1rem;}
+    .form input,.form select,.form textarea{width:100%;margin-bottom:1rem;padding:.9rem;border:none;border-radius:.6rem;background:#222;color:#fff;}
+    .form button{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff;border:none;padding:1rem;width:100%;border-radius:.7rem;font-weight:700;cursor:pointer;}
+    @media(max-width:768px){.contact{grid-template-columns:1fr;}}
 
     /* Footer & WhatsApp */
     footer{text-align:center;padding:1.5rem;background:#0d0d0d;color:var(--muted);}
@@ -73,6 +95,10 @@
       font-size:1.5rem;animation:pulse 1.5s infinite;}
     .whatsapp a{color:#fff;text-decoration:none;}
     @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);} }
+
+    /* Scroll reveal */
+    .reveal{opacity:0;transform:translateY(30px);transition:1s;}
+    .reveal.active{opacity:1;transform:translateY(0);}
   </style>
 </head>
 <body>
@@ -84,6 +110,7 @@
       <li><a href="#sobre">Sobre</a></li>
       <li><a href="#servicos">Serviços</a></li>
       <li><a href="#clientes">Clientes</a></li>
+      <li><a href="#etapas">Etapas</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
   </nav>
@@ -96,7 +123,7 @@
   </section>
 
   <!-- Services -->
-  <section class="services" id="servicos">
+  <section class="services reveal" id="servicos">
     <h2>Nossos Serviços</h2>
     <div class="grid">
       <div class="card">
@@ -163,6 +190,47 @@
     </div>
   </div>
 
+  <!-- Logos -->
+  <section class="logos reveal" id="clientes">
+    <h2>Empresas que confiam em nós</h2>
+    <div class="slider">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+1">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+2">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+3">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+4">
+    </div>
+  </section>
+
+  <!-- Steps -->
+  <section class="steps reveal" id="etapas">
+    <img src="https://dummyimage.com/500x300/222/fff.png&text=Dashboard">
+    <div class="step-list">
+      <div class="step"><h3>1. Diagnóstico</h3><p>Mapeamos sua operação.</p></div>
+      <div class="step"><h3>2. Planejamento</h3><p>Definimos metas claras.</p></div>
+      <div class="step"><h3>3. Execução</h3><p>Processos eficientes.</p></div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact reveal" id="contato">
+    <div>
+      <h2>Transforme sua gestão</h2>
+      <p>Receba um diagnóstico gratuito.</p>
+    </div>
+    <form class="form">
+      <input type="text" placeholder="Nome completo*" required>
+      <input type="email" placeholder="E-mail*" required>
+      <input type="tel" placeholder="Celular*" required>
+      <input type="text" placeholder="Empresa*" required>
+      <select required>
+        <option disabled selected>Cargo*</option>
+        <option>CEO</option><option>Gerente</option><option>Financeiro</option>
+      </select>
+      <textarea placeholder="Mensagem"></textarea>
+      <button type="submit">ENVIAR</button>
+    </form>
+  </section>
+
   <!-- Footer -->
   <footer>
     © 2025 • CB Systems • Soluções Empresariais
@@ -181,6 +249,14 @@
     // Mobile menu
     document.getElementById("menu-toggle").addEventListener("click",()=>{
       document.getElementById("menu").classList.toggle("active");
+    });
+    // Scroll reveal
+    const reveals=document.querySelectorAll(".reveal");
+    window.addEventListener("scroll",()=>{
+      reveals.forEach(r=>{
+        const top=r.getBoundingClientRect().top;
+        if(top<window.innerHeight-100) r.classList.add("active");
+      });
     });
     // Modal functions
     function openModal(id){document.getElementById(id).style.display="flex";}
