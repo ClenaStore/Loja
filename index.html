@@ -3,154 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soluções Empresariais • Sistemas Financeiros & Restaurantes</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <title>CB Systems • Soluções Empresariais</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b1220;
-      --card: #111a2e;
-      --ink: #eaf1ff;
-      --muted: #9aa5c3;
-      --brand: #ff006e;
-      --brand-2: #06b6d4;
-      --highlight: #32d74b;
+      --bg:#0b0f1a; --ink:#f0f2f7; --muted:#a3acc7;
+      --brand:#ff006e; --brand-2:#06b6d4; --highlight:#32d74b;
     }
     *{margin:0;padding:0;box-sizing:border-box;}
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);scroll-behavior:smooth;}
 
     /* Navbar */
-    nav {
-      position: fixed; top:0; left:0; width:100%;
-      background: #0d0d0d;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1rem 2rem; z-index: 1000;
-    }
-    nav .logo { font-weight: 800; font-size: 1.3rem; color: var(--brand); }
-    nav ul { display: flex; list-style: none; gap: 1.5rem; }
-    nav ul li a { text-decoration:none; color: var(--ink); font-weight:600; }
-    nav ul li a:hover { color: var(--brand-2); }
+    nav{position:fixed;top:0;left:0;width:100%;padding:1rem 2rem;
+      display:flex;justify-content:space-between;align-items:center;z-index:1000;
+      transition:.3s;}
+    nav.scrolled{background:rgba(0,0,0,.8);backdrop-filter:blur(10px);}
+    .logo{font-weight:800;font-size:1.4rem;color:var(--brand);}
+    nav ul{list-style:none;display:flex;gap:1.5rem;}
+    nav ul li a{text-decoration:none;color:var(--ink);font-weight:600;transition:.3s;}
+    nav ul li a:hover{color:var(--brand-2);}
 
     /* Hero */
-    .hero {
-      min-height: 90vh; display:flex; flex-direction:column; justify-content:center; align-items:center;
-      text-align:center; padding:2rem;
-      background: linear-gradient(120deg, var(--bg) 50%, #1a1a1a 100%);
-    }
-    .hero h1 { font-size:2.5rem; margin-bottom:1rem; }
-    .hero span { color: var(--brand); }
-    .hero p { color: var(--muted); margin-bottom: 2rem; }
-    .btn { padding:.8rem 1.5rem; border-radius:.6rem; border:none; cursor:pointer; font-weight:700; color:#fff; }
-    .btn-main { background: var(--brand); }
-    .btn-main:hover { background: var(--brand-2); }
+    .hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+      text-align:center;padding:2rem;
+      background:linear-gradient(120deg,var(--bg) 60%,#1b1f2f 100%);}
+    .hero h1{font-size:3rem;line-height:1.2;margin-bottom:1rem;}
+    .hero span{color:var(--brand);}
+    .hero p{color:var(--muted);max-width:600px;margin-bottom:2rem;}
+    .btn{padding:.9rem 1.6rem;border-radius:.7rem;border:none;cursor:pointer;font-weight:700;}
+    .btn-main{background:var(--brand);color:#fff;}
+    .btn-main:hover{background:var(--brand-2);}
 
-    /* Logos */
-    .logos {
-      background:#fff; color:#000; padding:2rem; text-align:center;
-    }
-    .logos h2 { margin-bottom:1.5rem; }
-    .logos .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1.5rem; align-items:center; }
-    .logos img { max-height:50px; margin:auto; filter:grayscale(100%); transition:.3s; }
-    .logos img:hover { filter:grayscale(0); }
+    /* Logos carousel */
+    .logos{background:#fff;color:#000;padding:2rem;overflow:hidden;}
+    .logos h2{text-align:center;margin-bottom:1rem;}
+    .slider{display:flex;gap:3rem;animation:scroll 18s linear infinite;}
+    .slider img{height:50px;filter:grayscale(100%);opacity:.7;transition:.3s;}
+    .slider img:hover{filter:none;opacity:1;}
+    @keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);} }
+
+    /* Services - glass cards */
+    .services{padding:4rem 2rem;text-align:center;}
+    .services h2{margin-bottom:2rem;font-size:2rem;}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2rem;}
+    .card{background:rgba(255,255,255,.05);backdrop-filter:blur(8px);
+      border-radius:1rem;padding:2rem;transition:.3s;box-shadow:0 5px 15px rgba(0,0,0,.3);}
+    .card:hover{transform:translateY(-8px) scale(1.02);}
+    .card h3{color:var(--brand-2);margin-bottom:.5rem;}
 
     /* Steps */
-    .steps { display:flex; flex-wrap:wrap; gap:2rem; padding:3rem 2rem; align-items:center; }
-    .steps img { max-width:400px; border-radius:1rem; }
-    .step-list { flex:1; }
-    .step { margin-bottom:1.5rem; }
-    .step h3 { color: var(--brand-2); }
-    .step p { color: var(--muted); }
+    .steps{padding:4rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;}
+    .steps img{max-width:100%;border-radius:1rem;}
+    .step-list{display:flex;flex-direction:column;gap:1.5rem;}
+    .step{background:#111;border-radius:.8rem;padding:1rem 1.5rem;}
+    .step h3{color:var(--brand);margin-bottom:.3rem;}
 
-    /* Serviços */
-    .services { background:#111; padding:3rem 2rem; text-align:center; }
-    .services h2 { margin-bottom:2rem; }
-    .service-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:2rem; }
-    .card { background: var(--card); border-radius:1rem; padding:1.5rem; transition:.3s; }
-    .card:hover { transform:translateY(-5px); box-shadow:0 5px 20px rgba(0,0,0,.5); }
-    .card h3 { margin-bottom:.5rem; color: var(--brand-2); }
-
-    /* Contato */
-    .contact { display:flex; flex-wrap:wrap; gap:2rem; padding:3rem 2rem; align-items:center; }
-    .contact-text { flex:1; }
-    .contact-text h2 { color: var(--highlight); margin-bottom:1rem; }
-    .form { flex:1; background: var(--card); padding:2rem; border-radius:1rem; }
-    .form input, .form select, .form textarea {
-      width:100%; margin-bottom:1rem; padding:.8rem; border:none; border-radius:.5rem; background:#222; color:#fff;
-    }
-    .form button { background: var(--brand); color:#fff; border:none; padding:1rem; width:100%; border-radius:.6rem; font-weight:700; cursor:pointer; }
-    .form button:hover { background: var(--brand-2); }
+    /* Contact */
+    .contact{padding:4rem 2rem;background:#111;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;}
+    .contact h2{color:var(--highlight);margin-bottom:1rem;}
+    .form{background:rgba(255,255,255,.05);padding:2rem;border-radius:1rem;backdrop-filter:blur(6px);}
+    .form input,.form select,.form textarea{width:100%;margin-bottom:1rem;padding:.9rem;border:none;border-radius:.6rem;background:#222;color:#fff;}
+    .form button{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff;border:none;padding:1rem;width:100%;border-radius:.7rem;font-weight:700;cursor:pointer;}
+    .form button:hover{opacity:.9;}
 
     /* Footer */
-    footer { text-align:center; padding:1.5rem; color:var(--muted); background:#0d0d0d; }
+    footer{text-align:center;padding:1.5rem;background:#0d0d0d;color:var(--muted);}
+    footer .social{margin-top:.5rem;}
+    footer a{margin:0 .5rem;color:var(--ink);text-decoration:none;font-size:1.2rem;}
 
     /* WhatsApp */
-    .whatsapp {
-      position:fixed; bottom:20px; right:20px; background:var(--highlight); padding:1rem; border-radius:50%; font-size:1.5rem;
-      box-shadow:0 5px 15px rgba(0,0,0,.4);
+    .whatsapp{position:fixed;bottom:20px;right:20px;background:var(--highlight);padding:1rem;border-radius:50%;
+      font-size:1.5rem;animation:pulse 1.5s infinite;}
+    .whatsapp a{color:#fff;text-decoration:none;}
+    @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);} }
+
+    /* Scroll reveal */
+    .reveal{opacity:0;transform:translateY(30px);transition:1s;}
+    .reveal.active{opacity:1;transform:translateY(0);}
+    @media(max-width:768px){
+      .steps{grid-template-columns:1fr;}
+      .contact{grid-template-columns:1fr;}
     }
-    .whatsapp a { color:#fff; text-decoration:none; }
   </style>
 </head>
 <body>
-  <nav>
+  <!-- Navbar -->
+  <nav id="navbar">
     <div class="logo">CB Systems</div>
     <ul>
-      <li><a href="#sobre">Quem Somos</a></li>
+      <li><a href="#sobre">Sobre</a></li>
       <li><a href="#servicos">Serviços</a></li>
       <li><a href="#clientes">Clientes</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
   </nav>
 
+  <!-- Hero -->
   <section class="hero" id="sobre">
     <h1>Aqui a gente não <span>tenta</span>, a gente <span>faz acontecer</span></h1>
-    <p>Soluções completas em sistemas financeiros e gestão de restaurantes.</p>
+    <p>Soluções completas para gestão financeira e restaurantes – do cardápio ao fluxo de caixa.</p>
     <button class="btn btn-main">Fale Conosco</button>
   </section>
 
+  <!-- Logos -->
   <section class="logos" id="clientes">
     <h2>Empresas que confiam em nós</h2>
-    <div class="grid">
-      <img src="https://dummyimage.com/200x60/ccc/000.png&text=Cliente+1">
-      <img src="https://dummyimage.com/200x60/ccc/000.png&text=Cliente+2">
-      <img src="https://dummyimage.com/200x60/ccc/000.png&text=Cliente+3">
-      <img src="https://dummyimage.com/200x60/ccc/000.png&text=Cliente+4">
+    <div class="slider">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+1">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+2">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+3">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+4">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+5">
+      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+6">
     </div>
   </section>
 
-  <section class="steps">
-    <img src="https://dummyimage.com/400x300/222/fff.png&text=Dashboard+Financeiro">
-    <div class="step-list">
-      <div class="step">
-        <h3>1. Diagnóstico estratégico</h3>
-        <p>Levantamento da operação, canais e equipe.</p>
-      </div>
-      <div class="step">
-        <h3>2. Planejamento de metas</h3>
-        <p>Definição clara de objetivos, funis e indicadores.</p>
-      </div>
-      <div class="step">
-        <h3>3. Redesenho de processos</h3>
-        <p>Construção de rotina eficiente e padronizada.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="services" id="servicos">
+  <!-- Services -->
+  <section class="services reveal" id="servicos">
     <h2>Nossos Serviços</h2>
-    <div class="service-grid">
-      <div class="card"><h3>📋 Cardápios Digitais</h3><p>Gestão de menus e pedidos em tempo real.</p></div>
-      <div class="card"><h3>🛒 Requisições de Compras</h3><p>Controle completo de solicitações e aprovações.</p></div>
-      <div class="card"><h3>📦 Estoque</h3><p>Monitoramento de entradas, saídas e inventário.</p></div>
-      <div class="card"><h3>💰 Financeiro</h3><p>Controle de fluxo de caixa, contas a pagar e receber.</p></div>
-      <div class="card"><h3>📊 Dashboards</h3><p>Análises financeiras em tempo real.</p></div>
-      <div class="card"><h3>🚚 Delivery</h3><p>Gestão integrada com apps de entrega.</p></div>
+    <div class="grid">
+      <div class="card"><h3>📋 Cardápios</h3><p>Gestão digital de menus e pedidos em tempo real.</p></div>
+      <div class="card"><h3>🛒 Compras</h3><p>Controle de solicitações e aprovações de compras.</p></div>
+      <div class="card"><h3>📦 Estoque</h3><p>Gestão de entradas, saídas e inventário.</p></div>
+      <div class="card"><h3>💰 Financeiro</h3><p>Fluxo de caixa, contas a pagar e receber.</p></div>
+      <div class="card"><h3>📊 Dashboards</h3><p>Análises e relatórios em tempo real.</p></div>
+      <div class="card"><h3>🚚 Delivery</h3><p>Integração completa com apps de entrega.</p></div>
     </div>
   </section>
 
-  <section class="contact" id="contato">
-    <div class="contact-text">
-      <h2>Transforme sua gestão com a gente</h2>
+  <!-- Steps -->
+  <section class="steps reveal">
+    <img src="https://dummyimage.com/500x300/222/fff.png&text=Dashboard+Financeiro">
+    <div class="step-list">
+      <div class="step"><h3>1. Diagnóstico</h3><p>Mapeamos sua operação e equipe.</p></div>
+      <div class="step"><h3>2. Planejamento</h3><p>Definimos metas claras e indicadores.</p></div>
+      <div class="step"><h3>3. Execução</h3><p>Redesenhamos processos e entregamos resultados.</p></div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact reveal" id="contato">
+    <div>
+      <h2>Transforme sua gestão</h2>
       <p>Preencha o formulário e receba um diagnóstico gratuito.</p>
     </div>
     <form class="form">
@@ -159,20 +153,42 @@
       <input type="tel" placeholder="Celular*" required>
       <input type="text" placeholder="Empresa*" required>
       <select required>
-        <option>Cargo*</option>
-        <option>CEO</option>
-        <option>Gerente</option>
-        <option>Financeiro</option>
+        <option disabled selected>Cargo*</option>
+        <option>CEO</option><option>Gerente</option><option>Financeiro</option>
       </select>
       <textarea placeholder="Mensagem"></textarea>
       <button type="submit">ENVIAR</button>
     </form>
   </section>
 
-  <footer>© 2025 • CB Systems • Soluções Empresariais</footer>
+  <!-- Footer -->
+  <footer>
+    © 2025 • CB Systems  
+    <div class="social">
+      <a href="#">🌐</a>
+      <a href="#">💼</a>
+      <a href="#">📷</a>
+    </div>
+  </footer>
 
+  <!-- WhatsApp -->
   <div class="whatsapp">
     <a href="https://wa.me/5511999999999">💬</a>
   </div>
+
+  <script>
+    // navbar scroll bg
+    window.addEventListener("scroll",()=>{
+      document.getElementById("navbar").classList.toggle("scrolled",window.scrollY>50);
+    });
+    // scroll reveal
+    const reveals=document.querySelectorAll(".reveal");
+    window.addEventListener("scroll",()=>{
+      reveals.forEach(r=>{
+        const top=r.getBoundingClientRect().top;
+        if(top<window.innerHeight-100) r.classList.add("active");
+      });
+    });
+  </script>
 </body>
 </html>
