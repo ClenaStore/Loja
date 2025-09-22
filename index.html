@@ -112,7 +112,7 @@
 const API_URL="https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
 let menu=[],complements=[],cart=[],current=null;
 const $=s=>document.querySelector(s);
-const BRL=v=>"R$ "+v.toFixed(2).replace(".",",");
+const BRL=v=>"R$ "+Number(v).toFixed(2).replace(".",",");
 
 // Banner loop
 let bIx=0;const banners=document.querySelectorAll(".banner img");
@@ -129,22 +129,28 @@ function renderMenu(){
   const grid=$("#menuGrid");grid.innerHTML="";
   menu.forEach(i=>{
     const el=document.createElement("div");el.className="card";
-    el.innerHTML=`<img src="${i.img}" onclick='openItem(${i.id})'>
+    el.innerHTML=`
+      <img src="${i.img}" alt="">
       <div class="body">
-        <div class="name" onclick='openItem(${i.id})'>${i.name}</div>
+        <div class="name">${i.name}</div>
         <div class="price">${BRL(i.price)}</div>
-        <button class="btn" onclick='openItem(${i.id})'>Adicionar</button>
+        <button class="btn">Adicionar</button>
       </div>`;
+    el.querySelector(".name").onclick=()=>openItem(i);
+    el.querySelector("img").onclick=()=>openItem(i);
+    el.querySelector(".btn").onclick=()=>openItem(i);
     grid.appendChild(el);
   });
 }
-function openItem(id){
-  current=menu.find(x=>x.id==id);
-  $("#pImg").src=current.img;$("#pName").textContent=current.name;
-  $("#pDesc").textContent=current.desc||"";$("#pPrice").textContent=BRL(current.price);
+function openItem(item){
+  current=item;
+  $("#pImg").src=item.img;
+  $("#pName").textContent=item.name;
+  $("#pDesc").textContent=item.desc||"";
+  $("#pPrice").textContent=BRL(item.price);
   $("#pQty").value=1;
   let html="";
-  if(current.cat!=="Bebidas"&&current.cat!=="Complementos"){
+  if(item.cat!=="Bebidas"&&item.cat!=="Complementos"){
     html="<h4>Complementos</h4>";
     complements.forEach(c=>{
       html+=`<label><span>${c.name} +${BRL(c.price)}</span><input type='checkbox' data-id='${c.id}' data-price='${c.price}'></label>`;
@@ -157,14 +163,15 @@ function addCurrent(){
   const qty=Number($("#pQty").value)||1;
   const comps=[...$("#compBox input:checked")].map(c=>({id:c.dataset.id,name:c.parentNode.textContent.trim(),price:+c.dataset.price}));
   cart.push({...current,qty,comps});
-  $("#dlgItem").close();renderCart();toggleCart(true);
+  $("#dlgItem").close();
+  renderCart();toggleCart(true);
 }
 function renderCart(){
   $("#cartBadge").textContent=cart.length;
   const box=$("#cartItems");box.innerHTML="";let total=0;
   cart.forEach(it=>{
     const extras=it.comps?.map(c=>c.name).join(", ");
-    const val=(it.price+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;total+=val;
+    const val=(Number(it.price)+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;total+=val;
     const row=document.createElement("div");row.className="row";
     row.innerHTML=`<img src="${it.img}" class="mini"><div><b>${it.qty}× ${it.name}</b><div style="font-size:12px;color:var(--muted)">${extras||""}</div></div><strong>${BRL(val)}</strong>`;
     box.appendChild(row);
@@ -186,7 +193,7 @@ function finalizar(){
   let msg=`*🍔 Pedido - Clena Foods*\n\n*Cliente:* ${nome}\n*Contato:* ${tel}\n*Endereço:* ${end}\n\n*Itens:*\n`;
   cart.forEach(it=>{
     const extras=it.comps?.map(c=>c.name).join(", ");
-    const val=(it.price+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;
+    const val=(Number(it.price)+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;
     msg+=`• ${it.qty}× ${it.name} ${extras?`(${extras})`:""} — *${BRL(val)}*\n`;
   });
   msg+=`\n*Total:* ${$("#grandTotal").textContent}\n*Pagamento:* ${pay.toUpperCase()}`;
