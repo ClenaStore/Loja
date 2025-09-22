@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soluções Empresariais • Financeiro & Restaurantes</title>
+  <title>Soluções Empresariais • Sistemas Financeiros & Restaurantes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
@@ -12,195 +12,167 @@
       --card: #111a2e;
       --ink: #eaf1ff;
       --muted: #9aa5c3;
-      --brand: #4f46e5;
+      --brand: #ff006e;
       --brand-2: #06b6d4;
-      --line: #25324a;
-      --green: #25d366;
-      --red: #ef4444;
+      --highlight: #32d74b;
     }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      overflow-x: hidden;
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); }
+
+    /* Navbar */
+    nav {
+      position: fixed; top:0; left:0; width:100%;
+      background: #0d0d0d;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 2rem; z-index: 1000;
     }
-    header {
-      background: linear-gradient(90deg, var(--brand), var(--brand-2));
-      padding: 1.2rem 2rem;
-      font-weight: 800;
-      font-size: 1.6rem;
-      text-align: center;
-      letter-spacing: 1px;
-      color: white;
-      box-shadow: 0 3px 15px rgba(0,0,0,.3);
-    }
+    nav .logo { font-weight: 800; font-size: 1.3rem; color: var(--brand); }
+    nav ul { display: flex; list-style: none; gap: 1.5rem; }
+    nav ul li a { text-decoration:none; color: var(--ink); font-weight:600; }
+    nav ul li a:hover { color: var(--brand-2); }
+
+    /* Hero */
     .hero {
-      padding: 3rem 1rem;
-      text-align: center;
-      background: radial-gradient(circle at center, rgba(79,70,229,0.3), transparent);
-      animation: fadeIn 1s ease-in;
+      min-height: 90vh; display:flex; flex-direction:column; justify-content:center; align-items:center;
+      text-align:center; padding:2rem;
+      background: linear-gradient(120deg, var(--bg) 50%, #1a1a1a 100%);
     }
-    .hero h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+    .hero h1 { font-size:2.5rem; margin-bottom:1rem; }
+    .hero span { color: var(--brand); }
+    .hero p { color: var(--muted); margin-bottom: 2rem; }
+    .btn { padding:.8rem 1.5rem; border-radius:.6rem; border:none; cursor:pointer; font-weight:700; color:#fff; }
+    .btn-main { background: var(--brand); }
+    .btn-main:hover { background: var(--brand-2); }
+
+    /* Logos */
+    .logos {
+      background:#fff; color:#000; padding:2rem; text-align:center;
     }
-    .hero p {
-      font-size: 1rem;
-      color: var(--muted);
+    .logos h2 { margin-bottom:1.5rem; }
+    .logos .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1.5rem; align-items:center; }
+    .logos img { max-height:50px; margin:auto; filter:grayscale(100%); transition:.3s; }
+    .logos img:hover { filter:grayscale(0); }
+
+    /* Steps */
+    .steps { display:flex; flex-wrap:wrap; gap:2rem; padding:3rem 2rem; align-items:center; }
+    .steps img { max-width:400px; border-radius:1rem; }
+    .step-list { flex:1; }
+    .step { margin-bottom:1.5rem; }
+    .step h3 { color: var(--brand-2); }
+    .step p { color: var(--muted); }
+
+    /* Serviços */
+    .services { background:#111; padding:3rem 2rem; text-align:center; }
+    .services h2 { margin-bottom:2rem; }
+    .service-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:2rem; }
+    .card { background: var(--card); border-radius:1rem; padding:1.5rem; transition:.3s; }
+    .card:hover { transform:translateY(-5px); box-shadow:0 5px 20px rgba(0,0,0,.5); }
+    .card h3 { margin-bottom:.5rem; color: var(--brand-2); }
+
+    /* Contato */
+    .contact { display:flex; flex-wrap:wrap; gap:2rem; padding:3rem 2rem; align-items:center; }
+    .contact-text { flex:1; }
+    .contact-text h2 { color: var(--highlight); margin-bottom:1rem; }
+    .form { flex:1; background: var(--card); padding:2rem; border-radius:1rem; }
+    .form input, .form select, .form textarea {
+      width:100%; margin-bottom:1rem; padding:.8rem; border:none; border-radius:.5rem; background:#222; color:#fff;
     }
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
-      gap: 1.5rem;
-      padding: 2rem;
-      animation: slideUp 1.2s ease;
+    .form button { background: var(--brand); color:#fff; border:none; padding:1rem; width:100%; border-radius:.6rem; font-weight:700; cursor:pointer; }
+    .form button:hover { background: var(--brand-2); }
+
+    /* Footer */
+    footer { text-align:center; padding:1.5rem; color:var(--muted); background:#0d0d0d; }
+
+    /* WhatsApp */
+    .whatsapp {
+      position:fixed; bottom:20px; right:20px; background:var(--highlight); padding:1rem; border-radius:50%; font-size:1.5rem;
+      box-shadow:0 5px 15px rgba(0,0,0,.4);
     }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      text-align: center;
-      transition: transform .3s, box-shadow .3s;
-      cursor: pointer;
-    }
-    .card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 8px 25px rgba(0,0,0,.4);
-    }
-    .card h2 {
-      font-size: 1.2rem;
-      margin-bottom: .5rem;
-      color: var(--brand-2);
-    }
-    .card p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 1rem;
-    }
-    .btn {
-      background: var(--brand);
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 0.6rem;
-      color: white;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background .3s;
-    }
-    .btn:hover { background: var(--brand-2); }
-    .contact {
-      background: var(--card);
-      padding: 2rem 1rem;
-      text-align: center;
-      margin: 2rem 0;
-      border-top: 2px solid var(--line);
-      border-bottom: 2px solid var(--line);
-      animation: fadeIn 1.5s ease;
-    }
-    .contact h2 { margin-bottom: 1rem; }
-    .contact p { color: var(--muted); margin-bottom: 1rem; }
-    .contact-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .c-btn {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .7rem 1rem;
-      border-radius: .6rem;
-      font-weight: 600;
-      color: white;
-      text-decoration: none;
-      transition: transform .3s;
-    }
-    .c-btn:hover { transform: scale(1.05); }
-    .whatsapp { background: var(--green); }
-    .email { background: var(--brand); }
-    .map { background: var(--red); }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-      border-top: 1px solid var(--line);
-      margin-top: 2rem;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes slideUp {
-      from { transform: translateY(30px); opacity:0; }
-      to { transform: translateY(0); opacity:1; }
-    }
+    .whatsapp a { color:#fff; text-decoration:none; }
   </style>
 </head>
 <body>
-  <header>Soluções Financeiras & Restaurantes</header>
-  
-  <section class="hero">
-    <h1>Transformando gestão em resultados</h1>
-    <p>Sistemas completos para restaurantes e empresas — do cardápio ao financeiro</p>
+  <nav>
+    <div class="logo">CB Systems</div>
+    <ul>
+      <li><a href="#sobre">Quem Somos</a></li>
+      <li><a href="#servicos">Serviços</a></li>
+      <li><a href="#clientes">Clientes</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero" id="sobre">
+    <h1>Aqui a gente não <span>tenta</span>, a gente <span>faz acontecer</span></h1>
+    <p>Soluções completas em sistemas financeiros e gestão de restaurantes.</p>
+    <button class="btn btn-main">Fale Conosco</button>
   </section>
 
-  <main class="container">
-    <div class="card">
-      <h2>📋 Cardápios</h2>
-      <p>Gestão digital de menus e pedidos em tempo real.</p>
-      <button class="btn">Acessar</button>
+  <section class="logos" id="clientes">
+    <h2>Empresas que confiam em nós</h2>
+    <div class="grid">
+      <img src="https://dummyimage.com/200x60/ccc/000.png&text=Cliente+1">
+      <img src="https://dummyimage.com/200x60/ccc/000.png&text=Cliente+2">
+      <img src="https://dummyimage.com/200x60/ccc/000.png&text=Cliente+3">
+      <img src="https://dummyimage.com/200x60/ccc/000.png&text=Cliente+4">
     </div>
-    <div class="card">
-      <h2>🛒 Requisições de Compras</h2>
-      <p>Controle de solicitações e aprovações de compras.</p>
-      <button class="btn">Gerenciar</button>
-    </div>
-    <div class="card">
-      <h2>📦 Estoque</h2>
-      <p>Monitoramento de entradas, saídas e inventário.</p>
-      <button class="btn">Visualizar</button>
-    </div>
-    <div class="card">
-      <h2>💰 Financeiro</h2>
-      <p>Controle de fluxo de caixa, contas a pagar e receber.</p>
-      <button class="btn">Abrir</button>
-    </div>
-    <div class="card">
-      <h2>📊 Dashboards</h2>
-      <p>Análises financeiras e relatórios em tempo real.</p>
-      <button class="btn">Ver Relatórios</button>
-    </div>
-    <div class="card">
-      <h2>🚚 Vendas Delivery</h2>
-      <p>Gestão de vendas externas e integração com apps.</p>
-      <button class="btn">Delivery</button>
-    </div>
-    <div class="card">
-      <h2>📈 Marketing</h2>
-      <p>Campanhas, promoções e engajamento de clientes.</p>
-      <button class="btn">Campanhas</button>
-    </div>
-    <div class="card">
-      <h2>🎨 Materiais Gráficos</h2>
-      <p>Artes e materiais visuais para comunicação.</p>
-      <button class="btn">Acessar</button>
-    </div>
-  </main>
+  </section>
 
-  <section class="contact">
-    <h2>📞 Entre em Contato</h2>
-    <p>Estamos prontos para atender sua empresa</p>
-    <div class="contact-buttons">
-      <a href="https://wa.me/5511999999999" class="c-btn whatsapp">💬 WhatsApp</a>
-      <a href="mailto:contato@empresa.com" class="c-btn email">✉️ E-mail</a>
-      <a href="https://maps.google.com/?q=Av+Paulista,+São+Paulo" target="_blank" class="c-btn map">📍 Endereço</a>
+  <section class="steps">
+    <img src="https://dummyimage.com/400x300/222/fff.png&text=Dashboard+Financeiro">
+    <div class="step-list">
+      <div class="step">
+        <h3>1. Diagnóstico estratégico</h3>
+        <p>Levantamento da operação, canais e equipe.</p>
+      </div>
+      <div class="step">
+        <h3>2. Planejamento de metas</h3>
+        <p>Definição clara de objetivos, funis e indicadores.</p>
+      </div>
+      <div class="step">
+        <h3>3. Redesenho de processos</h3>
+        <p>Construção de rotina eficiente e padronizada.</p>
+      </div>
     </div>
+  </section>
+
+  <section class="services" id="servicos">
+    <h2>Nossos Serviços</h2>
+    <div class="service-grid">
+      <div class="card"><h3>📋 Cardápios Digitais</h3><p>Gestão de menus e pedidos em tempo real.</p></div>
+      <div class="card"><h3>🛒 Requisições de Compras</h3><p>Controle completo de solicitações e aprovações.</p></div>
+      <div class="card"><h3>📦 Estoque</h3><p>Monitoramento de entradas, saídas e inventário.</p></div>
+      <div class="card"><h3>💰 Financeiro</h3><p>Controle de fluxo de caixa, contas a pagar e receber.</p></div>
+      <div class="card"><h3>📊 Dashboards</h3><p>Análises financeiras em tempo real.</p></div>
+      <div class="card"><h3>🚚 Delivery</h3><p>Gestão integrada com apps de entrega.</p></div>
+    </div>
+  </section>
+
+  <section class="contact" id="contato">
+    <div class="contact-text">
+      <h2>Transforme sua gestão com a gente</h2>
+      <p>Preencha o formulário e receba um diagnóstico gratuito.</p>
+    </div>
+    <form class="form">
+      <input type="text" placeholder="Nome completo*" required>
+      <input type="email" placeholder="E-mail*" required>
+      <input type="tel" placeholder="Celular*" required>
+      <input type="text" placeholder="Empresa*" required>
+      <select required>
+        <option>Cargo*</option>
+        <option>CEO</option>
+        <option>Gerente</option>
+        <option>Financeiro</option>
+      </select>
+      <textarea placeholder="Mensagem"></textarea>
+      <button type="submit">ENVIAR</button>
+    </form>
   </section>
 
   <footer>© 2025 • CB Systems • Soluções Empresariais</footer>
+
+  <div class="whatsapp">
+    <a href="https://wa.me/5511999999999">💬</a>
+  </div>
 </body>
 </html>
