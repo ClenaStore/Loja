@@ -1,216 +1,206 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Clena Fitness Store</title>
-  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soluções Empresariais • Financeiro & Restaurantes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    /* Reset */
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:Arial,Helvetica,sans-serif;background:#f9fafb;color:#111827}
-    a{text-decoration:none;color:inherit}
-    ul{list-style:none}
-
-    /* Header */
-    header{background:#111827;color:#fff;padding:15px 30px;display:flex;justify-content:space-between;align-items:center}
-    header h1{font-size:22px}
-    nav ul{display:flex;gap:20px}
-    nav li{cursor:pointer}
-    nav li:hover{color:#009ee3}
-    .cart-btn{background:#009ee3;padding:10px 15px;border:none;border-radius:6px;color:#fff;cursor:pointer}
-    .cart-btn:hover{background:#007bbd}
-
-    /* Banner */
-    .banner{background:url("https://via.placeholder.com/1600x400?text=Clena+Fitness+Store") no-repeat center/cover;height:300px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;font-weight:bold;text-shadow:0 2px 6px rgba(0,0,0,.5)}
-
-    /* Container */
-    main{padding:30px}
-    .search{margin-bottom:20px;text-align:center}
-    .search input{padding:10px;width:60%;border:1px solid #ccc;border-radius:6px}
-    .categories{display:flex;justify-content:center;gap:20px;margin:20px 0}
-    .categories button{padding:10px 15px;border:none;border-radius:6px;background:#e5e7eb;cursor:pointer}
-    .categories button.active,.categories button:hover{background:#009ee3;color:#fff}
-
-    /* Grid produtos */
-    .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
-    .product{background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;text-align:center}
-    .product img{max-width:100%;border-radius:6px}
-    .product h3{margin:10px 0}
-    .product .price{font-weight:bold;font-size:18px;color:#111827}
-    .product button{margin-top:10px;background:#009ee3;color:#fff;border:none;padding:10px;width:100%;border-radius:8px;cursor:pointer}
-    .product button:hover{background:#007bbd}
-
-    /* Carrinho lateral */
-    #cart{position:fixed;top:0;right:-400px;width:350px;height:100%;background:#fff;box-shadow:-2px 0 10px rgba(0,0,0,.15);padding:20px;display:flex;flex-direction:column;transition:.3s}
-    #cart.open{right:0}
-    #cart h2{margin-bottom:15px}
-    #cart-items{flex-grow:1;overflow-y:auto}
-    .cart-item{display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px}
-    .cart-item span.remove{color:red;cursor:pointer}
-    .cart-footer{margin-top:10px}
-    .cart-footer input{padding:8px;width:100%;border:1px solid #ccc;border-radius:6px;margin-bottom:10px}
-    .cart-footer button{background:#16a34a;color:#fff;padding:12px;border:none;width:100%;border-radius:8px;cursor:pointer}
-    .cart-footer button:hover{background:#15803d}
-
-    /* Rodapé */
-    footer{background:#111827;color:#fff;padding:30px;margin-top:40px;display:flex;justify-content:space-around;flex-wrap:wrap}
-    footer div{margin:10px}
-    footer h4{margin-bottom:10px}
+    :root {
+      --bg: #0b1220;
+      --card: #111a2e;
+      --ink: #eaf1ff;
+      --muted: #9aa5c3;
+      --brand: #4f46e5;
+      --brand-2: #06b6d4;
+      --line: #25324a;
+      --green: #25d366;
+      --red: #ef4444;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+    header {
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      padding: 1.2rem 2rem;
+      font-weight: 800;
+      font-size: 1.6rem;
+      text-align: center;
+      letter-spacing: 1px;
+      color: white;
+      box-shadow: 0 3px 15px rgba(0,0,0,.3);
+    }
+    .hero {
+      padding: 3rem 1rem;
+      text-align: center;
+      background: radial-gradient(circle at center, rgba(79,70,229,0.3), transparent);
+      animation: fadeIn 1s ease-in;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      font-size: 1rem;
+      color: var(--muted);
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      animation: slideUp 1.2s ease;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform .3s, box-shadow .3s;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(0,0,0,.4);
+    }
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: .5rem;
+      color: var(--brand-2);
+    }
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .btn {
+      background: var(--brand);
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.6rem;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background .3s;
+    }
+    .btn:hover { background: var(--brand-2); }
+    .contact {
+      background: var(--card);
+      padding: 2rem 1rem;
+      text-align: center;
+      margin: 2rem 0;
+      border-top: 2px solid var(--line);
+      border-bottom: 2px solid var(--line);
+      animation: fadeIn 1.5s ease;
+    }
+    .contact h2 { margin-bottom: 1rem; }
+    .contact p { color: var(--muted); margin-bottom: 1rem; }
+    .contact-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .c-btn {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .7rem 1rem;
+      border-radius: .6rem;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      transition: transform .3s;
+    }
+    .c-btn:hover { transform: scale(1.05); }
+    .whatsapp { background: var(--green); }
+    .email { background: var(--brand); }
+    .map { background: var(--red); }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      margin-top: 2rem;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity:0; }
+      to { transform: translateY(0); opacity:1; }
+    }
   </style>
 </head>
 <body>
-<header>
-  <h1>Clena Fitness Store</h1>
-  <nav>
-    <ul>
-      <li onclick="filterCategory('all')">Todos</li>
-      <li onclick="filterCategory('suplementos')">Suplementos</li>
-      <li onclick="filterCategory('acessorios')">Acessórios</li>
-      <li onclick="filterCategory('roupas')">Roupas</li>
-    </ul>
-  </nav>
-  <button class="cart-btn" onclick="toggleCart()">🛒 Carrinho (<span id="cart-count">0</span>)</button>
-</header>
+  <header>Soluções Financeiras & Restaurantes</header>
+  
+  <section class="hero">
+    <h1>Transformando gestão em resultados</h1>
+    <p>Sistemas completos para restaurantes e empresas — do cardápio ao financeiro</p>
+  </section>
 
-<div class="banner">Equipamentos e Suplementos para sua Performance</div>
+  <main class="container">
+    <div class="card">
+      <h2>📋 Cardápios</h2>
+      <p>Gestão digital de menus e pedidos em tempo real.</p>
+      <button class="btn">Acessar</button>
+    </div>
+    <div class="card">
+      <h2>🛒 Requisições de Compras</h2>
+      <p>Controle de solicitações e aprovações de compras.</p>
+      <button class="btn">Gerenciar</button>
+    </div>
+    <div class="card">
+      <h2>📦 Estoque</h2>
+      <p>Monitoramento de entradas, saídas e inventário.</p>
+      <button class="btn">Visualizar</button>
+    </div>
+    <div class="card">
+      <h2>💰 Financeiro</h2>
+      <p>Controle de fluxo de caixa, contas a pagar e receber.</p>
+      <button class="btn">Abrir</button>
+    </div>
+    <div class="card">
+      <h2>📊 Dashboards</h2>
+      <p>Análises financeiras e relatórios em tempo real.</p>
+      <button class="btn">Ver Relatórios</button>
+    </div>
+    <div class="card">
+      <h2>🚚 Vendas Delivery</h2>
+      <p>Gestão de vendas externas e integração com apps.</p>
+      <button class="btn">Delivery</button>
+    </div>
+    <div class="card">
+      <h2>📈 Marketing</h2>
+      <p>Campanhas, promoções e engajamento de clientes.</p>
+      <button class="btn">Campanhas</button>
+    </div>
+    <div class="card">
+      <h2>🎨 Materiais Gráficos</h2>
+      <p>Artes e materiais visuais para comunicação.</p>
+      <button class="btn">Acessar</button>
+    </div>
+  </main>
 
-<main>
-  <div class="search">
-    <input type="text" id="search" placeholder="Buscar produtos..." oninput="searchProducts()">
-  </div>
+  <section class="contact">
+    <h2>📞 Entre em Contato</h2>
+    <p>Estamos prontos para atender sua empresa</p>
+    <div class="contact-buttons">
+      <a href="https://wa.me/5511999999999" class="c-btn whatsapp">💬 WhatsApp</a>
+      <a href="mailto:contato@empresa.com" class="c-btn email">✉️ E-mail</a>
+      <a href="https://maps.google.com/?q=Av+Paulista,+São+Paulo" target="_blank" class="c-btn map">📍 Endereço</a>
+    </div>
+  </section>
 
-  <div class="products" id="product-list"></div>
-</main>
-
-<!-- Carrinho -->
-<aside id="cart">
-  <h2>Carrinho</h2>
-  <div id="cart-items"></div>
-  <div class="cart-footer">
-    <input type="text" id="cep" placeholder="CEP para frete" oninput="calcFrete()">
-    <p id="frete-info"></p>
-    <h3>Total: R$ <span id="cart-total">0.00</span></h3>
-    <button onclick="checkout()">Finalizar Compra</button>
-    <button onclick="toggleCart()">Fechar</button>
-  </div>
-</aside>
-
-<footer>
-  <div>
-    <h4>Sobre Nós</h4>
-    <p>Especialistas em suplementos e acessórios fitness.</p>
-  </div>
-  <div>
-    <h4>Contato</h4>
-    <p>Email: contato@clena.com.br</p>
-    <p>WhatsApp: (11) 99999-9999</p>
-  </div>
-  <div>
-    <h4>Redes Sociais</h4>
-    <p>Instagram | Facebook | YouTube</p>
-  </div>
-</footer>
-
-<script>
-  const mp = new MercadoPago("APP_USR-14a860ed-37e2-4831-be80-66d2044b8cbe", { locale: "pt-BR" });
-
-  // TODOS os produtos por R$ 1,00
-  const products = [
-    {id:1, name:"Whey Protein 1kg",        price:100, category:"suplementos", img:"https://via.placeholder.com/250x180?text=Whey+Protein"},
-    {id:2, name:"Creatina Monohidratada",  price:100, category:"suplementos", img:"https://via.placeholder.com/250x180?text=Creatina"},
-    {id:3, name:"BCAA 120 caps",           price:1200, category:"suplementos", img:"https://via.placeholder.com/250x180?text=BCAA"},
-    {id:4, name:"Luvas de Treino",         price:1, category:"acessorios",  img:"https://via.placeholder.com/250x180?text=Luvas"},
-    {id:5, name:"Camiseta Dry Fit",        price:1, category:"roupas",      img:"https://via.placeholder.com/250x180?text=Camiseta"},
-    {id:6, name:"Shorts Fitness",          price:1, category:"roupas",      img:"https://via.placeholder.com/250x180?text=Shorts"},
-  ];
-
-  let cart = [];
-  let frete = 0;
-
-  function renderProducts(list=products){
-    const div = document.getElementById("product-list");
-    div.innerHTML="";
-    list.forEach(p=>{
-      div.innerHTML+=`
-      <div class="product">
-        <img src="${p.img}" alt="${p.name}">
-        <h3>${p.name}</h3>
-        <p class="price">R$ ${p.price.toFixed(2)}</p>
-        <button onclick="addToCart(${p.id})">Adicionar</button>
-      </div>`;
-    });
-  }
-
-  function filterCategory(cat){
-    if(cat==="all"){renderProducts(products)} 
-    else{renderProducts(products.filter(p=>p.category===cat))}
-  }
-
-  function searchProducts(){
-    const q=document.getElementById("search").value.toLowerCase();
-    renderProducts(products.filter(p=>p.name.toLowerCase().includes(q)));
-  }
-
-  function addToCart(id){
-    const item=products.find(p=>p.id===id);
-    cart.push(item);
-    renderCart();
-    toggleCart(true);
-  }
-
-  function renderCart(){
-    document.getElementById("cart-count").innerText=cart.length;
-    const div=document.getElementById("cart-items");
-    div.innerHTML="";
-    let total=0;
-    cart.forEach((item,i)=>{
-      total+=item.price;
-      div.innerHTML+=`<div class="cart-item">
-        <span>${item.name}</span>
-        <span>R$ ${item.price.toFixed(2)} <span class="remove" onclick="removeItem(${i})">x</span></span>
-      </div>`;
-    });
-    document.getElementById("cart-total").innerText=(total+frete).toFixed(2);
-  }
-
-  function removeItem(i){
-    cart.splice(i,1);
-    renderCart();
-  }
-
-  function toggleCart(force=false){
-    const c=document.getElementById("cart");
-    if(force){c.classList.add("open")}
-    else{c.classList.toggle("open")}
-  }
-
-  function calcFrete(){
-    const cep=document.getElementById("cep").value;
-    if(cep.length===9){frete=20;document.getElementById("frete-info").innerText="Frete fixo: R$ 20,00";}
-    else{frete=0;document.getElementById("frete-info").innerText="";}
-    renderCart();
-  }
-
-  async function checkout(){
-    if(cart.length===0){alert("Carrinho vazio!");return;}
-    try{
-      const response=await fetch("/api/create_preference",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          title:"Compra Clena Fitness",
-          price:cart.reduce((s,i)=>s+i.price,0)+frete
-        })
-      });
-      const data=await response.json();
-      if(data.id){window.location.href=`https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${data.id}`;}
-      else{alert("Erro no backend");}
-    }catch(e){console.error(e);alert("Erro na requisição");}
-  }
-
-  // Inicializa
-  renderProducts();
-</script>
+  <footer>© 2025 • CB Systems • Soluções Empresariais</footer>
 </body>
 </html>
