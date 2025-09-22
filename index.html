@@ -26,9 +26,9 @@
     .card{background:linear-gradient(180deg,#151921,#12161c);
       border:1px solid var(--line);border-radius:14px;overflow:hidden;
       box-shadow:var(--shadow);display:flex;flex-direction:column}
-    .card img{width:100%;height:120px;object-fit:cover}
+    .card img{width:100%;height:120px;object-fit:cover;cursor:pointer}
     .card .body{padding:10px;display:flex;flex-direction:column;gap:6px;flex:1}
-    .card .name{font-weight:700}
+    .card .name{font-weight:700;cursor:pointer}
     .card .price{color:#fcd34d;font-weight:700}
     .btn{appearance:none;border:0;padding:10px;border-radius:10px;
       background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
@@ -49,6 +49,7 @@
       border:1px solid var(--line);color:var(--txt);cursor:pointer}
     dialog{border:0;border-radius:14px;padding:14px;
       background:linear-gradient(180deg,#181c23,#13171d);color:var(--txt);width:min(90vw,480px)}
+    dialog img{width:100%;border-radius:12px;margin-bottom:10px}
   </style>
 </head>
 <body>
@@ -58,13 +59,9 @@
     <button class="btn small secondary" style="margin-left:auto" onclick="toggleCart(true)">🛒 Carrinho (<span id="cartBadge">0</span>)</button>
   </header>
 
-  <!-- Categorias -->
   <div class="cats" id="cats"></div>
-
-  <!-- Menu -->
   <main class="page" id="menuGrid"></main>
 
-  <!-- Carrinho -->
   <aside id="cartDrawer">
     <div class="drawerHead">
       <span>Meu Carrinho</span>
@@ -77,10 +74,13 @@
     </div>
   </aside>
 
-  <!-- Dialog complementos -->
+  <!-- Popup complementos -->
   <dialog id="dlgItem"></dialog>
 
-  <!-- Dialog checkout -->
+  <!-- Popup detalhes -->
+  <dialog id="dlgDetail"></dialog>
+
+  <!-- Popup checkout -->
   <dialog id="dlgCheckout">
     <h3>Finalizar Pedido</h3>
     <label>Nome <input id="c-nome" class="btn secondary" style="width:100%"></label><br>
@@ -112,6 +112,10 @@
       const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json()).catch(()=>({}));
       if(m.ok) menu=m.items; if(c.ok) complements=c.items;
       renderCategories(); renderMenu();
+      // restaurar carrinho salvo
+      const saved=localStorage.getItem("cf_cart");
+      if(saved) cart=JSON.parse(saved);
+      renderCart();
     }
 
     function renderCategories(){
@@ -134,9 +138,9 @@
       menu.filter(i=>!activeCat || i.cat===activeCat).forEach(i=>{
         const el=document.createElement("div"); el.className="card";
         el.innerHTML=`
-          <img src="${i.img}" alt="${i.name}">
+          <img src="${i.img}" alt="${i.name}" onclick="showDetail(${i.id})">
           <div class="body">
-            <div class="name">${i.name}</div>
+            <div class="name" onclick="showDetail(${i.id})">${i.name}</div>
             <div class="price">${BRL(i.price)}</div>
             <button class="btn" onclick="addItem(${i.id})">Adicionar</button>
           </div>`;
@@ -144,10 +148,19 @@
       });
     }
 
+    function showDetail(id){
+      const item=menu.find(x=>String(x.id)===String(id)); if(!item) return;
+      $("#dlgDetail").innerHTML=`
+        <img src="${item.img}" alt="${item.name}">
+        <h3>${item.name}</h3>
+        <p>${item.desc||"Sem descrição"}</p>
+        <button class="btn" onclick="dlgDetail.close()">Fechar</button>`;
+      $("#dlgDetail").showModal();
+    }
+
     function addItem(id){
       const item=menu.find(x=>String(x.id)===String(id)); if(!item) return;
       if(item.cat!=="Bebidas" && item.cat!=="Complementos"){
-        // abrir dialog de complementos
         const compHtml=complements.map(c=>`
           <label><input type="checkbox" data-id="${c.id}" data-price="${c.price}"> ${c.name} (+${BRL(c.price)})</label><br>`).join("");
         $("#dlgItem").innerHTML=`
@@ -175,6 +188,7 @@
       const k=JSON.stringify({id:item.id, comps:(item.comps||[]).map(c=>c.id).sort()});
       const f=cart.find(x=>JSON.stringify({id:x.id,comps:(x.comps||[]).map(c=>c.id).sort()})===k);
       if(f) f.qty++; else cart.push(item);
+      saveCart();
       renderCart(); toggleCart(true);
     }
 
@@ -195,17 +209,19 @@
         box.appendChild(row);
       });
       $("#grandTotal").textContent=BRL(total);
+      saveCart();
     }
+
     function inc(ix){cart[ix].qty++; renderCart()}
     function dec(ix){ if(cart[ix].qty>1) cart[ix].qty--; else cart.splice(ix,1); renderCart() }
     function toggleCart(open){ $("#cartDrawer").classList.toggle("open",open) }
 
+    function saveCart(){ localStorage.setItem("cf_cart",JSON.stringify(cart)); }
+
     function openCheckout(){
-      // carregar dados salvos
       $("#c-nome").value=localStorage.getItem("cf_nome")||"";
       $("#c-wa").value=localStorage.getItem("cf_wa")||"";
       $("#c-addr").value=localStorage.getItem("cf_addr")||"";
-      $("#c-pay").value="dinheiro";
       dlgCheckout.showModal();
     }
     function confirmOrder(){
