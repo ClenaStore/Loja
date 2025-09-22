@@ -43,7 +43,9 @@
     .drawerHead{padding:12px;font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
     .drawerBody{flex:1;overflow:auto;padding:12px;display:grid;gap:8px}
     .drawerFoot{padding:12px;border-top:1px solid var(--line);display:grid;gap:8px}
-    .row{display:flex;justify-content:space-between;align-items:center;font-size:14px}
+    .row{display:flex;align-items:center;gap:8px;font-size:14px}
+    .row img{width:36px;height:36px;object-fit:cover;border-radius:6px}
+    .row .info{flex:1}
     .qty{display:flex;gap:6px;align-items:center}
     .qty button{width:28px;height:28px;border-radius:8px;background:#0f1115;
       border:1px solid var(--line);color:var(--txt);cursor:pointer}
@@ -70,33 +72,15 @@
     <div class="drawerBody" id="cartItems"></div>
     <div class="drawerFoot">
       <div class="row"><span>Total:</span><strong id="grandTotal">R$ 0,00</strong></div>
-      <button class="btn" onclick="openCheckout()">Finalizar Pedido</button>
+      <button class="btn">Finalizar Pedido</button>
     </div>
   </aside>
 
-  <!-- Popup complementos -->
+  <!-- Dialog complementos + quantidade -->
   <dialog id="dlgItem"></dialog>
 
-  <!-- Popup detalhes -->
+  <!-- Dialog detalhes -->
   <dialog id="dlgDetail"></dialog>
-
-  <!-- Popup checkout -->
-  <dialog id="dlgCheckout">
-    <h3>Finalizar Pedido</h3>
-    <label>Nome <input id="c-nome" class="btn secondary" style="width:100%"></label><br>
-    <label>WhatsApp <input id="c-wa" class="btn secondary" style="width:100%"></label><br>
-    <label>Endereço <input id="c-addr" class="btn secondary" style="width:100%"></label><br>
-    <label>Forma de Pagamento 
-      <select id="c-pay" class="btn secondary" style="width:100%">
-        <option value="dinheiro">Dinheiro</option>
-        <option value="pix">PIX</option>
-        <option value="debito">Débito</option>
-        <option value="credito">Crédito</option>
-      </select>
-    </label><br>
-    <button class="btn" onclick="confirmOrder()">Confirmar</button>
-    <button class="btn secondary" onclick="dlgCheckout.close()">Cancelar</button>
-  </dialog>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
@@ -112,7 +96,6 @@
       const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json()).catch(()=>({}));
       if(m.ok) menu=m.items; if(c.ok) complements=c.items;
       renderCategories(); renderMenu();
-      // restaurar carrinho salvo
       const saved=localStorage.getItem("cf_cart");
       if(saved) cart=JSON.parse(saved);
       renderCart();
@@ -160,34 +143,35 @@
 
     function addItem(id){
       const item=menu.find(x=>String(x.id)===String(id)); if(!item) return;
-      if(item.cat!=="Bebidas" && item.cat!=="Complementos"){
-        const compHtml=complements.map(c=>`
+      let compHtml="", cat=item.cat||"";
+      if(cat!=="Bebidas" && cat!=="Complementos"){
+        compHtml=complements.map(c=>`
           <label><input type="checkbox" data-id="${c.id}" data-price="${c.price}"> ${c.name} (+${BRL(c.price)})</label><br>`).join("");
-        $("#dlgItem").innerHTML=`
-          <h3>${item.name}</h3>
-          <p>${item.desc||""}</p>
-          ${compHtml||"<em>Sem complementos</em>"}<br>
-          <button class="btn" onclick="confirmAdd(${id})">Adicionar ao Carrinho</button>
-          <button class="btn secondary" onclick="dlgItem.close()">Cancelar</button>`;
-        $("#dlgItem").showModal();
-        $("#dlgItem").dataset.item=id;
-      }else{
-        addToCart({...item,qty:1,comps:[]});
       }
+      $("#dlgItem").innerHTML=`
+        <h3>${item.name}</h3>
+        <p>${item.desc||""}</p>
+        ${compHtml}
+        <label>Quantidade: <input type="number" id="qtd" min="1" value="1" style="width:60px"></label><br><br>
+        <button class="btn" onclick="confirmAdd(${id})">Adicionar ao Carrinho</button>
+        <button class="btn secondary" onclick="dlgItem.close()">Cancelar</button>`;
+      $("#dlgItem").showModal();
+      $("#dlgItem").dataset.item=id;
     }
 
     function confirmAdd(id){
       const item=menu.find(x=>String(x.id)===String(id));
+      const qtd=parseInt($("#qtd").value)||1;
       const chec=[...$("#dlgItem").querySelectorAll("input:checked")]
         .map(ch=>({id:ch.dataset.id,name:complements.find(c=>c.id===ch.dataset.id)?.name,price:Number(ch.dataset.price)}));
-      addToCart({...item,qty:1,comps:chec});
+      addToCart({...item,qty:qtd,comps:chec});
       $("#dlgItem").close();
     }
 
     function addToCart(item){
-      const k=JSON.stringify({id:item.id, comps:(item.comps||[]).map(c=>c.id).sort()});
-      const f=cart.find(x=>JSON.stringify({id:x.id,comps:(x.comps||[]).map(c=>c.id).sort()})===k);
-      if(f) f.qty++; else cart.push(item);
+      const key=JSON.stringify({id:item.id, comps:(item.comps||[]).map(c=>c.id).sort()});
+      const f=cart.find(x=>JSON.stringify({id:x.id,comps:(x.comps||[]).map(c=>c.id).sort()})===key);
+      if(f) f.qty+=item.qty; else cart.push(item);
       saveCart();
       renderCart(); toggleCart(true);
     }
@@ -200,7 +184,10 @@
         const t=(it.price+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty; total+=t;
         const row=document.createElement("div"); row.className="row";
         row.innerHTML=`
-          <span>${it.qty}× ${it.name}${compTxt}</span>
+          <img src="${it.img}" alt="">
+          <div class="info">
+            ${it.qty}× ${it.name}${compTxt}
+          </div>
           <div class="qty">
             <button onclick="dec(${ix})">-</button>
             <button onclick="inc(${ix})">+</button>
@@ -215,22 +202,7 @@
     function inc(ix){cart[ix].qty++; renderCart()}
     function dec(ix){ if(cart[ix].qty>1) cart[ix].qty--; else cart.splice(ix,1); renderCart() }
     function toggleCart(open){ $("#cartDrawer").classList.toggle("open",open) }
-
     function saveCart(){ localStorage.setItem("cf_cart",JSON.stringify(cart)); }
-
-    function openCheckout(){
-      $("#c-nome").value=localStorage.getItem("cf_nome")||"";
-      $("#c-wa").value=localStorage.getItem("cf_wa")||"";
-      $("#c-addr").value=localStorage.getItem("cf_addr")||"";
-      dlgCheckout.showModal();
-    }
-    function confirmOrder(){
-      localStorage.setItem("cf_nome",$("#c-nome").value);
-      localStorage.setItem("cf_wa",$("#c-wa").value);
-      localStorage.setItem("cf_addr",$("#c-addr").value);
-      alert("Pedido confirmado!\nObrigado, "+$("#c-nome").value);
-      dlgCheckout.close(); toggleCart(false); cart=[]; renderCart();
-    }
 
     loadData();
   </script>
