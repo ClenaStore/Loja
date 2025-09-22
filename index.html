@@ -1,178 +1,211 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Clena Foods • Catálogo</title>
-<style>
-:root{
-  --bg:#0e0f12; --panel:#14161a; --line:#262b36;
-  --brand:#e63946; --brand-2:#ff8f1f;
-  --txt:#f7f8fa; --muted:#cbd5e1;
-}
-body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
-header{padding:14px;border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,#1a1f27,#14181f);
-  font-weight:800;display:flex;align-items:center;gap:10px}
-header img{width:34px;height:34px;border-radius:8px}
-header h1{font-size:16px;margin:0}
-.page{padding:16px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
-@media(min-width:900px){.page{grid-template-columns:1fr 1fr 1fr}}
-.card{background:#151921;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.card img{width:100%;height:120px;object-fit:cover;cursor:pointer}
-.card .body{padding:10px}
-.card .name{font-weight:700;cursor:pointer}
-.card .price{color:#fcd34d;font-weight:700}
-.btn{border:0;padding:8px 12px;border-radius:10px;
-  background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;font-weight:700;cursor:pointer}
-#cartDrawer{position:fixed;top:0;right:0;bottom:0;width:90vw;max-width:380px;
-  background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
-  transition:.3s;display:flex;flex-direction:column;z-index:50}
-#cartDrawer.open{transform:translateX(0)}
-.drawerHead{padding:12px;font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
-.drawerBody{flex:1;overflow:auto;padding:12px;display:grid;gap:8px}
-.drawerFoot{padding:12px;border-top:1px solid var(--line)}
-.row{display:flex;align-items:center;gap:8px;font-size:14px}
-.row img{width:32px;height:32px;object-fit:cover;border-radius:6px}
-.row .info{flex:1}
-.qty{display:flex;gap:6px}
-.qty button{width:24px;height:24px;border-radius:6px;background:#0f1115;color:#fff;border:1px solid #333;cursor:pointer}
-dialog{border:0;border-radius:14px;padding:14px;background:#181c23;color:var(--txt);width:min(90vw,420px)}
-dialog img{width:100%;border-radius:12px;margin-bottom:10px}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Clena Foods • Catálogo</title>
+  <style>
+    :root{
+      --bg:#0e0f12; --panel:#14161a; --line:#262b36;
+      --brand:#e63946; --brand-2:#ff8f1f;
+      --txt:#f7f8fa; --muted:#cbd5e1;
+      --shadow:0 12px 28px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.25);
+    }
+    body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
+    header{padding:14px;border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#1a1f27,#14181f);
+      font-weight:800;display:flex;align-items:center;gap:10px}
+    header img{width:34px;height:34px;border-radius:8px;box-shadow:var(--shadow)}
+    header h1{font-size:16px;margin:0}
+    .btn{appearance:none;border:0;padding:8px 12px;border-radius:10px;
+      background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
+      font-weight:700;cursor:pointer;text-align:center}
+    .btn.secondary{background:linear-gradient(180deg,#2b3240,#1c222c);color:var(--txt)}
+    /* Banner */
+    .banner{position:relative;width:100%;height:200px;overflow:hidden}
+    .banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+      opacity:0;transition:opacity 1s ease}
+    .banner img.active{opacity:1}
+    /* Grid */
+    .page{padding:16px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
+    @media(min-width:900px){.page{grid-template-columns:1fr 1fr 1fr}}
+    .card{background:linear-gradient(180deg,#151921,#12161c);
+      border:1px solid var(--line);border-radius:14px;overflow:hidden;
+      box-shadow:var(--shadow);display:flex;flex-direction:column;cursor:pointer}
+    .card img{width:100%;height:140px;object-fit:cover}
+    .card .body{padding:10px;display:flex;flex-direction:column;gap:6px;flex:1}
+    .card .name{font-weight:700}
+    .card .price{color:#fcd34d;font-weight:700}
+    /* Drawer carrinho */
+    #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:90vw;max-width:380px;
+      background:linear-gradient(180deg,#161a22,#12161c);
+      border-left:1px solid var(--line);transform:translateX(100%);
+      transition:.28s ease;box-shadow:var(--shadow);display:flex;flex-direction:column;z-index:50}
+    #cartDrawer.open{transform:translateX(0)}
+    .drawerHead{padding:12px;font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .drawerBody{flex:1;overflow:auto;padding:12px;display:grid;gap:8px}
+    .drawerFoot{padding:12px;border-top:1px solid var(--line);display:grid;gap:8px}
+    .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;gap:8px}
+    .qty{display:flex;gap:6px;align-items:center}
+    .qty button{width:24px;height:24px;border-radius:6px;background:#0f1115;
+      border:1px solid var(--line);color:var(--txt);cursor:pointer}
+    .mini{width:40px;height:40px;object-fit:cover;border-radius:6px}
+    /* Popup */
+    dialog{border:0;border-radius:14px;max-width:420px;width:90%;background:linear-gradient(180deg,#181b23,#13171d);color:var(--txt)}
+    dialog::backdrop{background:rgba(0,0,0,.6)}
+    .popup-body img{width:100%;max-height:200px;object-fit:cover;border-radius:10px;margin-bottom:8px}
+    .comps{display:grid;gap:6px;margin-top:8px}
+    label{font-size:14px;display:flex;justify-content:space-between;align-items:center}
+    input,select,textarea{width:100%;padding:8px;border-radius:8px;background:#0f1115;border:1px solid var(--line);color:var(--txt)}
+  </style>
 </head>
 <body>
-<header>
-  <img src="https://github.com/ClenaStore/foods/blob/main/paste/ChatGPT%20Image%2027%20de%20ago.%20de%202025,%2019_35_02.png?raw=true" alt="logo">
-  <h1>CLENA FOODS</h1>
-  <button class="btn" style="margin-left:auto" onclick="toggleCart(true)">🛒 (<span id="cartBadge">0</span>)</button>
-</header>
+  <header>
+    <img src="https://github.com/ClenaStore/foods/blob/main/paste/ChatGPT%20Image%2027%20de%20ago.%20de%202025,%2019_35_02.png?raw=true" alt="logo">
+    <h1>CLENA FOODS</h1>
+    <button class="btn secondary" style="margin-left:auto" onclick="toggleCart(true)">🛒 <span id="cartBadge">0</span></button>
+  </header>
 
-<main class="page" id="menuGrid"></main>
+  <!-- Banner -->
+  <div class="banner">
+    <img src="https://source.unsplash.com/1200x400/?burger" class="active">
+    <img src="https://source.unsplash.com/1200x400/?fries">
+    <img src="https://source.unsplash.com/1200x400/?soda">
+  </div>
 
-<aside id="cartDrawer">
-  <div class="drawerHead">
-    <span>Meu Carrinho</span>
-    <button class="btn" onclick="toggleCart(false)">✖</button>
-  </div>
-  <div class="drawerBody" id="cartItems"></div>
-  <div class="drawerFoot">
-    <div><b>Total:</b> <span id="grandTotal">R$ 0,00</span></div>
-    <button class="btn" onclick="openCheckout()">Finalizar</button>
-  </div>
-</aside>
+  <!-- Produtos -->
+  <main class="page" id="menuGrid"></main>
 
-<!-- Popup item -->
-<dialog id="dlgItem"></dialog>
-<!-- Checkout -->
-<dialog id="dlgCheckout">
-  <h3>Finalizar Pedido</h3>
-  <label>Nome <input id="c-nome" style="width:100%"></label><br>
-  <label>WhatsApp <input id="c-wa" style="width:100%"></label><br>
-  <label>Endereço <input id="c-addr" style="width:100%"></label><br>
-  <label>Pagamento 
-    <select id="c-pay" style="width:100%" onchange="toggleTroco(this.value)">
-      <option value="Dinheiro">Dinheiro</option>
-      <option value="PIX">PIX</option>
-      <option value="Débito">Débito</option>
-      <option value="Crédito">Crédito</option>
-    </select>
-  </label><br>
-  <div id="trocoDiv" style="display:none">
-    <label>Troco para quanto? <input id="c-troco" style="width:100%"></label><br>
-  </div>
-  <label>Obs <textarea id="c-obs" style="width:100%"></textarea></label><br>
-  <button class="btn" onclick="sendWhats()">Enviar WhatsApp</button>
-  <button class="btn" onclick="dlgCheckout.close()">Cancelar</button>
-</dialog>
+  <!-- Drawer carrinho -->
+  <aside id="cartDrawer">
+    <div class="drawerHead">
+      <span>Meu Carrinho</span>
+      <button class="btn small secondary" onclick="toggleCart(false)">✖</button>
+    </div>
+    <div class="drawerBody" id="cartItems"></div>
+    <div class="drawerFoot">
+      <div class="row"><span>Total:</span><strong id="grandTotal">R$ 0,00</strong></div>
+      <div style="display:grid;gap:6px">
+        <select id="payMethod">
+          <option value="">Forma de pagamento</option>
+          <option value="pix">PIX</option>
+          <option value="credito">Crédito</option>
+          <option value="debito">Débito</option>
+          <option value="dinheiro">Dinheiro</option>
+        </select>
+        <div id="trocoBox" style="display:none">
+          <label>Troco para: <input id="trocoVal" placeholder="Ex.: 100"/></label>
+        </div>
+        <input id="clienteNome" placeholder="Seu nome"/>
+        <input id="clienteTel" placeholder="WhatsApp"/>
+        <textarea id="clienteEnd" placeholder="Endereço completo"></textarea>
+        <textarea id="obs" placeholder="Observações"></textarea>
+        <button class="btn" onclick="finalizar()">Enviar Pedido</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Popup produto -->
+  <dialog id="dlgItem">
+    <div class="popup-body">
+      <img id="pImg"><h3 id="pName"></h3><p id="pDesc" style="color:var(--muted)"></p>
+      <strong id="pPrice"></strong>
+      <div id="compBox"></div>
+      <label>Quantidade: <input type="number" id="pQty" min="1" value="1" style="width:80px"></label>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn" onclick="addCurrent()">Adicionar</button>
+        <button class="btn secondary" onclick="dlgItem.close()">Cancelar</button>
+      </div>
+    </div>
+  </dialog>
 
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
-const NUMERO_LOJA="5571999999999"; // troque pelo número real
-let menu=[],complements=[],cart=[];
+let menu=[],cart=[],current=null;
 const $=s=>document.querySelector(s);
-const BRL=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const BRL=v=>"R$ "+v.toFixed(2).replace(".",",");
 
-async function loadData(){
-  const m=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})}).then(r=>r.json());
-  const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json());
-  if(m.ok) menu=m.items; if(c.ok) complements=c.items;
-  renderMenu();
+// Banner loop
+let bIx=0;const banners=document.querySelectorAll(".banner img");
+setInterval(()=>{banners[bIx].classList.remove("active");bIx=(bIx+1)%banners.length;banners[bIx].classList.add("active")},4000);
+
+// Carregar menu
+async function loadMenu(){
+  const r=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})});
+  const d=await r.json();
+  if(d.ok){menu=d.items;renderMenu()}
 }
 function renderMenu(){
-  $("#menuGrid").innerHTML="";
+  const grid=$("#menuGrid");grid.innerHTML="";
   menu.forEach(i=>{
     const el=document.createElement("div");el.className="card";
-    el.innerHTML=`
-      <img src="${i.img}" onclick="openItem(${i.id})">
-      <div class="body">
-        <div class="name" onclick="openItem(${i.id})">${i.name}</div>
-        <div class="price">${BRL(i.price)}</div>
-        <button class="btn" onclick="addItem(${i.id})">Adicionar</button>
-      </div>`;
-    $("#menuGrid").appendChild(el);
+    el.innerHTML=`<img src="${i.img}" alt=""><div class="body"><div class="name">${i.name}</div><div class="price">${BRL(i.price)}</div></div>`;
+    el.onclick=()=>openItem(i);
+    grid.appendChild(el);
   });
 }
-function openItem(id){
-  const it=menu.find(x=>x.id==id);
-  $("#dlgItem").innerHTML=`
-    <img src="${it.img}">
-    <h3>${it.name}</h3>
-    <p>${it.desc||""}</p>
-    <label>Qtd <input type="number" id="qtd" value="1" min="1"></label><br>`;
-  if(it.cat!=="Bebidas" && it.cat!=="Complementos"){
-    $("#dlgItem").innerHTML+=complements.map(c=>`
-      <label><input type="checkbox" data-id="${c.id}" data-price="${c.price}"> ${c.name} (+${BRL(c.price)})</label><br>`).join("");
+function openItem(i){
+  current=i;
+  $("#pImg").src=i.img;$("#pName").textContent=i.name;
+  $("#pDesc").textContent=i.desc||"";$("#pPrice").textContent=BRL(i.price);
+  $("#pQty").value=1;
+  // complementos
+  let html="";
+  if(i.cat!=="Bebidas"&&i.cat!=="Complementos"){
+    html="<h4>Complementos</h4><div class='comps'>";
+    (i.comps||[]).forEach(c=>{html+=`<label><span>${c.name} +${BRL(c.price)}</span><input type='checkbox' data-id='${c.id}' data-price='${c.price}'></label>`});
+    html+="</div>";
   }
-  $("#dlgItem").innerHTML+=`<br><button class="btn" onclick="confirmAdd(${id})">Adicionar</button>`;
+  $("#compBox").innerHTML=html;
   $("#dlgItem").showModal();
 }
-function addItem(id){openItem(id);}
-function confirmAdd(id){
-  const it=menu.find(x=>x.id==id);
-  const qtd=parseInt($("#qtd").value)||1;
-  const chec=[...$("#dlgItem").querySelectorAll("input:checked")]
-    .map(ch=>({id:ch.dataset.id,name:complements.find(c=>c.id==ch.dataset.id)?.name,price:+ch.dataset.price}));
-  cart.push({...it,qty:qtd,comps:chec});
-  $("#dlgItem").close();renderCart();toggleCart(true);
+function addCurrent(){
+  const qty=Number($("#pQty").value)||1;
+  const comps=[...$("#compBox input:checked")].map(c=>({id:c.dataset.id,name:c.parentNode.textContent.trim(),price:Number(c.dataset.price)}));
+  const item={id:current.id,name:current.name,price:current.price,img:current.img,qty,comps};
+  cart.push(item);
+  $("#dlgItem").close();
+  renderCart();toggleCart(true);
 }
 function renderCart(){
-  $("#cartBadge").textContent=cart.reduce((a,b)=>a+b.qty,0);
-  let total=0;$("#cartItems").innerHTML="";
+  $("#cartBadge").textContent=cart.length;
+  const box=$("#cartItems");box.innerHTML="";
+  let total=0;
   cart.forEach((it,ix)=>{
-    const compTxt=it.comps?.length? " + "+it.comps.map(c=>c.name).join(", "):"";
-    const t=(it.price+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;total+=t;
+    let extras=it.comps?.map(c=>c.name).join(", ");
+    const val=(it.price+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;
+    total+=val;
     const row=document.createElement("div");row.className="row";
-    row.innerHTML=`
-      <img src="${it.img}">
-      <div class="info">${it.qty}× <b>${it.name}</b>${compTxt}</div>
-      <div class="qty"><button onclick="dec(${ix})">-</button><button onclick="inc(${ix})">+</button></div>
-      <strong>${BRL(t)}</strong>`;
-    $("#cartItems").appendChild(row);
+    row.innerHTML=`<img src="${it.img}" class="mini"><div><b>${it.qty}× ${it.name}</b><div style="font-size:12px;color:var(--muted)">${extras||""}</div></div><strong>${BRL(val)}</strong>`;
+    box.appendChild(row);
   });
   $("#grandTotal").textContent=BRL(total);
+  $("#trocoBox").style.display=$("#payMethod").value==="dinheiro"?"block":"none";
 }
-function inc(ix){cart[ix].qty++;renderCart()}
-function dec(ix){if(cart[ix].qty>1)cart[ix].qty--;else cart.splice(ix,1);renderCart()}
-function toggleCart(o){$("#cartDrawer").classList.toggle("open",o)}
-function openCheckout(){ $("#c-addr").value=localStorage.getItem("cf_addr")||""; dlgCheckout.showModal();}
-function toggleTroco(v){$("#trocoDiv").style.display=(v==="Dinheiro")?"block":"none"}
-function sendWhats(){
-  const nome=$("#c-nome").value,wa=$("#c-wa").value,addr=$("#c-addr").value,
-        pay=$("#c-pay").value,troco=$("#c-troco").value,obs=$("#c-obs").value;
-  localStorage.setItem("cf_addr",addr);
-  let msg="*🍔 NOVO PEDIDO*\n\n";
+function toggleCart(open){$("#cartDrawer").classList.toggle("open",open)}
+$("#payMethod").addEventListener("change",()=>renderCart());
+
+function finalizar(){
+  if(!cart.length){alert("Carrinho vazio");return}
+  const nome=$("#clienteNome").value.trim();
+  const tel=$("#clienteTel").value.trim();
+  const end=$("#clienteEnd").value.trim();
+  if(!nome||!tel||!end){alert("Preencha nome, telefone e endereço");return}
+  localStorage.setItem("cf_end",end);
+  const pay=$("#payMethod").value;
+  let msg=`*🍔 Pedido - Clena Foods*\n\n*Cliente:* ${nome}\n*Contato:* ${tel}\n*Endereço:* ${end}\n\n*Itens:*\n`;
   cart.forEach(it=>{
-    const compTxt=it.comps?.length?" + "+it.comps.map(c=>c.name).join(", "):"";
-    msg+=`*${it.qty}× ${it.name}*${compTxt}\n`;
+    let extras=it.comps?.map(c=>c.name).join(", ");
+    const val=(it.price+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;
+    msg+=`• ${it.qty}× ${it.name} ${extras?`(${extras})`:""} — *${BRL(val)}*\n`;
   });
-  msg+=`\n*Total:* ${$("#grandTotal").textContent}\n\n👤 *Cliente:* ${nome}\n📱 *WhatsApp:* ${wa}\n🏠 *Endereço:* ${addr}\n💳 *Pagamento:* ${pay}\n`;
-  if(pay==="Dinheiro"&&troco) msg+=`💵 *Troco para:* ${troco}\n`;
-  if(obs) msg+=`\n📝 *Obs:* ${obs}\n`;
-  window.open(`https://wa.me/${NUMERO_LOJA}?text=${encodeURIComponent(msg)}`,"_blank");
-  dlgCheckout.close();toggleCart(false);cart=[];renderCart();
+  msg+=`\n*Total:* ${$("#grandTotal").textContent}\n*Pagamento:* ${pay.toUpperCase()}`;
+  if(pay==="dinheiro"&&$("#trocoVal").value){msg+=`\n*Troco para:* ${$("#trocoVal").value}`;}
+  if($("#obs").value) msg+=`\n*Obs:* ${$("#obs").value}`;
+  const url="https://wa.me/5577999999999?text="+encodeURIComponent(msg);
+  window.open(url,"_blank");
 }
-loadData();
+loadMenu();
 </script>
 </body>
 </html>
