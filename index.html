@@ -89,13 +89,16 @@
     <label>WhatsApp <input id="c-wa" class="btn secondary" style="width:100%"></label><br>
     <label>Endereço <input id="c-addr" class="btn secondary" style="width:100%"></label><br>
     <label>Forma de Pagamento 
-      <select id="c-pay" class="btn secondary" style="width:100%">
+      <select id="c-pay" class="btn secondary" style="width:100%" onchange="toggleTroco(this.value)">
         <option value="Dinheiro">Dinheiro</option>
         <option value="PIX">PIX</option>
         <option value="Débito">Débito</option>
         <option value="Crédito">Crédito</option>
       </select>
     </label><br>
+    <div id="trocoDiv" style="display:none">
+      <label>Troco para quanto? <input id="c-troco" class="btn secondary" style="width:100%"></label><br>
+    </div>
     <label>Observação <textarea id="c-obs" class="btn secondary" style="width:100%"></textarea></label><br>
     <button class="btn" onclick="sendWhats()">Enviar pelo WhatsApp</button>
     <button class="btn secondary" onclick="dlgCheckout.close()">Cancelar</button>
@@ -103,7 +106,7 @@
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
-    const NUMERO_LOJA = "5571999999999"; // coloque o número da loja aqui
+    const NUMERO_LOJA = "5571999999999"; // troque pelo número real da loja
 
     let menu=[], complements=[], cart=[];
     let activeCat=null;
@@ -181,7 +184,10 @@
       const qtd=parseInt($("#qtd").value)||1;
       const chec=[...$("#dlgItem").querySelectorAll("input:checked")]
         .map(ch=>({id:ch.dataset.id,name:complements.find(c=>c.id===ch.dataset.id)?.name,price:Number(ch.dataset.price)}));
-      cart.push({...item,qty:qtd,comps:chec});
+      // verificar se já existe item igual no carrinho
+      const key=JSON.stringify({id:item.id, comps:chec.map(c=>c.id).sort()});
+      const f=cart.find(x=>JSON.stringify({id:x.id, comps:(x.comps||[]).map(c=>c.id).sort()})===key);
+      if(f) f.qty+=qtd; else cart.push({...item,qty:qtd,comps:chec});
       $("#dlgItem").close();
       renderCart(); toggleCart(true);
     }
@@ -195,9 +201,7 @@
         const row=document.createElement("div"); row.className="row";
         row.innerHTML=`
           <img src="${it.img}" alt="">
-          <div class="info">
-            ${it.qty}× <b>${it.name}</b>${compTxt}
-          </div>
+          <div class="info">${it.qty}× <b>${it.name}</b>${compTxt}</div>
           <div class="qty">
             <button onclick="dec(${ix})">-</button>
             <button onclick="inc(${ix})">+</button>
@@ -217,11 +221,16 @@
       dlgCheckout.showModal();
     }
 
+    function toggleTroco(val){
+      $("#trocoDiv").style.display = (val==="Dinheiro") ? "block" : "none";
+    }
+
     function sendWhats(){
       const nome=$("#c-nome").value;
       const wa=$("#c-wa").value;
       const addr=$("#c-addr").value;
       const pay=$("#c-pay").value;
+      const troco=$("#c-troco").value;
       const obs=$("#c-obs").value;
       localStorage.setItem("cf_addr",addr);
 
@@ -232,6 +241,7 @@
       });
       msg+=`\n*Total:* ${$("#grandTotal").textContent}\n\n`;
       msg+=`👤 *Cliente:* ${nome}\n📱 *WhatsApp:* ${wa}\n🏠 *Endereço:* ${addr}\n💳 *Pagamento:* ${pay}\n`;
+      if(pay==="Dinheiro" && troco) msg+=`💵 *Troco para:* ${troco}\n`;
       if(obs) msg+=`\n📝 *Obs:* ${obs}\n`;
 
       const url=`https://wa.me/${NUMERO_LOJA}?text=${encodeURIComponent(msg)}`;
