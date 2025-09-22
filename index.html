@@ -30,9 +30,14 @@
       .menu-toggle{display:block;}
     }
 
-    /* Hero */
-    .hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
-      text-align:center;padding:2rem;background:linear-gradient(120deg,var(--bg) 60%,#1b1f2f 100%);}
+    /* Hero com imagem de fundo apagada */
+    .hero{
+      height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+      text-align:center;padding:2rem;
+      background:linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+                 url('https://picsum.photos/1920/1080?blur=3') no-repeat center center;
+      background-size:cover;
+    }
     .hero h1{font-size:2.5rem;line-height:1.2;margin-bottom:1rem;}
     .hero span{color:var(--brand);}
     .hero p{color:var(--muted);max-width:600px;margin-bottom:2rem;}
