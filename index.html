@@ -1,278 +1,136 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soluções Empresariais</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Clena Foods • Catálogo</title>
   <style>
-    :root {
-      --bg:#0b0f1a; --ink:#f0f2f7; --muted:#a3acc7;
-      --brand:#ff006e; --brand-2:#06b6d4; --highlight:#32d74b;
+    :root{
+      --bg:#0e0f12; --panel:#14161a; --line:#262b36;
+      --brand:#e63946; --brand-2:#ff8f1f;
+      --txt:#f7f8fa; --muted:#cbd5e1; --ok:#22c55e; --bad:#ef4444;
+      --shadow:0 12px 28px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.25);
     }
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);scroll-behavior:smooth;}
+    body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
+    header{padding:14px;border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#1a1f27,#14181f);
+      font-weight:800;display:flex;align-items:center;gap:10px}
+    header img{width:34px;height:34px;border-radius:8px;box-shadow:var(--shadow)}
+    header h1{font-size:16px;margin:0}
 
-    /* Navbar */
-    nav{position:fixed;top:0;left:0;width:100%;padding:1rem 2rem;
-      display:flex;justify-content:space-between;align-items:center;z-index:1000;
-      transition:.3s;}
-    nav.scrolled{background:rgba(0,0,0,.8);backdrop-filter:blur(10px);}
-    .logo{font-weight:800;font-size:1.4rem;color:var(--brand);}
-    nav ul{list-style:none;display:flex;gap:1.5rem;}
-    nav ul li a{text-decoration:none;color:var(--ink);font-weight:600;}
-    nav ul li a:hover{color:var(--brand-2);}
-    .menu-toggle{display:none;font-size:1.8rem;cursor:pointer;color:var(--ink);}
-    @media(max-width:768px){
-      nav ul{position:absolute;top:70px;left:0;width:100%;flex-direction:column;align-items:center;
-        background:#111;display:none;padding:1rem 0;}
-      nav ul.active{display:flex;}
-      .menu-toggle{display:block;}
-    }
+    .page{padding:16px;display:grid;gap:12px;grid-template-columns:1fr}
+    @media(min-width:600px){.page{grid-template-columns:1fr 1fr}}
+    @media(min-width:900px){.page{grid-template-columns:1fr 1fr 1fr}}
 
-    /* Hero com imagem de fundo apagada */
-    .hero{
-      height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
-      text-align:center;padding:2rem;
-      background:linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
-                 url('https://picsum.photos/1920/1080?blur=3') no-repeat center center;
-      background-size:cover;
-    }
-    .hero h1{font-size:2.5rem;line-height:1.2;margin-bottom:1rem;}
-    .hero span{color:var(--brand);}
-    .hero p{color:var(--muted);max-width:600px;margin-bottom:2rem;}
-    .btn{padding:.7rem 1.4rem;border-radius:.7rem;border:none;cursor:pointer;font-weight:700;transition:.3s;}
-    .btn-main{background:var(--brand);color:#fff;}
-    .btn-main:hover{background:var(--brand-2);}
-    @media(max-width:480px){.hero h1{font-size:1.8rem;}}
+    .card{background:linear-gradient(180deg,#151921,#12161c);
+      border:1px solid var(--line);border-radius:14px;overflow:hidden;
+      box-shadow:var(--shadow);display:flex;flex-direction:column}
+    .card img{width:100%;height:140px;object-fit:cover}
+    .card .body{padding:10px;display:flex;flex-direction:column;gap:6px;flex:1}
+    .card .name{font-weight:700}
+    .card .price{color:#fcd34d;font-weight:700}
+    .btn{appearance:none;border:0;padding:10px;border-radius:10px;
+      background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
+      font-weight:700;cursor:pointer;text-align:center}
+    .btn.small{padding:6px 10px;font-size:13px}
+    .btn.secondary{background:linear-gradient(180deg,#2b3240,#1c222c)}
 
-    /* Services */
-    .services{padding:3rem 1rem;text-align:center;}
-    .services h2{margin-bottom:2rem;font-size:1.8rem;}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;}
-    .card{background:rgba(255,255,255,.05);backdrop-filter:blur(8px);
-      border-radius:1rem;padding:1.5rem;transition:.3s;box-shadow:0 5px 15px rgba(0,0,0,.3);}
-    .card:hover{transform:translateY(-6px) scale(1.02);}
-    .card h3{color:var(--brand-2);margin-bottom:.5rem;}
-    .card p{margin-bottom:1rem;color:var(--muted);}
-    .card button{background:var(--brand);color:#fff;border:none;padding:.6rem 1rem;
-      border-radius:.5rem;font-weight:600;cursor:pointer;transition:.3s;}
-    .card button:hover{background:var(--brand-2);}
-
-    /* Modal */
-    .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);
-      display:none;justify-content:center;align-items:center;z-index:2000;}
-    .modal-content{background:#111;color:#fff;padding:1.5rem;border-radius:1rem;max-width:600px;width:90%;
-      animation:fadeIn .4s ease;position:relative;}
-    .modal-content h3{margin-bottom:.8rem;}
-    .modal-content p{margin-bottom:1rem;color:var(--muted);}
-    .modal-content iframe{width:100%;height:250px;border:none;border-radius:.8rem;margin-bottom:1rem;}
-    .close{position:absolute;top:10px;right:15px;font-size:1.5rem;cursor:pointer;color:var(--muted);}
-    .contact-btn{display:inline-block;background:var(--highlight);color:#fff;padding:.7rem 1.2rem;border-radius:.6rem;text-decoration:none;font-weight:700;}
-    @keyframes fadeIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
-
-    /* Logos */
-.logos {
-  background: transparent;
-  color:#fff;
-}
-
-    .logos h2{margin-bottom:1rem;}
-    .slider{display:flex;gap:2rem;min-width:max-content;}
-    .slider img{height:40px;filter:grayscale(100%);opacity:.7;}
-    .slider img:hover{filter:none;opacity:1;}
-
-    /* Steps */
-    .steps{padding:3rem 1rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;}
-    .steps img{max-width:100%;border-radius:1rem;}
-    .step-list{display:flex;flex-direction:column;gap:1.5rem;}
-    .step{background:#111;border-radius:.8rem;padding:1rem;}
-    .step h3{color:var(--brand);}
-    @media(max-width:768px){.steps{grid-template-columns:1fr;text-align:center;}}
-
-    /* Contact */
-    .contact{padding:3rem 1rem;background:#111;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;}
-    .contact h2{color:var(--highlight);margin-bottom:1rem;}
-    .form{background:rgba(255,255,255,.05);padding:1.5rem;border-radius:1rem;}
-    .form input,.form select,.form textarea{width:100%;margin-bottom:1rem;padding:.9rem;border:none;border-radius:.6rem;background:#222;color:#fff;}
-    .form button{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff;border:none;padding:1rem;width:100%;border-radius:.7rem;font-weight:700;cursor:pointer;}
-    @media(max-width:768px){.contact{grid-template-columns:1fr;}}
-
-    /* Footer & WhatsApp */
-    footer{text-align:center;padding:1.5rem;background:#0d0d0d;color:var(--muted);}
-    .whatsapp{position:fixed;bottom:20px;right:20px;background:var(--highlight);padding:.8rem;border-radius:50%;
-      font-size:1.5rem;animation:pulse 1.5s infinite;}
-    .whatsapp a{color:#fff;text-decoration:none;}
-    @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);} }
-
-    /* Scroll reveal */
-    .reveal{opacity:0;transform:translateY(30px);transition:1s;}
-    .reveal.active{opacity:1;transform:translateY(0);}
+    /* CARRINHO */
+    #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:90vw;max-width:380px;
+      background:linear-gradient(180deg,#161a22,#12161c);
+      border-left:1px solid var(--line);transform:translateX(100%);
+      transition:.28s ease;box-shadow:var(--shadow);display:flex;flex-direction:column;z-index:50}
+    #cartDrawer.open{transform:translateX(0)}
+    .drawerHead{padding:12px;font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .drawerBody{flex:1;overflow:auto;padding:12px;display:grid;gap:8px}
+    .drawerFoot{padding:12px;border-top:1px solid var(--line);display:grid;gap:8px}
+    .row{display:flex;justify-content:space-between;align-items:center;font-size:14px}
+    .qty{display:flex;gap:6px;align-items:center}
+    .qty button{width:28px;height:28px;border-radius:8px;background:#0f1115;
+      border:1px solid var(--line);color:var(--txt);cursor:pointer}
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav id="navbar">
-    <div class="logo">Soluções financeiras</div>
-    <div class="menu-toggle" id="menu-toggle">☰</div>
-    <ul id="menu">
-      <li><a href="#servicos">Serviços</a></li>
-      <li><a href="#contato">Contato</a></li>
-    </ul>
-  </nav>
+  <header>
+    <img src="https://github.com/ClenaStore/foods/blob/main/paste/ChatGPT%20Image%2027%20de%20ago.%20de%202025,%2019_35_02.png?raw=true" alt="logo">
+    <h1>CLENA FOODS</h1>
+    <button class="btn small secondary" style="margin-left:auto" onclick="toggleCart(true)">🛒 Carrinho (<span id="cartBadge">0</span>)</button>
+  </header>
 
-  <!-- Hero -->
-<!-- Hero -->
-<section class="hero" id="sobre">
-  <h1>Aqui a gente não <span>tenta</span>, a gente <span>faz acontecer</span></h1>
-  <p>Soluções completas para gestão financeira e restaurantes.</p>
-  <a href="#contato" class="btn btn-main">Fale Conosco</a>
-</section>
+  <!-- Catálogo -->
+  <main class="page" id="menuGrid"></main>
 
-  <!-- Services -->
-  <section class="services reveal" id="servicos">
-    <h2>Nossos Serviços</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>📋 Cardápios</h3>
-        <p>Gestão digital de menus e pedidos.</p>
-        <button onclick="openModal('cardapio')">Saiba Mais</button>
-      </div>
-      <div class="card">
-        <h3>🛒 Compras</h3>
-        <p>Controle de solicitações e aprovações.</p>
-        <button onclick="openModal('compras')">Saiba Mais</button>
-      </div>
-      <div class="card">
-        <h3>📦 Estoque</h3>
-        <p>Gestão de inventário completa.</p>
-        <button onclick="openModal('estoque')">Saiba Mais</button>
-      </div>
-      <div class="card">
-        <h3>💰 Financeiro</h3>
-        <p>Fluxo de caixa e contas.</p>
-        <button onclick="openModal('financeiro')">Saiba Mais</button>
-      </div>
+  <!-- Carrinho -->
+  <aside id="cartDrawer">
+    <div class="drawerHead">
+      <span>Meu Carrinho</span>
+      <button class="btn small secondary" onclick="toggleCart(false)">Fechar ✖</button>
     </div>
-  </section>
-
-  <!-- Modals -->
-  <div id="cardapio" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('cardapio')">&times;</span>
-      <h3>📋 Cardápios Digitais</h3>
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-      <p>Gerencie seu cardápio em tempo real, integrado com pedidos de delivery e salão.</p>
-      <a href="https://wa.me/5511999999999" class="contact-btn">Entrar em Contato</a>
+    <div class="drawerBody" id="cartItems"></div>
+    <div class="drawerFoot">
+      <div class="row"><span>Total:</span><strong id="grandTotal">R$ 0,00</strong></div>
+      <button class="btn">Finalizar Pedido</button>
     </div>
-  </div>
-
-  <div id="compras" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('compras')">&times;</span>
-      <h3>🛒 Compras</h3>
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-      <p>Controle requisições de compras com aprovação rápida e transparente.</p>
-      <a href="https://wa.me/5511999999999" class="contact-btn">Entrar em Contato</a>
-    </div>
-  </div>
-
-  <div id="estoque" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('estoque')">&times;</span>
-      <h3>📦 Estoque</h3>
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-      <p>Tenha controle total de entradas, saídas e relatórios de estoque.</p>
-      <a href="https://wa.me/5511999999999" class="contact-btn">Entrar em Contato</a>
-    </div>
-  </div>
-
-  <div id="financeiro" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('financeiro')">&times;</span>
-      <h3>💰 Financeiro</h3>
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-      <p>Gerencie seu fluxo de caixa, contas a pagar e receber em um só lugar.</p>
-      <a href="https://wa.me/5511999999999" class="contact-btn">Entrar em Contato</a>
-    </div>
-  </div>
-
-  <!-- Logos -->
-  <section class="logos reveal" id="clientes">
-    <h2>Empresas que confiam em nós</h2>
-    <div class="slider">
-      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+1">
-      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+2">
-      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+3">
-      <img src="https://dummyimage.com/150x50/ccc/000.png&text=Logo+4">
-    </div>
-  </section>
-
-  <!-- Steps -->
-  <section class="steps reveal" id="etapas">
-    <img src="https://dummyimage.com/500x300/222/fff.png&text=Dashboard">
-    <div class="step-list">
-      <div class="step"><h3>1. Diagnóstico</h3><p>Mapeamos sua operação.</p></div>
-      <div class="step"><h3>2. Planejamento</h3><p>Definimos metas claras.</p></div>
-      <div class="step"><h3>3. Execução</h3><p>Processos eficientes.</p></div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section class="contact reveal" id="contato">
-    <div>
-      <h2>Transforme sua gestão</h2>
-      <p>Receba um diagnóstico gratuito.</p>
-    </div>
-    <form class="form">
-      <input type="text" placeholder="Nome completo*" required>
-      <input type="email" placeholder="E-mail*" required>
-      <input type="tel" placeholder="Celular*" required>
-      <input type="text" placeholder="Empresa*" required>
-      <select required>
-        <option disabled selected>Cargo*</option>
-        <option>CEO</option><option>Gerente</option><option>Financeiro</option>
-      </select>
-      <textarea placeholder="Mensagem"></textarea>
-      <button type="submit">ENVIAR</button>
-    </form>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    © 2025 • CB Systems • Soluções Empresariais
-  </footer>
-
-  <!-- WhatsApp -->
-  <div class="whatsapp">
-    <a href="https://wa.me/5511999999999">💬</a>
-  </div>
+  </aside>
 
   <script>
-    // Navbar scroll
-    window.addEventListener("scroll",()=>{
-      document.getElementById("navbar").classList.toggle("scrolled",window.scrollY>50);
-    });
-    // Mobile menu
-    document.getElementById("menu-toggle").addEventListener("click",()=>{
-      document.getElementById("menu").classList.toggle("active");
-    });
-    // Scroll reveal
-    const reveals=document.querySelectorAll(".reveal");
-    window.addEventListener("scroll",()=>{
-      reveals.forEach(r=>{
-        const top=r.getBoundingClientRect().top;
-        if(top<window.innerHeight-100) r.classList.add("active");
-      });
-    });
-    // Modal functions
-    function openModal(id){document.getElementById(id).style.display="flex";}
-    function closeModal(id){document.getElementById(id).style.display="none";}
-    window.onclick=function(e){
-      document.querySelectorAll(".modal").forEach(m=>{
-        if(e.target==m){m.style.display="none";}
+    const menu = [
+      {id:1, name:"Smash Burger", price:22, img:"https://images.unsplash.com/photo-1550547660-d9450f859349"},
+      {id:2, name:"Combo Duplo", price:39, img:"https://images.unsplash.com/photo-1551782450-17144c3a95b7"},
+      {id:3, name:"Batata Cheddar", price:18, img:"https://images.unsplash.com/photo-1585238342028-4c92d5d9c3b9"},
+      {id:4, name:"Refrigerante Lata", price:6, img:"https://images.unsplash.com/photo-1587731544311-7f6f6c9f9f4f"},
+    ];
+    let cart=[];
+
+    const $=s=>document.querySelector(s);
+    const BRL=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+
+    function renderMenu(){
+      const grid=$("#menuGrid"); grid.innerHTML="";
+      menu.forEach(i=>{
+        const el=document.createElement("div"); el.className="card";
+        el.innerHTML=`
+          <img src="${i.img}" alt="${i.name}">
+          <div class="body">
+            <div class="name">${i.name}</div>
+            <div class="price">${BRL(i.price)}</div>
+            <button class="btn" onclick="addToCart(${i.id})">Adicionar</button>
+          </div>`;
+        grid.appendChild(el);
       });
     }
+
+    function renderCart(){
+      $("#cartBadge").textContent=cart.reduce((a,b)=>a+b.qty,0);
+      const box=$("#cartItems"); box.innerHTML="";
+      let total=0;
+      cart.forEach((it,ix)=>{
+        const t=it.qty*it.price; total+=t;
+        const row=document.createElement("div"); row.className="row";
+        row.innerHTML=`
+          <span>${it.qty}× ${it.name}</span>
+          <div class="qty">
+            <button onclick="dec(${ix})">-</button>
+            <button onclick="inc(${ix})">+</button>
+          </div>
+          <strong>${BRL(t)}</strong>`;
+        box.appendChild(row);
+      });
+      $("#grandTotal").textContent=BRL(total);
+    }
+
+    function addToCart(id){
+      const p=menu.find(x=>x.id===id);
+      const f=cart.find(x=>x.id===id);
+      if(f) f.qty++; else cart.push({...p,qty:1});
+      renderCart();
+      toggleCart(true);
+    }
+    function inc(ix){cart[ix].qty++; renderCart()}
+    function dec(ix){ if(cart[ix].qty>1) cart[ix].qty--; else cart.splice(ix,1); renderCart() }
+    function toggleCart(open){ $("#cartDrawer").classList.toggle("open",open) }
+
+    renderMenu(); renderCart();
   </script>
 </body>
 </html>
