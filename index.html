@@ -9,6 +9,7 @@
       --bg:#0e0f12; --panel:#14161a; --line:#262b36;
       --brand:#e63946; --brand-2:#ff8f1f;
       --txt:#f7f8fa; --muted:#cbd5e1;
+      --shadow:0 4px 10px rgba(0,0,0,.3);
     }
     body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
     header{padding:14px;border-bottom:1px solid var(--line);
@@ -16,43 +17,57 @@
       font-weight:800;display:flex;align-items:center;gap:10px}
     header img{width:34px;height:34px;border-radius:8px}
     header h1{font-size:16px;margin:0}
-    .btn{border:0;padding:8px 12px;border-radius:10px;
+    .btn{border:0;padding:10px 14px;border-radius:12px;
       background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
-      font-weight:700;cursor:pointer;text-align:center}
-    .btn.secondary{background:linear-gradient(180deg,#2b3240,#1c222c);color:var(--txt)}
+      font-weight:700;cursor:pointer;text-align:center;transition:.2s}
+    .btn:hover{filter:brightness(1.1)}
+    .btn.secondary{background:#2b3240;color:var(--txt)}
     /* Banner */
     .banner{position:relative;width:100%;height:200px;overflow:hidden}
     .banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
       opacity:0;transition:opacity 1s ease}
     .banner img.active{opacity:1}
     /* Grid */
-    .page{padding:16px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
+    .page{padding:16px;display:grid;gap:16px;grid-template-columns:1fr 1fr}
     @media(min-width:900px){.page{grid-template-columns:1fr 1fr 1fr}}
-    .card{background:#151921;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+    .card{background:#151921;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.2s}
+    .card:hover{transform:translateY(-2px)}
     .card img{width:100%;height:140px;object-fit:cover;cursor:pointer}
-    .card .body{padding:10px;display:flex;flex-direction:column;gap:6px;flex:1}
-    .card .name{font-weight:700;cursor:pointer}
-    .card .price{color:#fcd34d;font-weight:700}
+    .card .body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+    .card .name{font-weight:700;font-size:15px}
+    .card .price{color:#fcd34d;font-weight:700;font-size:14px}
     /* Carrinho */
     #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:90vw;max-width:380px;
       background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
-      transition:.3s;display:flex;flex-direction:column;z-index:50}
+      transition:.3s;display:flex;flex-direction:column;z-index:50;box-shadow:-4px 0 12px rgba(0,0,0,.5)}
     #cartDrawer.open{transform:translateX(0)}
-    .drawerHead{padding:12px;font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
-    .drawerBody{flex:1;overflow:auto;padding:12px;display:grid;gap:8px}
-    .drawerFoot{padding:12px;border-top:1px solid var(--line)}
-    .row{display:flex;align-items:center;gap:8px;font-size:14px}
-    .mini{width:40px;height:40px;object-fit:cover;border-radius:6px}
+    .drawerHead{padding:16px;font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;font-size:16px}
+    .drawerBody{flex:1;overflow:auto;padding:14px;display:grid;gap:12px}
+    .cartItem{background:#1d222b;padding:10px;border-radius:10px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow)}
+    .cartItem img{width:46px;height:46px;border-radius:8px;object-fit:cover}
+    .cartItem .info{flex:1}
+    .cartItem .name{font-weight:700;font-size:14px}
+    .cartItem .extras{font-size:12px;color:var(--muted)}
+    .cartItem .price{font-weight:700;font-size:14px}
+    .drawerFoot{padding:14px;border-top:1px solid var(--line);display:grid;gap:10px}
+    #grandTotal{font-size:18px;color:#fcd34d;font-weight:800}
     /* Popup */
-    dialog{border:0;border-radius:14px;max-width:420px;width:90%;background:#181c23;color:var(--txt)}
+    dialog{border:0;border-radius:16px;max-width:420px;width:90%;background:#181c23;color:var(--txt);padding:16px;box-shadow:var(--shadow)}
     dialog::backdrop{background:rgba(0,0,0,.6)}
-    .popup-body img{width:100%;max-height:200px;object-fit:contain;display:block;margin:0 auto 10px auto;border-radius:10px;background:#000}
-    .comps{display:grid;gap:6px;margin:10px 0}
-    .qtyBox{display:flex;align-items:center;gap:12px;margin:10px 0}
-    .qtyBox button{width:36px;height:36px;border-radius:50%;border:0;
-      background:var(--brand);color:#fff;font-size:20px;font-weight:bold;cursor:pointer}
-    .qtyVal{min-width:32px;text-align:center;font-weight:700}
-    input,select,textarea{width:100%;padding:8px;border-radius:8px;background:#0f1115;border:1px solid var(--line);color:var(--txt)}
+    .popup-body img{width:100%;max-height:200px;object-fit:contain;display:block;margin:0 auto 12px auto;border-radius:12px;background:#000}
+    .popup-body h3{margin:0;font-size:18px;font-weight:800}
+    .popup-body p{margin:4px 0 10px 0;color:var(--muted);font-size:14px}
+    .popup-body strong{font-size:16px;color:#fcd34d}
+    .comps{display:grid;gap:8px;margin:12px 0}
+    .comps label{background:#222730;padding:8px 10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:.2s}
+    .comps label:hover{background:#2b3140}
+    /* quantidade */
+    .qtyBox{display:flex;align-items:center;gap:14px;margin:14px 0}
+    .qtyBox button{width:38px;height:38px;border-radius:50%;border:0;
+      background:var(--brand);color:#fff;font-size:20px;font-weight:bold;cursor:pointer;transition:.2s}
+    .qtyBox button:hover{filter:brightness(1.1)}
+    .qtyVal{min-width:32px;text-align:center;font-weight:700;font-size:16px}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;background:#0f1115;border:1px solid var(--line);color:var(--txt);font-size:14px}
   </style>
 </head>
 <body>
@@ -75,13 +90,13 @@
 <!-- Carrinho -->
 <aside id="cartDrawer">
   <div class="drawerHead">
-    <span>Meu Carrinho</span>
+    <span>🛒 Meu Carrinho</span>
     <button class="btn secondary" onclick="toggleCart(false)">✖</button>
   </div>
   <div class="drawerBody" id="cartItems"></div>
   <div class="drawerFoot">
     <div><b>Total:</b> <span id="grandTotal">R$ 0,00</span></div>
-    <div style="display:grid;gap:6px;margin-top:8px">
+    <div style="display:grid;gap:6px">
       <select id="payMethod">
         <option value="">Forma de pagamento</option>
         <option value="pix">PIX</option>
@@ -113,7 +128,7 @@
       <span class="qtyVal" id="pQty">1</span>
       <button onclick="changeQty(1)">+</button>
     </div>
-    <div style="margin-top:8px;display:flex;gap:8px">
+    <div style="margin-top:10px;display:flex;gap:10px">
       <button class="btn" id="btnAddCart">Adicionar</button>
       <button class="btn secondary" onclick="dlgItem.close()">Cancelar</button>
     </div>
@@ -189,8 +204,8 @@ function renderCart(){
   cart.forEach(it=>{
     const extras=it.comps?.map(c=>c.name).join(", ");
     const val=(Number(it.price)+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;total+=val;
-    const row=document.createElement("div");row.className="row";
-    row.innerHTML=`<img src="${it.img}" class="mini"><div><b>${it.qty}× ${it.name}</b><div style="font-size:12px;color:var(--muted)">${extras||""}</div></div><strong>${BRL(val)}</strong>`;
+    const row=document.createElement("div");row.className="cartItem";
+    row.innerHTML=`<img src="${it.img}"><div class="info"><div class="name">${it.qty}× ${it.name}</div><div class="extras">${extras||""}</div></div><div class="price">${BRL(val)}</div>`;
     box.appendChild(row);
   });
   $("#grandTotal").textContent=BRL(total);
