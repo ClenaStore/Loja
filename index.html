@@ -48,6 +48,10 @@
     dialog::backdrop{background:rgba(0,0,0,.6)}
     .popup-body img{width:100%;max-height:200px;object-fit:contain;display:block;margin:0 auto 10px auto;border-radius:10px;background:#000}
     .comps{display:grid;gap:6px;margin:10px 0}
+    .qtyBox{display:flex;align-items:center;gap:12px;margin:10px 0}
+    .qtyBox button{width:36px;height:36px;border-radius:50%;border:0;
+      background:var(--brand);color:#fff;font-size:20px;font-weight:bold;cursor:pointer}
+    .qtyVal{min-width:32px;text-align:center;font-weight:700}
     input,select,textarea{width:100%;padding:8px;border-radius:8px;background:#0f1115;border:1px solid var(--line);color:var(--txt)}
   </style>
 </head>
@@ -103,7 +107,12 @@
     <img id="pImg"><h3 id="pName"></h3><p id="pDesc"></p>
     <strong id="pPrice"></strong>
     <div id="compBox"></div>
-    <label>Quantidade: <input type="number" id="pQty" min="1" value="1"></label>
+    <!-- Quantidade com + e - -->
+    <div class="qtyBox">
+      <button onclick="changeQty(-1)">-</button>
+      <span class="qtyVal" id="pQty">1</span>
+      <button onclick="changeQty(1)">+</button>
+    </div>
     <div style="margin-top:8px;display:flex;gap:8px">
       <button class="btn" id="btnAddCart">Adicionar</button>
       <button class="btn secondary" onclick="dlgItem.close()">Cancelar</button>
@@ -113,7 +122,7 @@
 
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
-let menu=[],complements=[],cart=[],current=null;
+let menu=[],complements=[],cart=[],current=null, qty=1;
 const $=s=>document.querySelector(s);
 const BRL=v=>"R$ "+Number(v).toFixed(2).replace(".",",");
 
@@ -146,12 +155,12 @@ function renderMenu(){
   });
 }
 function openItem(item){
-  current=item;
+  current=item; qty=1;
   $("#pImg").src=item.img;
   $("#pName").textContent=item.name;
   $("#pDesc").textContent=item.desc||"";
   $("#pPrice").textContent=BRL(item.price);
-  $("#pQty").value=1;
+  $("#pQty").textContent=qty;
   let html="";
   if(item.cat!=="Bebidas"&&item.cat!=="Complementos"){
     html="<h4>Complementos</h4><div class='comps'>";
@@ -162,11 +171,13 @@ function openItem(item){
   }
   $("#compBox").innerHTML=html;
   $("#dlgItem").showModal();
-  // garantir botão
   $("#btnAddCart").onclick=()=>addCurrent();
 }
+function changeQty(v){
+  qty=Math.max(1,qty+v);
+  $("#pQty").textContent=qty;
+}
 function addCurrent(){
-  const qty=Number($("#pQty").value)||1;
   const comps=[...$("#compBox input:checked")].map(c=>({id:c.dataset.id,name:c.parentNode.textContent.trim(),price:+c.dataset.price}));
   cart.push({...current,qty,comps});
   $("#dlgItem").close();
