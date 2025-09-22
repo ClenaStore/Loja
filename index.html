@@ -1,255 +1,178 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Clena Foods • Catálogo</title>
-  <style>
-    :root{
-      --bg:#0e0f12; --panel:#14161a; --line:#262b36;
-      --brand:#e63946; --brand-2:#ff8f1f;
-      --txt:#f7f8fa; --muted:#cbd5e1;
-      --shadow:0 12px 28px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.25);
-    }
-    body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
-    header{padding:14px;border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg,#1a1f27,#14181f);
-      font-weight:800;display:flex;align-items:center;gap:10px}
-    header img{width:34px;height:34px;border-radius:8px;box-shadow:var(--shadow)}
-    header h1{font-size:16px;margin:0}
-    .cats{padding:8px;display:flex;gap:8px;overflow:auto}
-    .chip{flex:0 0 auto;padding:8px 14px;border-radius:999px;
-      border:1px solid var(--line);background:#1a1f27;color:var(--txt);cursor:pointer}
-    .chip.active{outline:2px solid var(--brand-2)}
-    .page{padding:16px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
-    @media(min-width:900px){.page{grid-template-columns:1fr 1fr 1fr}}
-    .card{background:linear-gradient(180deg,#151921,#12161c);
-      border:1px solid var(--line);border-radius:14px;overflow:hidden;
-      box-shadow:var(--shadow);display:flex;flex-direction:column}
-    .card img{width:100%;height:120px;object-fit:cover;cursor:pointer}
-    .card .body{padding:10px;display:flex;flex-direction:column;gap:6px;flex:1}
-    .card .name{font-weight:700;cursor:pointer}
-    .card .price{color:#fcd34d;font-weight:700}
-    .btn{appearance:none;border:0;padding:10px;border-radius:10px;
-      background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
-      font-weight:700;cursor:pointer;text-align:center}
-    .btn.small{padding:6px 10px;font-size:13px}
-    .btn.secondary{background:linear-gradient(180deg,#2b3240,#1c222c)}
-    #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:90vw;max-width:380px;
-      background:linear-gradient(180deg,#161a22,#12161c);
-      border-left:1px solid var(--line);transform:translateX(100%);
-      transition:.28s ease;box-shadow:var(--shadow);display:flex;flex-direction:column;z-index:50}
-    #cartDrawer.open{transform:translateX(0)}
-    .drawerHead{padding:12px;font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
-    .drawerBody{flex:1;overflow:auto;padding:12px;display:grid;gap:8px}
-    .drawerFoot{padding:12px;border-top:1px solid var(--line);display:grid;gap:8px}
-    .row{display:flex;align-items:center;gap:8px;font-size:14px}
-    .row img{width:36px;height:36px;object-fit:cover;border-radius:6px}
-    .row .info{flex:1}
-    .qty{display:flex;gap:6px;align-items:center}
-    .qty button{width:28px;height:28px;border-radius:8px;background:#0f1115;
-      border:1px solid var(--line);color:var(--txt);cursor:pointer}
-    dialog{border:0;border-radius:14px;padding:14px;
-      background:linear-gradient(180deg,#181c23,#13171d);color:var(--txt);width:min(90vw,480px)}
-    dialog img{width:100%;border-radius:12px;margin-bottom:10px}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Clena Foods • Catálogo</title>
+<style>
+:root{
+  --bg:#0e0f12; --panel:#14161a; --line:#262b36;
+  --brand:#e63946; --brand-2:#ff8f1f;
+  --txt:#f7f8fa; --muted:#cbd5e1;
+}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
+header{padding:14px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#1a1f27,#14181f);
+  font-weight:800;display:flex;align-items:center;gap:10px}
+header img{width:34px;height:34px;border-radius:8px}
+header h1{font-size:16px;margin:0}
+.page{padding:16px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media(min-width:900px){.page{grid-template-columns:1fr 1fr 1fr}}
+.card{background:#151921;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card img{width:100%;height:120px;object-fit:cover;cursor:pointer}
+.card .body{padding:10px}
+.card .name{font-weight:700;cursor:pointer}
+.card .price{color:#fcd34d;font-weight:700}
+.btn{border:0;padding:8px 12px;border-radius:10px;
+  background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;font-weight:700;cursor:pointer}
+#cartDrawer{position:fixed;top:0;right:0;bottom:0;width:90vw;max-width:380px;
+  background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
+  transition:.3s;display:flex;flex-direction:column;z-index:50}
+#cartDrawer.open{transform:translateX(0)}
+.drawerHead{padding:12px;font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.drawerBody{flex:1;overflow:auto;padding:12px;display:grid;gap:8px}
+.drawerFoot{padding:12px;border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:8px;font-size:14px}
+.row img{width:32px;height:32px;object-fit:cover;border-radius:6px}
+.row .info{flex:1}
+.qty{display:flex;gap:6px}
+.qty button{width:24px;height:24px;border-radius:6px;background:#0f1115;color:#fff;border:1px solid #333;cursor:pointer}
+dialog{border:0;border-radius:14px;padding:14px;background:#181c23;color:var(--txt);width:min(90vw,420px)}
+dialog img{width:100%;border-radius:12px;margin-bottom:10px}
+</style>
 </head>
 <body>
-  <header>
-    <img src="https://github.com/ClenaStore/foods/blob/main/paste/ChatGPT%20Image%2027%20de%20ago.%20de%202025,%2019_35_02.png?raw=true" alt="logo">
-    <h1>CLENA FOODS</h1>
-    <button class="btn small secondary" style="margin-left:auto" onclick="toggleCart(true)">🛒 Carrinho (<span id="cartBadge">0</span>)</button>
-  </header>
+<header>
+  <img src="https://github.com/ClenaStore/foods/blob/main/paste/ChatGPT%20Image%2027%20de%20ago.%20de%202025,%2019_35_02.png?raw=true" alt="logo">
+  <h1>CLENA FOODS</h1>
+  <button class="btn" style="margin-left:auto" onclick="toggleCart(true)">🛒 (<span id="cartBadge">0</span>)</button>
+</header>
 
-  <div class="cats" id="cats"></div>
-  <main class="page" id="menuGrid"></main>
+<main class="page" id="menuGrid"></main>
 
-  <aside id="cartDrawer">
-    <div class="drawerHead">
-      <span>Meu Carrinho</span>
-      <button class="btn small secondary" onclick="toggleCart(false)">Fechar ✖</button>
-    </div>
-    <div class="drawerBody" id="cartItems"></div>
-    <div class="drawerFoot">
-      <div class="row"><span>Total:</span><strong id="grandTotal">R$ 0,00</strong></div>
-      <button class="btn" onclick="openCheckout()">Finalizar Pedido</button>
-    </div>
-  </aside>
+<aside id="cartDrawer">
+  <div class="drawerHead">
+    <span>Meu Carrinho</span>
+    <button class="btn" onclick="toggleCart(false)">✖</button>
+  </div>
+  <div class="drawerBody" id="cartItems"></div>
+  <div class="drawerFoot">
+    <div><b>Total:</b> <span id="grandTotal">R$ 0,00</span></div>
+    <button class="btn" onclick="openCheckout()">Finalizar</button>
+  </div>
+</aside>
 
-  <!-- Popup adicionar -->
-  <dialog id="dlgItem"></dialog>
+<!-- Popup item -->
+<dialog id="dlgItem"></dialog>
+<!-- Checkout -->
+<dialog id="dlgCheckout">
+  <h3>Finalizar Pedido</h3>
+  <label>Nome <input id="c-nome" style="width:100%"></label><br>
+  <label>WhatsApp <input id="c-wa" style="width:100%"></label><br>
+  <label>Endereço <input id="c-addr" style="width:100%"></label><br>
+  <label>Pagamento 
+    <select id="c-pay" style="width:100%" onchange="toggleTroco(this.value)">
+      <option value="Dinheiro">Dinheiro</option>
+      <option value="PIX">PIX</option>
+      <option value="Débito">Débito</option>
+      <option value="Crédito">Crédito</option>
+    </select>
+  </label><br>
+  <div id="trocoDiv" style="display:none">
+    <label>Troco para quanto? <input id="c-troco" style="width:100%"></label><br>
+  </div>
+  <label>Obs <textarea id="c-obs" style="width:100%"></textarea></label><br>
+  <button class="btn" onclick="sendWhats()">Enviar WhatsApp</button>
+  <button class="btn" onclick="dlgCheckout.close()">Cancelar</button>
+</dialog>
 
-  <!-- Popup detalhes -->
-  <dialog id="dlgDetail"></dialog>
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
+const NUMERO_LOJA="5571999999999"; // troque pelo número real
+let menu=[],complements=[],cart=[];
+const $=s=>document.querySelector(s);
+const BRL=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 
-  <!-- Popup checkout -->
-  <dialog id="dlgCheckout">
-    <h3>Finalizar Pedido</h3>
-    <label>Nome <input id="c-nome" class="btn secondary" style="width:100%"></label><br>
-    <label>WhatsApp <input id="c-wa" class="btn secondary" style="width:100%"></label><br>
-    <label>Endereço <input id="c-addr" class="btn secondary" style="width:100%"></label><br>
-    <label>Forma de Pagamento 
-      <select id="c-pay" class="btn secondary" style="width:100%" onchange="toggleTroco(this.value)">
-        <option value="Dinheiro">Dinheiro</option>
-        <option value="PIX">PIX</option>
-        <option value="Débito">Débito</option>
-        <option value="Crédito">Crédito</option>
-      </select>
-    </label><br>
-    <div id="trocoDiv" style="display:none">
-      <label>Troco para quanto? <input id="c-troco" class="btn secondary" style="width:100%"></label><br>
-    </div>
-    <label>Observação <textarea id="c-obs" class="btn secondary" style="width:100%"></textarea></label><br>
-    <button class="btn" onclick="sendWhats()">Enviar pelo WhatsApp</button>
-    <button class="btn secondary" onclick="dlgCheckout.close()">Cancelar</button>
-  </dialog>
-
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
-    const NUMERO_LOJA = "5571999999999"; // troque pelo número real da loja
-
-    let menu=[], complements=[], cart=[];
-    let activeCat=null;
-
-    const $=s=>document.querySelector(s);
-    const BRL=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-
-    async function loadData(){
-      const m=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})}).then(r=>r.json()).catch(()=>({}));
-      const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json()).catch(()=>({}));
-      if(m.ok) menu=m.items; if(c.ok) complements=c.items;
-      renderCategories(); renderMenu();
-    }
-
-    function renderCategories(){
-      const cats=['Tudo',...new Set(menu.map(i=>i.cat))];
-      const box=$("#cats"); box.innerHTML="";
-      cats.forEach((c,ix)=>{
-        const chip=document.createElement("button");
-        chip.className="chip"+(ix===0?" active":"");
-        chip.textContent=c;
-        chip.onclick=()=>{
-          document.querySelectorAll("#cats .chip").forEach(x=>x.classList.remove("active"));
-          chip.classList.add("active"); activeCat=(c==="Tudo"?null:c); renderMenu();
-        };
-        box.appendChild(chip);
-      });
-    }
-
-    function renderMenu(){
-      const grid=$("#menuGrid"); grid.innerHTML="";
-      menu.filter(i=>!activeCat || i.cat===activeCat).forEach(i=>{
-        const el=document.createElement("div"); el.className="card";
-        el.innerHTML=`
-          <img src="${i.img}" alt="${i.name}" onclick="showDetail(${i.id})">
-          <div class="body">
-            <div class="name" onclick="showDetail(${i.id})">${i.name}</div>
-            <div class="price">${BRL(i.price)}</div>
-            <button class="btn" onclick="addItem(${i.id})">Adicionar</button>
-          </div>`;
-        grid.appendChild(el);
-      });
-    }
-
-    function showDetail(id){
-      const item=menu.find(x=>String(x.id)===String(id)); if(!item) return;
-      $("#dlgDetail").innerHTML=`
-        <img src="${item.img}" alt="${item.name}">
-        <h3>${item.name}</h3>
-        <p>${item.desc||"Sem descrição"}</p>
-        <button class="btn" onclick="dlgDetail.close()">Fechar</button>`;
-      $("#dlgDetail").showModal();
-    }
-
-    function addItem(id){
-      const item=menu.find(x=>String(x.id)===String(id)); if(!item) return;
-      let compHtml="", cat=item.cat||"";
-      if(cat!=="Bebidas" && cat!=="Complementos"){
-        compHtml=complements.map(c=>`
-          <label><input type="checkbox" data-id="${c.id}" data-price="${c.price}"> ${c.name} (+${BRL(c.price)})</label><br>`).join("");
-      }
-      $("#dlgItem").innerHTML=`
-        <h3>${item.name}</h3>
-        <p>${item.desc||""}</p>
-        ${compHtml}
-        <label>Quantidade: <input type="number" id="qtd" min="1" value="1" style="width:60px"></label><br><br>
-        <button class="btn" onclick="confirmAdd(${id})">Adicionar ao Carrinho</button>
-        <button class="btn secondary" onclick="dlgItem.close()">Cancelar</button>`;
-      $("#dlgItem").showModal();
-      $("#dlgItem").dataset.item=id;
-    }
-
-    function confirmAdd(id){
-      const item=menu.find(x=>String(x.id)===String(id));
-      const qtd=parseInt($("#qtd").value)||1;
-      const chec=[...$("#dlgItem").querySelectorAll("input:checked")]
-        .map(ch=>({id:ch.dataset.id,name:complements.find(c=>c.id===ch.dataset.id)?.name,price:Number(ch.dataset.price)}));
-      // verificar se já existe item igual no carrinho
-      const key=JSON.stringify({id:item.id, comps:chec.map(c=>c.id).sort()});
-      const f=cart.find(x=>JSON.stringify({id:x.id, comps:(x.comps||[]).map(c=>c.id).sort()})===key);
-      if(f) f.qty+=qtd; else cart.push({...item,qty:qtd,comps:chec});
-      $("#dlgItem").close();
-      renderCart(); toggleCart(true);
-    }
-
-    function renderCart(){
-      $("#cartBadge").textContent=cart.reduce((a,b)=>a+b.qty,0);
-      const box=$("#cartItems"); box.innerHTML=""; let total=0;
-      cart.forEach((it,ix)=>{
-        const compTxt=it.comps?.length? " + "+it.comps.map(c=>c.name).join(", "):"";
-        const t=(it.price+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty; total+=t;
-        const row=document.createElement("div"); row.className="row";
-        row.innerHTML=`
-          <img src="${it.img}" alt="">
-          <div class="info">${it.qty}× <b>${it.name}</b>${compTxt}</div>
-          <div class="qty">
-            <button onclick="dec(${ix})">-</button>
-            <button onclick="inc(${ix})">+</button>
-          </div>
-          <strong>${BRL(t)}</strong>`;
-        box.appendChild(row);
-      });
-      $("#grandTotal").textContent=BRL(total);
-    }
-
-    function inc(ix){cart[ix].qty++; renderCart()}
-    function dec(ix){ if(cart[ix].qty>1) cart[ix].qty--; else cart.splice(ix,1); renderCart() }
-    function toggleCart(open){ $("#cartDrawer").classList.toggle("open",open) }
-
-    function openCheckout(){
-      $("#c-addr").value=localStorage.getItem("cf_addr")||"";
-      dlgCheckout.showModal();
-    }
-
-    function toggleTroco(val){
-      $("#trocoDiv").style.display = (val==="Dinheiro") ? "block" : "none";
-    }
-
-    function sendWhats(){
-      const nome=$("#c-nome").value;
-      const wa=$("#c-wa").value;
-      const addr=$("#c-addr").value;
-      const pay=$("#c-pay").value;
-      const troco=$("#c-troco").value;
-      const obs=$("#c-obs").value;
-      localStorage.setItem("cf_addr",addr);
-
-      let msg="*🍔 NOVO PEDIDO - CLENA FOODS*\n\n";
-      cart.forEach(it=>{
-        const compTxt=it.comps?.length? " + "+it.comps.map(c=>c.name).join(", "):"";
-        msg+=`*${it.qty}× ${it.name}*${compTxt}\n`;
-      });
-      msg+=`\n*Total:* ${$("#grandTotal").textContent}\n\n`;
-      msg+=`👤 *Cliente:* ${nome}\n📱 *WhatsApp:* ${wa}\n🏠 *Endereço:* ${addr}\n💳 *Pagamento:* ${pay}\n`;
-      if(pay==="Dinheiro" && troco) msg+=`💵 *Troco para:* ${troco}\n`;
-      if(obs) msg+=`\n📝 *Obs:* ${obs}\n`;
-
-      const url=`https://wa.me/${NUMERO_LOJA}?text=${encodeURIComponent(msg)}`;
-      window.open(url,"_blank");
-      dlgCheckout.close(); toggleCart(false); cart=[]; renderCart();
-    }
-
-    loadData();
-  </script>
+async function loadData(){
+  const m=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})}).then(r=>r.json());
+  const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json());
+  if(m.ok) menu=m.items; if(c.ok) complements=c.items;
+  renderMenu();
+}
+function renderMenu(){
+  $("#menuGrid").innerHTML="";
+  menu.forEach(i=>{
+    const el=document.createElement("div");el.className="card";
+    el.innerHTML=`
+      <img src="${i.img}" onclick="openItem(${i.id})">
+      <div class="body">
+        <div class="name" onclick="openItem(${i.id})">${i.name}</div>
+        <div class="price">${BRL(i.price)}</div>
+        <button class="btn" onclick="addItem(${i.id})">Adicionar</button>
+      </div>`;
+    $("#menuGrid").appendChild(el);
+  });
+}
+function openItem(id){
+  const it=menu.find(x=>x.id==id);
+  $("#dlgItem").innerHTML=`
+    <img src="${it.img}">
+    <h3>${it.name}</h3>
+    <p>${it.desc||""}</p>
+    <label>Qtd <input type="number" id="qtd" value="1" min="1"></label><br>`;
+  if(it.cat!=="Bebidas" && it.cat!=="Complementos"){
+    $("#dlgItem").innerHTML+=complements.map(c=>`
+      <label><input type="checkbox" data-id="${c.id}" data-price="${c.price}"> ${c.name} (+${BRL(c.price)})</label><br>`).join("");
+  }
+  $("#dlgItem").innerHTML+=`<br><button class="btn" onclick="confirmAdd(${id})">Adicionar</button>`;
+  $("#dlgItem").showModal();
+}
+function addItem(id){openItem(id);}
+function confirmAdd(id){
+  const it=menu.find(x=>x.id==id);
+  const qtd=parseInt($("#qtd").value)||1;
+  const chec=[...$("#dlgItem").querySelectorAll("input:checked")]
+    .map(ch=>({id:ch.dataset.id,name:complements.find(c=>c.id==ch.dataset.id)?.name,price:+ch.dataset.price}));
+  cart.push({...it,qty:qtd,comps:chec});
+  $("#dlgItem").close();renderCart();toggleCart(true);
+}
+function renderCart(){
+  $("#cartBadge").textContent=cart.reduce((a,b)=>a+b.qty,0);
+  let total=0;$("#cartItems").innerHTML="";
+  cart.forEach((it,ix)=>{
+    const compTxt=it.comps?.length? " + "+it.comps.map(c=>c.name).join(", "):"";
+    const t=(it.price+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;total+=t;
+    const row=document.createElement("div");row.className="row";
+    row.innerHTML=`
+      <img src="${it.img}">
+      <div class="info">${it.qty}× <b>${it.name}</b>${compTxt}</div>
+      <div class="qty"><button onclick="dec(${ix})">-</button><button onclick="inc(${ix})">+</button></div>
+      <strong>${BRL(t)}</strong>`;
+    $("#cartItems").appendChild(row);
+  });
+  $("#grandTotal").textContent=BRL(total);
+}
+function inc(ix){cart[ix].qty++;renderCart()}
+function dec(ix){if(cart[ix].qty>1)cart[ix].qty--;else cart.splice(ix,1);renderCart()}
+function toggleCart(o){$("#cartDrawer").classList.toggle("open",o)}
+function openCheckout(){ $("#c-addr").value=localStorage.getItem("cf_addr")||""; dlgCheckout.showModal();}
+function toggleTroco(v){$("#trocoDiv").style.display=(v==="Dinheiro")?"block":"none"}
+function sendWhats(){
+  const nome=$("#c-nome").value,wa=$("#c-wa").value,addr=$("#c-addr").value,
+        pay=$("#c-pay").value,troco=$("#c-troco").value,obs=$("#c-obs").value;
+  localStorage.setItem("cf_addr",addr);
+  let msg="*🍔 NOVO PEDIDO*\n\n";
+  cart.forEach(it=>{
+    const compTxt=it.comps?.length?" + "+it.comps.map(c=>c.name).join(", "):"";
+    msg+=`*${it.qty}× ${it.name}*${compTxt}\n`;
+  });
+  msg+=`\n*Total:* ${$("#grandTotal").textContent}\n\n👤 *Cliente:* ${nome}\n📱 *WhatsApp:* ${wa}\n🏠 *Endereço:* ${addr}\n💳 *Pagamento:* ${pay}\n`;
+  if(pay==="Dinheiro"&&troco) msg+=`💵 *Troco para:* ${troco}\n`;
+  if(obs) msg+=`\n📝 *Obs:* ${obs}\n`;
+  window.open(`https://wa.me/${NUMERO_LOJA}?text=${encodeURIComponent(msg)}`,"_blank");
+  dlgCheckout.close();toggleCart(false);cart=[];renderCart();
+}
+loadData();
+</script>
 </body>
 </html>
