@@ -8,7 +8,7 @@
     :root{
       --bg:#0e0f12; --panel:#14161a; --line:#262b36;
       --brand:#e63946; --brand-2:#ff8f1f;
-      --txt:#f7f8fa; --muted:#cbd5e1; --ok:#22c55e; --bad:#ef4444;
+      --txt:#f7f8fa; --muted:#cbd5e1;
       --shadow:0 12px 28px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.25);
     }
     body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
@@ -17,11 +17,9 @@
       font-weight:800;display:flex;align-items:center;gap:10px}
     header img{width:34px;height:34px;border-radius:8px;box-shadow:var(--shadow)}
     header h1{font-size:16px;margin:0}
-
     .page{padding:16px;display:grid;gap:12px;grid-template-columns:1fr}
     @media(min-width:600px){.page{grid-template-columns:1fr 1fr}}
     @media(min-width:900px){.page{grid-template-columns:1fr 1fr 1fr}}
-
     .card{background:linear-gradient(180deg,#151921,#12161c);
       border:1px solid var(--line);border-radius:14px;overflow:hidden;
       box-shadow:var(--shadow);display:flex;flex-direction:column}
@@ -34,8 +32,6 @@
       font-weight:700;cursor:pointer;text-align:center}
     .btn.small{padding:6px 10px;font-size:13px}
     .btn.secondary{background:linear-gradient(180deg,#2b3240,#1c222c)}
-
-    /* CARRINHO */
     #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:90vw;max-width:380px;
       background:linear-gradient(180deg,#161a22,#12161c);
       border-left:1px solid var(--line);transform:translateX(100%);
@@ -57,10 +53,8 @@
     <button class="btn small secondary" style="margin-left:auto" onclick="toggleCart(true)">🛒 Carrinho (<span id="cartBadge">0</span>)</button>
   </header>
 
-  <!-- Catálogo -->
   <main class="page" id="menuGrid"></main>
 
-  <!-- Carrinho -->
   <aside id="cartDrawer">
     <div class="drawerHead">
       <span>Meu Carrinho</span>
@@ -74,16 +68,24 @@
   </aside>
 
   <script>
-    const menu = [
-      {id:1, name:"Smash Burger", price:22, img:"https://images.unsplash.com/photo-1550547660-d9450f859349"},
-      {id:2, name:"Combo Duplo", price:39, img:"https://images.unsplash.com/photo-1551782450-17144c3a95b7"},
-      {id:3, name:"Batata Cheddar", price:18, img:"https://images.unsplash.com/photo-1585238342028-4c92d5d9c3b9"},
-      {id:4, name:"Refrigerante Lata", price:6, img:"https://images.unsplash.com/photo-1587731544311-7f6f6c9f9f4f"},
-    ];
-    let cart=[];
+    const API_URL = "https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
+
+    let menu = [];
+    let cart = [];
 
     const $=s=>document.querySelector(s);
     const BRL=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+
+    async function loadMenu(){
+      try{
+        const res = await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})});
+        const data = await res.json();
+        if(data.ok) menu = data.items || [];
+        renderMenu();
+      }catch(e){
+        console.error("Erro ao carregar menu:",e);
+      }
+    }
 
     function renderMenu(){
       const grid=$("#menuGrid"); grid.innerHTML="";
@@ -120,8 +122,9 @@
     }
 
     function addToCart(id){
-      const p=menu.find(x=>x.id===id);
-      const f=cart.find(x=>x.id===id);
+      const p=menu.find(x=>String(x.id)===String(id));
+      if(!p) return;
+      const f=cart.find(x=>x.id===p.id);
       if(f) f.qty++; else cart.push({...p,qty:1});
       renderCart();
       toggleCart(true);
@@ -130,7 +133,7 @@
     function dec(ix){ if(cart[ix].qty>1) cart[ix].qty--; else cart.splice(ix,1); renderCart() }
     function toggleCart(open){ $("#cartDrawer").classList.toggle("open",open) }
 
-    renderMenu(); renderCart();
+    loadMenu();
   </script>
 </body>
 </html>
