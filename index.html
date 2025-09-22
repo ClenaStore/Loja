@@ -17,13 +17,16 @@
       font-weight:800;display:flex;align-items:center;gap:10px}
     header img{width:34px;height:34px;border-radius:8px;box-shadow:var(--shadow)}
     header h1{font-size:16px;margin:0}
-    .page{padding:16px;display:grid;gap:12px;grid-template-columns:1fr}
-    @media(min-width:600px){.page{grid-template-columns:1fr 1fr}}
+    .cats{padding:8px;display:flex;gap:8px;overflow:auto}
+    .chip{flex:0 0 auto;padding:8px 14px;border-radius:999px;
+      border:1px solid var(--line);background:#1a1f27;color:var(--txt);cursor:pointer}
+    .chip.active{outline:2px solid var(--brand-2)}
+    .page{padding:16px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
     @media(min-width:900px){.page{grid-template-columns:1fr 1fr 1fr}}
     .card{background:linear-gradient(180deg,#151921,#12161c);
       border:1px solid var(--line);border-radius:14px;overflow:hidden;
       box-shadow:var(--shadow);display:flex;flex-direction:column}
-    .card img{width:100%;height:140px;object-fit:cover}
+    .card img{width:100%;height:120px;object-fit:cover}
     .card .body{padding:10px;display:flex;flex-direction:column;gap:6px;flex:1}
     .card .name{font-weight:700}
     .card .price{color:#fcd34d;font-weight:700}
@@ -44,6 +47,8 @@
     .qty{display:flex;gap:6px;align-items:center}
     .qty button{width:28px;height:28px;border-radius:8px;background:#0f1115;
       border:1px solid var(--line);color:var(--txt);cursor:pointer}
+    dialog{border:0;border-radius:14px;padding:14px;
+      background:linear-gradient(180deg,#181c23,#13171d);color:var(--txt);width:min(90vw,480px)}
   </style>
 </head>
 <body>
@@ -53,8 +58,13 @@
     <button class="btn small secondary" style="margin-left:auto" onclick="toggleCart(true)">🛒 Carrinho (<span id="cartBadge">0</span>)</button>
   </header>
 
+  <!-- Categorias -->
+  <div class="cats" id="cats"></div>
+
+  <!-- Menu -->
   <main class="page" id="menuGrid"></main>
 
+  <!-- Carrinho -->
   <aside id="cartDrawer">
     <div class="drawerHead">
       <span>Meu Carrinho</span>
@@ -63,54 +73,120 @@
     <div class="drawerBody" id="cartItems"></div>
     <div class="drawerFoot">
       <div class="row"><span>Total:</span><strong id="grandTotal">R$ 0,00</strong></div>
-      <button class="btn">Finalizar Pedido</button>
+      <button class="btn" onclick="openCheckout()">Finalizar Pedido</button>
     </div>
   </aside>
+
+  <!-- Dialog complementos -->
+  <dialog id="dlgItem"></dialog>
+
+  <!-- Dialog checkout -->
+  <dialog id="dlgCheckout">
+    <h3>Finalizar Pedido</h3>
+    <label>Nome <input id="c-nome" class="btn secondary" style="width:100%"></label><br>
+    <label>WhatsApp <input id="c-wa" class="btn secondary" style="width:100%"></label><br>
+    <label>Endereço <input id="c-addr" class="btn secondary" style="width:100%"></label><br>
+    <label>Forma de Pagamento 
+      <select id="c-pay" class="btn secondary" style="width:100%">
+        <option value="dinheiro">Dinheiro</option>
+        <option value="pix">PIX</option>
+        <option value="debito">Débito</option>
+        <option value="credito">Crédito</option>
+      </select>
+    </label><br>
+    <button class="btn" onclick="confirmOrder()">Confirmar</button>
+    <button class="btn secondary" onclick="dlgCheckout.close()">Cancelar</button>
+  </dialog>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
 
-    let menu = [];
-    let cart = [];
+    let menu=[], complements=[], cart=[];
+    let activeCat=null;
 
     const $=s=>document.querySelector(s);
     const BRL=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 
-    async function loadMenu(){
-      try{
-        const res = await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})});
-        const data = await res.json();
-        if(data.ok) menu = data.items || [];
-        renderMenu();
-      }catch(e){
-        console.error("Erro ao carregar menu:",e);
-      }
+    async function loadData(){
+      const m=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})}).then(r=>r.json()).catch(()=>({}));
+      const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json()).catch(()=>({}));
+      if(m.ok) menu=m.items; if(c.ok) complements=c.items;
+      renderCategories(); renderMenu();
+    }
+
+    function renderCategories(){
+      const cats=['Tudo',...new Set(menu.map(i=>i.cat))];
+      const box=$("#cats"); box.innerHTML="";
+      cats.forEach((c,ix)=>{
+        const chip=document.createElement("button");
+        chip.className="chip"+(ix===0?" active":"");
+        chip.textContent=c;
+        chip.onclick=()=>{
+          document.querySelectorAll("#cats .chip").forEach(x=>x.classList.remove("active"));
+          chip.classList.add("active"); activeCat=(c==="Tudo"?null:c); renderMenu();
+        };
+        box.appendChild(chip);
+      });
     }
 
     function renderMenu(){
       const grid=$("#menuGrid"); grid.innerHTML="";
-      menu.forEach(i=>{
+      menu.filter(i=>!activeCat || i.cat===activeCat).forEach(i=>{
         const el=document.createElement("div"); el.className="card";
         el.innerHTML=`
           <img src="${i.img}" alt="${i.name}">
           <div class="body">
             <div class="name">${i.name}</div>
             <div class="price">${BRL(i.price)}</div>
-            <button class="btn" onclick="addToCart(${i.id})">Adicionar</button>
+            <button class="btn" onclick="addItem(${i.id})">Adicionar</button>
           </div>`;
         grid.appendChild(el);
       });
     }
 
+    function addItem(id){
+      const item=menu.find(x=>String(x.id)===String(id)); if(!item) return;
+      if(item.cat!=="Bebidas" && item.cat!=="Complementos"){
+        // abrir dialog de complementos
+        const compHtml=complements.map(c=>`
+          <label><input type="checkbox" data-id="${c.id}" data-price="${c.price}"> ${c.name} (+${BRL(c.price)})</label><br>`).join("");
+        $("#dlgItem").innerHTML=`
+          <h3>${item.name}</h3>
+          <p>${item.desc||""}</p>
+          ${compHtml||"<em>Sem complementos</em>"}<br>
+          <button class="btn" onclick="confirmAdd(${id})">Adicionar ao Carrinho</button>
+          <button class="btn secondary" onclick="dlgItem.close()">Cancelar</button>`;
+        $("#dlgItem").showModal();
+        $("#dlgItem").dataset.item=id;
+      }else{
+        addToCart({...item,qty:1,comps:[]});
+      }
+    }
+
+    function confirmAdd(id){
+      const item=menu.find(x=>String(x.id)===String(id));
+      const chec=[...$("#dlgItem").querySelectorAll("input:checked")]
+        .map(ch=>({id:ch.dataset.id,name:complements.find(c=>c.id===ch.dataset.id)?.name,price:Number(ch.dataset.price)}));
+      addToCart({...item,qty:1,comps:chec});
+      $("#dlgItem").close();
+    }
+
+    function addToCart(item){
+      const k=JSON.stringify({id:item.id, comps:(item.comps||[]).map(c=>c.id).sort()});
+      const f=cart.find(x=>JSON.stringify({id:x.id,comps:(x.comps||[]).map(c=>c.id).sort()})===k);
+      if(f) f.qty++; else cart.push(item);
+      renderCart(); toggleCart(true);
+    }
+
     function renderCart(){
       $("#cartBadge").textContent=cart.reduce((a,b)=>a+b.qty,0);
-      const box=$("#cartItems"); box.innerHTML="";
-      let total=0;
+      const box=$("#cartItems"); box.innerHTML=""; let total=0;
       cart.forEach((it,ix)=>{
-        const t=it.qty*it.price; total+=t;
+        const compTxt=it.comps?.length? " + "+it.comps.map(c=>c.name).join(", "):"";
+        const t=(it.price+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty; total+=t;
         const row=document.createElement("div"); row.className="row";
         row.innerHTML=`
-          <span>${it.qty}× ${it.name}</span>
+          <span>${it.qty}× ${it.name}${compTxt}</span>
           <div class="qty">
             <button onclick="dec(${ix})">-</button>
             <button onclick="inc(${ix})">+</button>
@@ -120,20 +196,27 @@
       });
       $("#grandTotal").textContent=BRL(total);
     }
-
-    function addToCart(id){
-      const p=menu.find(x=>String(x.id)===String(id));
-      if(!p) return;
-      const f=cart.find(x=>x.id===p.id);
-      if(f) f.qty++; else cart.push({...p,qty:1});
-      renderCart();
-      toggleCart(true);
-    }
     function inc(ix){cart[ix].qty++; renderCart()}
     function dec(ix){ if(cart[ix].qty>1) cart[ix].qty--; else cart.splice(ix,1); renderCart() }
     function toggleCart(open){ $("#cartDrawer").classList.toggle("open",open) }
 
-    loadMenu();
+    function openCheckout(){
+      // carregar dados salvos
+      $("#c-nome").value=localStorage.getItem("cf_nome")||"";
+      $("#c-wa").value=localStorage.getItem("cf_wa")||"";
+      $("#c-addr").value=localStorage.getItem("cf_addr")||"";
+      $("#c-pay").value="dinheiro";
+      dlgCheckout.showModal();
+    }
+    function confirmOrder(){
+      localStorage.setItem("cf_nome",$("#c-nome").value);
+      localStorage.setItem("cf_wa",$("#c-wa").value);
+      localStorage.setItem("cf_addr",$("#c-addr").value);
+      alert("Pedido confirmado!\nObrigado, "+$("#c-nome").value);
+      dlgCheckout.close(); toggleCart(false); cart=[]; renderCart();
+    }
+
+    loadData();
   </script>
 </body>
 </html>
