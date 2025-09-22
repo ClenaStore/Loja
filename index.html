@@ -72,18 +72,38 @@
     <div class="drawerBody" id="cartItems"></div>
     <div class="drawerFoot">
       <div class="row"><span>Total:</span><strong id="grandTotal">R$ 0,00</strong></div>
-      <button class="btn">Finalizar Pedido</button>
+      <button class="btn" onclick="openCheckout()">Finalizar Pedido</button>
     </div>
   </aside>
 
-  <!-- Dialog complementos + quantidade -->
+  <!-- Popup adicionar -->
   <dialog id="dlgItem"></dialog>
 
-  <!-- Dialog detalhes -->
+  <!-- Popup detalhes -->
   <dialog id="dlgDetail"></dialog>
+
+  <!-- Popup checkout -->
+  <dialog id="dlgCheckout">
+    <h3>Finalizar Pedido</h3>
+    <label>Nome <input id="c-nome" class="btn secondary" style="width:100%"></label><br>
+    <label>WhatsApp <input id="c-wa" class="btn secondary" style="width:100%"></label><br>
+    <label>Endereço <input id="c-addr" class="btn secondary" style="width:100%"></label><br>
+    <label>Forma de Pagamento 
+      <select id="c-pay" class="btn secondary" style="width:100%">
+        <option value="Dinheiro">Dinheiro</option>
+        <option value="PIX">PIX</option>
+        <option value="Débito">Débito</option>
+        <option value="Crédito">Crédito</option>
+      </select>
+    </label><br>
+    <label>Observação <textarea id="c-obs" class="btn secondary" style="width:100%"></textarea></label><br>
+    <button class="btn" onclick="sendWhats()">Enviar pelo WhatsApp</button>
+    <button class="btn secondary" onclick="dlgCheckout.close()">Cancelar</button>
+  </dialog>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
+    const NUMERO_LOJA = "5571999999999"; // coloque o número da loja aqui
 
     let menu=[], complements=[], cart=[];
     let activeCat=null;
@@ -96,9 +116,6 @@
       const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json()).catch(()=>({}));
       if(m.ok) menu=m.items; if(c.ok) complements=c.items;
       renderCategories(); renderMenu();
-      const saved=localStorage.getItem("cf_cart");
-      if(saved) cart=JSON.parse(saved);
-      renderCart();
     }
 
     function renderCategories(){
@@ -164,15 +181,8 @@
       const qtd=parseInt($("#qtd").value)||1;
       const chec=[...$("#dlgItem").querySelectorAll("input:checked")]
         .map(ch=>({id:ch.dataset.id,name:complements.find(c=>c.id===ch.dataset.id)?.name,price:Number(ch.dataset.price)}));
-      addToCart({...item,qty:qtd,comps:chec});
+      cart.push({...item,qty:qtd,comps:chec});
       $("#dlgItem").close();
-    }
-
-    function addToCart(item){
-      const key=JSON.stringify({id:item.id, comps:(item.comps||[]).map(c=>c.id).sort()});
-      const f=cart.find(x=>JSON.stringify({id:x.id,comps:(x.comps||[]).map(c=>c.id).sort()})===key);
-      if(f) f.qty+=item.qty; else cart.push(item);
-      saveCart();
       renderCart(); toggleCart(true);
     }
 
@@ -186,7 +196,7 @@
         row.innerHTML=`
           <img src="${it.img}" alt="">
           <div class="info">
-            ${it.qty}× ${it.name}${compTxt}
+            ${it.qty}× <b>${it.name}</b>${compTxt}
           </div>
           <div class="qty">
             <button onclick="dec(${ix})">-</button>
@@ -196,13 +206,38 @@
         box.appendChild(row);
       });
       $("#grandTotal").textContent=BRL(total);
-      saveCart();
     }
 
     function inc(ix){cart[ix].qty++; renderCart()}
     function dec(ix){ if(cart[ix].qty>1) cart[ix].qty--; else cart.splice(ix,1); renderCart() }
     function toggleCart(open){ $("#cartDrawer").classList.toggle("open",open) }
-    function saveCart(){ localStorage.setItem("cf_cart",JSON.stringify(cart)); }
+
+    function openCheckout(){
+      $("#c-addr").value=localStorage.getItem("cf_addr")||"";
+      dlgCheckout.showModal();
+    }
+
+    function sendWhats(){
+      const nome=$("#c-nome").value;
+      const wa=$("#c-wa").value;
+      const addr=$("#c-addr").value;
+      const pay=$("#c-pay").value;
+      const obs=$("#c-obs").value;
+      localStorage.setItem("cf_addr",addr);
+
+      let msg="*🍔 NOVO PEDIDO - CLENA FOODS*\n\n";
+      cart.forEach(it=>{
+        const compTxt=it.comps?.length? " + "+it.comps.map(c=>c.name).join(", "):"";
+        msg+=`*${it.qty}× ${it.name}*${compTxt}\n`;
+      });
+      msg+=`\n*Total:* ${$("#grandTotal").textContent}\n\n`;
+      msg+=`👤 *Cliente:* ${nome}\n📱 *WhatsApp:* ${wa}\n🏠 *Endereço:* ${addr}\n💳 *Pagamento:* ${pay}\n`;
+      if(obs) msg+=`\n📝 *Obs:* ${obs}\n`;
+
+      const url=`https://wa.me/${NUMERO_LOJA}?text=${encodeURIComponent(msg)}`;
+      window.open(url,"_blank");
+      dlgCheckout.close(); toggleCart(false); cart=[]; renderCart();
+    }
 
     loadData();
   </script>
