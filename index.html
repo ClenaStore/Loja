@@ -1,209 +1,239 @@
-<!DOCTYPE html>
-<html lang="pt-BR" data-theme="light">
+<!doctype html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Painel de Conciliação</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Clena Foods • Catálogo</title>
   <style>
     :root{
-      --bg:#f6f7fb; --surface:#fff; --card:#fff; --text:#0f172a; --muted:#475569;
-      --line:#e5e7eb; --shadow:0 16px 36px rgba(15,23,42,.08);
-      --blue:#2563eb; --yellow:#f59e0b;
+      --bg:#0e0f12; --panel:#14161a; --line:#262b36;
+      --brand:#e63946; --brand-2:#ff8f1f;
+      --txt:#f7f8fa; --muted:#cbd5e1;
+      --shadow:0 4px 10px rgba(0,0,0,.3);
     }
-    [data-theme="dark"] {
-      --bg:#0f172a; --surface:#1e293b; --card:#1e293b; --text:#f1f5f9; --muted:#94a3b8;
-      --line:#334155; --blue:#3b82f6; --yellow:#fbbf24;
-    }
-    body{margin:0; font-family:sans-serif; background:var(--bg); color:var(--text);}
-    header{position:sticky; top:0; z-index:40; background:var(--surface); border-bottom:1px solid var(--line);}
-    .head{max-width:1200px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:12px}
-    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit}
-    .brand img{height:42px}
-    .title{font-weight:800; letter-spacing:.2px; font-size:clamp(18px,1.6vw,22px)}
-    .grow{flex:1}
-    .btn{border:1px solid var(--line); background:var(--surface); color:var(--text);
-      padding:8px 12px; border-radius:12px; font-weight:800; cursor:pointer}
-    .btn:hover{box-shadow:var(--shadow); transform:translateY(-1px)}
-    .user{position:relative}
-    .user-btn{display:flex; align-items:center; gap:10px; border:1px solid var(--line);
-      background:var(--surface); padding:6px 8px; border-radius:999px; cursor:pointer}
-    .user-btn img{width:34px; height:34px; border-radius:50%; object-fit:cover; background:#ddd}
-    .user-menu{position:absolute; right:0; top:110%; background:var(--surface); border:1px solid var(--line);
-      border-radius:12px; min-width:200px; padding:6px; box-shadow:var(--shadow); display:none}
-    .user.open .user-menu{display:block}
-    .user-menu a,.user-menu button{display:flex; width:100%; padding:10px 12px; border-radius:10px;
-      border:none; background:transparent; color:var(--text); text-align:left; cursor:pointer; font-weight:600}
-    .user-menu a:hover,.user-menu button:hover{background:rgba(2,6,23,.06)}
-    .container{max-width:1200px; margin:0 auto; padding:20px}
-    .filters{display:grid; grid-template-columns:1fr 180px; gap:12px; margin-bottom:20px}
-    @media(max-width:700px){.filters{grid-template-columns:1fr;}}
-    .field label{display:block; margin:0 0 4px; font-weight:700; color:var(--muted)}
-    .field input,.field select{width:100%; padding:10px; border:1px solid var(--line); border-radius:10px;}
-    .card{background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); padding:16px; margin-bottom:18px}
-    .card h3{margin:0 0 12px}
-    .flex{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px; justify-items:center}
-    .circle-wrap{display:flex; flex-direction:column; align-items:center; gap:8px}
-    canvas{width:120px!important; height:120px!important}
-    table{width:100%; border-collapse:collapse; font-size:.95rem}
-    th,td{padding:10px; border-bottom:1px solid var(--line); text-align:left}
-    td:last-child,th:last-child{text-align:right}
-    .loading{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:60}
-    .loading.show{display:flex}
-    .spinner{width:74px; height:74px; border-radius:50%; border:6px solid rgba(255,255,255,.25); border-top-color:#fff; animation:spin 1s linear infinite}
-    .loading p{color:#fff; font-weight:800; margin-top:12px; text-shadow:0 2px 6px rgba(0,0,0,.3)}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
+    header{padding:14px;border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#1a1f27,#14181f);
+      font-weight:800;display:flex;align-items:center;gap:10px}
+    header img{width:34px;height:34px;border-radius:8px}
+    header h1{font-size:16px;margin:0}
+    .btn{border:0;padding:10px 14px;border-radius:12px;
+      background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
+      font-weight:700;cursor:pointer;text-align:center;transition:.2s}
+    .btn:hover{filter:brightness(1.1)}
+    .btn.secondary{background:#2b3240;color:var(--txt)}
+    /* Banner */
+    .banner{position:relative;width:100%;height:200px;overflow:hidden}
+    .banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+      opacity:0;transition:opacity 1s ease}
+    .banner img.active{opacity:1}
+    /* Grid */
+    .page{padding:16px;display:grid;gap:16px;grid-template-columns:1fr 1fr}
+    @media(min-width:900px){.page{grid-template-columns:1fr 1fr 1fr}}
+    .card{background:#151921;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.2s}
+    .card:hover{transform:translateY(-2px)}
+    .card img{width:100%;height:140px;object-fit:cover;cursor:pointer}
+    .card .body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+    .card .name{font-weight:700;font-size:15px}
+    .card .price{color:#fcd34d;font-weight:700;font-size:14px}
+    /* Carrinho */
+    #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:90vw;max-width:380px;
+      background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
+      transition:.3s;display:flex;flex-direction:column;z-index:50;box-shadow:-4px 0 12px rgba(0,0,0,.5)}
+    #cartDrawer.open{transform:translateX(0)}
+    .drawerHead{padding:16px;font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;font-size:16px}
+    .drawerBody{flex:1;overflow:auto;padding:14px;display:grid;gap:12px}
+    .cartItem{background:#1d222b;padding:10px;border-radius:10px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow)}
+    .cartItem img{width:46px;height:46px;border-radius:8px;object-fit:cover}
+    .cartItem .info{flex:1}
+    .cartItem .name{font-weight:700;font-size:14px}
+    .cartItem .extras{font-size:12px;color:var(--muted)}
+    .cartItem .price{font-weight:700;font-size:14px}
+    .drawerFoot{padding:14px;border-top:1px solid var(--line);display:grid;gap:10px}
+    #grandTotal{font-size:18px;color:#fcd34d;font-weight:800}
+    /* Popup */
+    dialog{border:0;border-radius:16px;max-width:420px;width:90%;background:#181c23;color:var(--txt);padding:16px;box-shadow:var(--shadow)}
+    dialog::backdrop{background:rgba(0,0,0,.6)}
+    .popup-body img{width:100%;max-height:200px;object-fit:contain;display:block;margin:0 auto 12px auto;border-radius:12px;background:#000}
+    .popup-body h3{margin:0;font-size:18px;font-weight:800}
+    .popup-body p{margin:4px 0 10px 0;color:var(--muted);font-size:14px}
+    .popup-body strong{font-size:16px;color:#fcd34d}
+    .comps{display:grid;gap:8px;margin:12px 0}
+    .comps label{background:#222730;padding:8px 10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:.2s}
+    .comps label:hover{background:#2b3140}
+    /* quantidade */
+    .qtyBox{display:flex;align-items:center;gap:14px;margin:14px 0}
+    .qtyBox button{width:38px;height:38px;border-radius:50%;border:0;
+      background:var(--brand);color:#fff;font-size:20px;font-weight:bold;cursor:pointer;transition:.2s}
+    .qtyBox button:hover{filter:brightness(1.1)}
+    .qtyVal{min-width:32px;text-align:center;font-weight:700;font-size:16px}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;background:#0f1115;border:1px solid var(--line);color:var(--txt);font-size:14px}
   </style>
 </head>
 <body>
-
 <header>
-  <div class="head">
-    <a class="brand" href="#">
-      <img src="https://github.com/ClenaStore/painel-principal/blob/main/img/GRUPO%20DV%20(1).png?raw=true" alt="Logo">
-      <span class="title">Painel de Conciliação</span>
-    </a>
-    <div class="grow"></div>
-    <button id="btnTema" class="btn">🌓 Tema</button>
-    <div class="user" id="userMenu">
-      <button class="user-btn" type="button">
-        <img src="https://github.com/ClenaStore/grupodv/blob/main/paste/Imagem%20do%20WhatsApp%20de%202025-09-08%20%C3%A0(s)%2011.54.12_884bebc9.jpg?raw=true" alt="">
-        <strong style="font-size:13px">Leonardo</strong>
-      </button>
-      <div class="user-menu">
-        <a href="#">👤 Meu Perfil</a>
-        <button onclick="alert('Logout')">🚪 Sair</button>
-      </div>
-    </div>
-  </div>
+  <img src="https://github.com/ClenaStore/foods/blob/main/paste/ChatGPT%20Image%2027%20de%20ago.%20de%202025,%2019_35_02.png?raw=true" alt="logo">
+  <h1>CLENA FOODS</h1>
+  <button class="btn secondary" style="margin-left:auto" onclick="toggleCart(true)">🛒 <span id="cartBadge">0</span></button>
 </header>
 
-<div id="loading" class="loading" aria-hidden="true">
-  <div style="display:flex; flex-direction:column; align-items:center;">
-    <div class="spinner"></div>
-    <p>Carregando dados...</p>
-  </div>
+<!-- Banner -->
+<div class="banner">
+  <img src="https://source.unsplash.com/1200x400/?burger" class="active">
+  <img src="https://source.unsplash.com/1200x400/?fries">
+  <img src="https://source.unsplash.com/1200x400/?soda">
 </div>
 
-<div class="container">
-  <div class="filters">
-    <div class="field">
-      <label>Empresa</label>
-      <select id="fEmpresa"></select>
-    </div>
-    <div class="field">
-      <label>Data</label>
-      <input type="date" id="fData">
-    </div>
-  </div>
+<!-- Produtos -->
+<main class="page" id="menuGrid"></main>
 
-  <div class="card">
-    <h3>Conciliação</h3>
-    <div id="areaGraficos" class="flex"></div>
+<!-- Carrinho -->
+<aside id="cartDrawer">
+  <div class="drawerHead">
+    <span>🛒 Meu Carrinho</span>
+    <button class="btn secondary" onclick="toggleCart(false)">✖</button>
   </div>
+  <div class="drawerBody" id="cartItems"></div>
+  <div class="drawerFoot">
+    <div><b>Total:</b> <span id="grandTotal">R$ 0,00</span></div>
+    <div style="display:grid;gap:6px">
+      <select id="payMethod">
+        <option value="">Forma de pagamento</option>
+        <option value="pix">PIX</option>
+        <option value="credito">Crédito</option>
+        <option value="debito">Débito</option>
+        <option value="dinheiro">Dinheiro</option>
+      </select>
+      <div id="trocoBox" style="display:none">
+        <label>Troco para: <input id="trocoVal" placeholder="Ex.: 100"/></label>
+      </div>
+      <input id="clienteNome" placeholder="Seu nome"/>
+      <input id="clienteTel" placeholder="WhatsApp"/>
+      <textarea id="clienteEnd" placeholder="Endereço completo"></textarea>
+      <textarea id="obs" placeholder="Observações"></textarea>
+      <button class="btn" onclick="finalizar()">Enviar Pedido</button>
+    </div>
+  </div>
+</aside>
 
-  <div class="card">
-    <h3>Resumo Consolidado</h3>
-    <table>
-      <thead><tr><th>Empresa</th><th>Conciliado</th><th>Pendente</th><th>Percentual</th></tr></thead>
-      <tbody id="tblPend"></tbody>
-    </table>
+<!-- Popup produto -->
+<dialog id="dlgItem">
+  <div class="popup-body">
+    <img id="pImg"><h3 id="pName"></h3><p id="pDesc"></p>
+    <strong id="pPrice"></strong>
+    <div id="compBox"></div>
+    <!-- Quantidade com + e - -->
+    <div class="qtyBox">
+      <button onclick="changeQty(-1)">-</button>
+      <span class="qtyVal" id="pQty">1</span>
+      <button onclick="changeQty(1)">+</button>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:10px">
+      <button class="btn" id="btnAddCart">Adicionar</button>
+      <button class="btn secondary" onclick="dlgItem.close()">Cancelar</button>
+    </div>
   </div>
-</div>
+</dialog>
 
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbxVmPiaFQptAWVN1GKNiy_LKW-QyovxVNsBMLV-NrEDVDchxLaCCAavqlQoQb4-IWmk/exec";
-let charts=[];
-const cores=["#2563eb","#f59e0b","#16a34a","#ef4444","#8b5cf6","#06b6d4"];
+const API_URL="https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
+let menu=[],complements=[],cart=[],current=null, qty=1;
+const $=s=>document.querySelector(s);
+const BRL=v=>"R$ "+Number(v).toFixed(2).replace(".",",");
 
-/* -------- THEME -------- */
-function aplicarTema(){
-  const tema=localStorage.getItem("tema")||"light";
-  document.documentElement.dataset.theme=tema;
+// Banner loop
+let bIx=0;const banners=document.querySelectorAll(".banner img");
+setInterval(()=>{banners[bIx].classList.remove("active");bIx=(bIx+1)%banners.length;banners[bIx].classList.add("active")},4000);
+
+// Carregar dados
+async function loadData(){
+  const m=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})}).then(r=>r.json());
+  const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json());
+  if(m.ok) menu=m.items; if(c.ok) complements=c.items;
+  renderMenu();
 }
-aplicarTema();
-document.getElementById("btnTema").addEventListener("click",()=>{
-  const atual=document.documentElement.dataset.theme;
-  const novo=atual==="dark"?"light":"dark";
-  localStorage.setItem("tema",novo);
-  aplicarTema();
-});
-
-/* User menu */
-const user=document.getElementById('userMenu');
-user.querySelector('.user-btn').addEventListener('click',()=>user.classList.toggle('open'));
-window.addEventListener('click',e=>{if(!user.contains(e.target)) user.classList.remove('open');});
-
-/* Loading */
-function showLoading(v){document.getElementById('loading').classList.toggle('show',!!v);}
-
-/* Chart Doughnut */
-function criaDoughnut(canvas, valor, cor, label=""){
-  return new Chart(canvas,{
-    type:'doughnut',
-    data:{datasets:[{data:[valor,100-valor], backgroundColor:[cor,"#e5e7eb"], cutout:"70%"}]},
-    options:{plugins:{legend:{display:false},tooltip:{enabled:false}}},
-    plugins:[{id:"text",beforeDraw(c){
-      const {ctx,width}=c; ctx.save();
-      ctx.font="bold 16px sans-serif"; ctx.fillStyle=cor;
-      ctx.textAlign="center"; ctx.textBaseline="middle"; 
-      ctx.fillText(valor.toFixed(1)+"%",width/2,c.chartArea.height/2);
-      if(label){ctx.font="12px sans-serif"; ctx.fillStyle="#555"; ctx.fillText(label,width/2,c.chartArea.height/2+20);}
-    }}]
+function renderMenu(){
+  const grid=$("#menuGrid");grid.innerHTML="";
+  menu.forEach(i=>{
+    const el=document.createElement("div");el.className="card";
+    el.innerHTML=`
+      <img src="${i.img}" alt="">
+      <div class="body">
+        <div class="name">${i.name}</div>
+        <div class="price">${BRL(i.price)}</div>
+        <button class="btn">Adicionar</button>
+      </div>`;
+    el.querySelector(".name").onclick=()=>openItem(i);
+    el.querySelector("img").onclick=()=>openItem(i);
+    el.querySelector(".btn").onclick=()=>openItem(i);
+    grid.appendChild(el);
   });
 }
-
-/* Carregar */
-async function carregar(){
-  showLoading(true);
-  const res=await fetch(API_URL);
-  const js=await res.json();
-
-  // Empresas no select
-  const empresas=[...new Set(js.map(r=>r.empresa))];
-  const sel=document.getElementById("fEmpresa");
-  sel.innerHTML=`<option value="">Todas</option>`+empresas.map(e=>`<option>${e}</option>`).join("");
-
-  // Data default
-  const hoje=new Date();
-  document.getElementById("fData").value=hoje.toISOString().slice(0,10);
-
-  function aplicar(){
-    charts.forEach(c=>c.destroy());
-    charts=[];
-    const emp=sel.value;
-    const area=document.getElementById("areaGraficos");
-    area.innerHTML="";
-
-    let dados=js.filter(r=>(!emp||r.empresa===emp));
-
-    // Gráficos
-    dados.forEach((r,i)=>{
-      let wrap=document.createElement("div"); wrap.className="circle-wrap";
-      let c=document.createElement("canvas"); wrap.appendChild(c);
-      wrap.innerHTML+=`<strong>${r.empresa}</strong>`;
-      area.appendChild(wrap);
-      charts.push(criaDoughnut(c,r.percentual,cores[i%cores.length],r.empresa));
+function openItem(item){
+  current=item; qty=1;
+  $("#pImg").src=item.img;
+  $("#pName").textContent=item.name;
+  $("#pDesc").textContent=item.desc||"";
+  $("#pPrice").textContent=BRL(item.price);
+  $("#pQty").textContent=qty;
+  let html="";
+  if(item.cat!=="Bebidas"&&item.cat!=="Complementos"){
+    html="<h4>Complementos</h4><div class='comps'>";
+    complements.forEach(c=>{
+      html+=`<label><span>${c.name} +${BRL(c.price)}</span><input type='checkbox' data-id='${c.id}' data-price='${c.price}'></label>`;
     });
-
-    // Tabela consolidada
-    const tbody=document.getElementById("tblPend");
-    tbody.innerHTML=dados.map(r=>`
-      <tr>
-        <td>${r.empresa}</td>
-        <td>R$ ${r.conciliado.toLocaleString("pt-BR",{minimumFractionDigits:2})}</td>
-        <td>R$ ${r.pendente.toLocaleString("pt-BR",{minimumFractionDigits:2})}</td>
-        <td>${r.percentual.toFixed(2)}%</td>
-      </tr>
-    `).join("");
+    html+="</div>";
   }
-
-  aplicar();
-  sel.onchange=aplicar;
-  document.getElementById("fData").onchange=aplicar;
-  showLoading(false);
+  $("#compBox").innerHTML=html;
+  $("#dlgItem").showModal();
+  $("#btnAddCart").onclick=()=>addCurrent();
 }
-carregar();
+function changeQty(v){
+  qty=Math.max(1,qty+v);
+  $("#pQty").textContent=qty;
+}
+function addCurrent(){
+  const comps=[...$("#compBox input:checked")].map(c=>({id:c.dataset.id,name:c.parentNode.textContent.trim(),price:+c.dataset.price}));
+  cart.push({...current,qty,comps});
+  $("#dlgItem").close();
+  renderCart();toggleCart(true);
+}
+function renderCart(){
+  $("#cartBadge").textContent=cart.length;
+  const box=$("#cartItems");box.innerHTML="";let total=0;
+  cart.forEach(it=>{
+    const extras=it.comps?.map(c=>c.name).join(", ");
+    const val=(Number(it.price)+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;total+=val;
+    const row=document.createElement("div");row.className="cartItem";
+    row.innerHTML=`<img src="${it.img}"><div class="info"><div class="name">${it.qty}× ${it.name}</div><div class="extras">${extras||""}</div></div><div class="price">${BRL(val)}</div>`;
+    box.appendChild(row);
+  });
+  $("#grandTotal").textContent=BRL(total);
+  $("#trocoBox").style.display=$("#payMethod").value==="dinheiro"?"block":"none";
+}
+function toggleCart(o){$("#cartDrawer").classList.toggle("open",o)}
+$("#payMethod").addEventListener("change",()=>renderCart());
+
+function finalizar(){
+  if(!cart.length){alert("Carrinho vazio");return}
+  const nome=$("#clienteNome").value.trim();
+  const tel=$("#clienteTel").value.trim();
+  const end=$("#clienteEnd").value.trim();
+  if(!nome||!tel||!end){alert("Preencha nome, telefone e endereço");return}
+  localStorage.setItem("cf_end",end);
+  const pay=$("#payMethod").value;
+  let msg=`*🍔 Pedido - Clena Foods*\n\n*Cliente:* ${nome}\n*Contato:* ${tel}\n*Endereço:* ${end}\n\n*Itens:*\n`;
+  cart.forEach(it=>{
+    const extras=it.comps?.map(c=>c.name).join(", ");
+    const val=(Number(it.price)+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;
+    msg+=`• ${it.qty}× ${it.name} ${extras?`(${extras})`:""} — *${BRL(val)}*\n`;
+  });
+  msg+=`\n*Total:* ${$("#grandTotal").textContent}\n*Pagamento:* ${pay.toUpperCase()}`;
+  if(pay==="dinheiro"&&$("#trocoVal").value) msg+=`\n*Troco para:* ${$("#trocoVal").value}`;
+  if($("#obs").value) msg+=`\n*Obs:* ${$("#obs").value}`;
+  window.open("https://wa.me/5577999999999?text="+encodeURIComponent(msg),"_blank");
+}
+loadData();
 </script>
 </body>
 </html>
