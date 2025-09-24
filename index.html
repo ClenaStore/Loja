@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Clena Foods • Catálogo</title>
+  <title>Clena Foods • Cardápio</title>
   <style>
     :root{
       --bg:#0e0f12; --panel:#14161a; --line:#262b36;
@@ -13,36 +13,37 @@
     }
     body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
     /* Header */
-    header{padding:14px 18px;border-bottom:1px solid var(--line);
+    header{padding:14px 18px;position:sticky;top:0;z-index:50;
       background:linear-gradient(135deg,var(--brand),var(--brand-2));
       font-weight:800;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
     header img{width:38px;height:38px;border-radius:10px}
-    header h1{font-size:18px;margin:0;letter-spacing:.4px}
+    header h1{font-size:18px;margin:0;letter-spacing:.4px;flex:1}
     .btn{border:0;padding:10px 16px;border-radius:12px;
       background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
       font-weight:700;cursor:pointer;text-align:center;transition:.25s;box-shadow:0 4px 8px rgba(0,0,0,.25)}
     .btn:hover{filter:brightness(1.15);transform:translateY(-2px)}
     .btn.secondary{background:#2b3240;color:var(--txt);box-shadow:none}
     /* Banner */
-    .banner{position:relative;width:100%;height:220px;overflow:hidden;border-bottom:2px solid var(--line)}
+    .banner{position:relative;width:100%;height:240px;overflow:hidden}
     .banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
       opacity:0;transition:opacity 1s ease}
     .banner img.active{opacity:1}
+    .banner::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent)}
     /* Grid */
     .page{padding:20px;display:grid;gap:20px;grid-template-columns:1fr 1fr}
     @media(min-width:900px){.page{grid-template-columns:repeat(3,1fr)}}
-    .card{background:#1b1f27;border:1px solid var(--line);border-radius:16px;overflow:hidden;
-      display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.25s;cursor:pointer}
+    .card{background:#1b1f27;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+      display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.25s}
     .card:hover{transform:translateY(-4px) scale(1.02)}
-    .card img{width:100%;height:160px;object-fit:cover}
+    .card img{width:100%;height:160px;object-fit:cover;cursor:pointer}
     .card .body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
-    .card .name{font-weight:700;font-size:16px}
+    .card .name{font-weight:700;font-size:16px;cursor:pointer}
     .card .price{color:#facc15;font-weight:800;font-size:15px}
     .card .btn{margin-top:auto}
     /* Carrinho */
     #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:92vw;max-width:400px;
       background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
-      transition:.35s;display:flex;flex-direction:column;z-index:50;box-shadow:-6px 0 20px rgba(0,0,0,.6)}
+      transition:.35s;display:flex;flex-direction:column;z-index:100;box-shadow:-6px 0 20px rgba(0,0,0,.6)}
     #cartDrawer.open{transform:translateX(0)}
     .drawerHead{padding:18px;font-weight:800;border-bottom:1px solid var(--line);
       display:flex;justify-content:space-between;align-items:center;font-size:17px}
@@ -76,13 +77,18 @@
     .qtyVal{min-width:36px;text-align:center;font-weight:800;font-size:17px}
     input,select,textarea{width:100%;padding:12px;border-radius:12px;background:#0f1115;
       border:1px solid var(--line);color:var(--txt);font-size:15px}
+    /* Barra de resumo (mobile) */
+    #cartBar{position:fixed;bottom:0;left:0;right:0;background:var(--brand);
+      padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
+      font-weight:800;color:#fff;font-size:15px;z-index:90;cursor:pointer;display:none}
+    #cartBar span{font-size:16px}
   </style>
 </head>
 <body>
 <header>
   <img src="https://github.com/ClenaStore/foods/blob/main/paste/ChatGPT%20Image%2027%20de%20ago.%20de%202025,%2019_35_02.png?raw=true" alt="logo">
   <h1>CLENA FOODS</h1>
-  <button class="btn secondary" style="margin-left:auto" onclick="toggleCart(true)">🛒 <span id="cartBadge">0</span></button>
+  <button class="btn secondary" onclick="toggleCart(true)">🛒 <span id="cartBadge">0</span></button>
 </header>
 
 <!-- Banner -->
@@ -124,13 +130,18 @@
   </div>
 </aside>
 
+<!-- Barra de resumo mobile -->
+<div id="cartBar" onclick="toggleCart(true)">
+  <span id="cartCount">0 itens</span>
+  <span id="cartTotal">R$ 0,00</span>
+</div>
+
 <!-- Popup produto -->
 <dialog id="dlgItem">
   <div class="popup-body">
     <img id="pImg"><h3 id="pName"></h3><p id="pDesc"></p>
     <strong id="pPrice"></strong>
     <div id="compBox"></div>
-    <!-- Quantidade com + e - -->
     <div class="qtyBox">
       <button onclick="changeQty(-1)">-</button>
       <span class="qtyVal" id="pQty">1</span>
@@ -173,9 +184,7 @@ function renderMenu(){
       </div>`;
     el.querySelector(".name").onclick=()=>openItem(i);
     el.querySelector("img").onclick=()=>openItem(i);
-    el.querySelector(".btn").onclick=()=>{
-      current=i; qty=1; addCurrent();
-    };
+    el.querySelector(".btn").onclick=()=>{current=i;qty=1;addCurrent();};
     grid.appendChild(el);
   });
 }
@@ -210,6 +219,7 @@ function addCurrent(){
 }
 function renderCart(){
   $("#cartBadge").textContent=cart.length;
+  $("#cartCount").textContent=cart.length+" itens";
   const box=$("#cartItems");box.innerHTML="";let total=0;
   cart.forEach(it=>{
     const extras=it.comps?.map(c=>c.name).join(", ");
@@ -219,7 +229,9 @@ function renderCart(){
     box.appendChild(row);
   });
   $("#grandTotal").textContent=BRL(total);
+  $("#cartTotal").textContent=BRL(total);
   $("#trocoBox").style.display=$("#payMethod").value==="dinheiro"?"block":"none";
+  document.getElementById("cartBar").style.display=cart.length? "flex":"none";
 }
 function toggleCart(o){$("#cartDrawer").classList.toggle("open",o)}
 $("#payMethod").addEventListener("change",()=>renderCart());
