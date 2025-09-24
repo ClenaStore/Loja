@@ -165,7 +165,11 @@ function renderMenu(){
       </div>`;
     el.querySelector(".name").onclick=()=>openItem(i);
     el.querySelector("img").onclick=()=>openItem(i);
-    el.querySelector(".btn").onclick=()=>openItem(i);
+    el.querySelector(".btn").onclick=()=>{
+  current=i; 
+  qty=1; 
+  addCurrent(); // adiciona direto ao carrinho
+};
     grid.appendChild(el);
   });
 }
