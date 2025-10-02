@@ -9,9 +9,8 @@
       --bg:#0e0f12; --panel:#14161a; --line:#262b36;
       --brand:#e63946; --brand-2:#ff8f1f;
       --txt:#f7f8fa; --muted:#cbd5e1;
-      --shadow:0 10px 28px rgba(0,0,0,.35);
+      --shadow:0 8px 24px rgba(0,0,0,.35);
     }
-    *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
     /* Header */
     header{padding:14px 18px;position:sticky;top:0;z-index:50;
@@ -22,7 +21,7 @@
     .btn{border:0;padding:10px 16px;border-radius:12px;
       background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
       font-weight:700;cursor:pointer;text-align:center;transition:.25s;box-shadow:0 4px 8px rgba(0,0,0,.25)}
-    .btn:hover{filter:brightness(1.12);transform:translateY(-2px)}
+    .btn:hover{filter:brightness(1.15);transform:translateY(-2px)}
     .btn.secondary{background:#2b3240;color:var(--txt);box-shadow:none}
     /* Banner */
     .banner{position:relative;width:100%;height:240px;overflow:hidden}
@@ -34,12 +33,12 @@
     .page{padding:20px;display:grid;gap:20px;grid-template-columns:1fr 1fr}
     @media(min-width:900px){.page{grid-template-columns:repeat(3,1fr)}}
     .card{background:#1b1f27;border:1px solid var(--line);border-radius:18px;overflow:hidden;
-      display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.25s;cursor:pointer}
+      display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.25s}
     .card:hover{transform:translateY(-4px) scale(1.02)}
-    .card img{width:100%;height:160px;object-fit:cover}
-    .card .body{padding:14px;display:flex;flex-direction:column;gap:10px;flex:1}
-    .card .name{font-weight:800;font-size:16px}
-    .card .price{color:#facc15;font-weight:900;font-size:15px}
+    .card img{width:100%;height:160px;object-fit:cover;cursor:pointer}
+    .card .body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+    .card .name{font-weight:700;font-size:16px;cursor:pointer}
+    .card .price{color:#facc15;font-weight:800;font-size:15px}
     .card .btn{margin-top:auto}
     /* Carrinho */
     #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:92vw;max-width:400px;
@@ -57,26 +56,20 @@
     .cartItem .price{font-weight:800;font-size:15px}
     .drawerFoot{padding:16px;border-top:1px solid var(--line);display:grid;gap:12px}
     #grandTotal{font-size:20px;color:#facc15;font-weight:900}
-    /* Barra de resumo (mobile) */
-    #cartBar{position:fixed;bottom:0;left:0;right:0;background:var(--brand);
-      padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
-      font-weight:800;color:#fff;font-size:15px;z-index:90;cursor:pointer;display:none}
-    #cartBar span{font-size:16px}
     /* Popup */
-    dialog{border:0;border-radius:20px;max-width:520px;width:94%;background:#181c23;
+    dialog{border:0;border-radius:20px;max-width:440px;width:92%;background:#181c23;
       color:var(--txt);padding:18px;box-shadow:var(--shadow)}
     dialog::backdrop{background:rgba(0,0,0,.65)}
-    .media{width:100%;max-height:260px;margin:0 auto 14px auto;border-radius:14px;overflow:hidden;background:#000}
-    .media img,.media video{display:block;width:100%;height:100%;object-fit:cover}
-    .popup-body h3{margin:0;font-size:20px;font-weight:900}
+    .popup-body img{width:100%;max-height:220px;object-fit:cover;display:block;
+      margin:0 auto 14px auto;border-radius:14px;background:#000}
+    .popup-body h3{margin:0;font-size:20px;font-weight:800}
     .popup-body p{margin:6px 0 12px 0;color:var(--muted);font-size:14px}
     .popup-body strong{font-size:17px;color:#facc15}
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .chip{background:#222730;border:1px solid #2b3240;padding:6px 10px;border-radius:999px;font-size:12px;color:#e2e8f0}
     .comps{display:grid;gap:8px;margin:14px 0}
     .comps label{background:#222730;padding:10px 12px;border-radius:12px;display:flex;
       justify-content:space-between;align-items:center;cursor:pointer;transition:.2s}
     .comps label:hover{background:#2e3648}
+    /* quantidade */
     .qtyBox{display:flex;align-items:center;gap:16px;margin:16px 0}
     .qtyBox button{width:42px;height:42px;border-radius:50%;border:0;
       background:var(--brand);color:#fff;font-size:22px;font-weight:bold;cursor:pointer;transition:.25s}
@@ -84,6 +77,11 @@
     .qtyVal{min-width:36px;text-align:center;font-weight:800;font-size:17px}
     input,select,textarea{width:100%;padding:12px;border-radius:12px;background:#0f1115;
       border:1px solid var(--line);color:var(--txt);font-size:15px}
+    /* Barra de resumo (mobile) */
+    #cartBar{position:fixed;bottom:0;left:0;right:0;background:var(--brand);
+      padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
+      font-weight:800;color:#fff;font-size:15px;z-index:90;cursor:pointer;display:none}
+    #cartBar span{font-size:16px}
   </style>
 </head>
 <body>
@@ -141,10 +139,7 @@
 <!-- Popup produto -->
 <dialog id="dlgItem">
   <div class="popup-body">
-    <div class="media" id="pMedia"></div>
-    <h3 id="pName"></h3>
-    <p id="pDesc"></p>
-    <div id="pIngredients"></div>
+    <img id="pImg"><h3 id="pName"></h3><p id="pDesc"></p>
     <strong id="pPrice"></strong>
     <div id="compBox"></div>
     <div class="qtyBox">
@@ -160,118 +155,75 @@
 </dialog>
 
 <script>
-/* ====== CONFIG ====== */
-const API_URL="https://script.google.com/macros/s/AKfycbxC165_jzwPBViYyn5feg26nH15Ba09qKOvrF380yIsE4fLP3I2IQU5iWsO8EpWFZiQfg/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
 let menu=[],complements=[],cart=[],current=null, qty=1;
 const $=s=>document.querySelector(s);
-const BRL=v=>"R$ "+Number(v||0).toFixed(2).replace(".",",");
+const BRL=v=>"R$ "+Number(v).toFixed(2).replace(".",",");
 
-/* ====== BANNER ====== */
+// Banner loop
 let bIx=0;const banners=document.querySelectorAll(".banner img");
 setInterval(()=>{banners[bIx].classList.remove("active");bIx=(bIx+1)%banners.length;banners[bIx].classList.add("active")},4000);
 
-/* ====== DATA LOAD ====== */
+// Carregar dados
 async function loadData(){
-  const m=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})}).then(r=>r.json()).catch(()=>({ok:false,items:[]}));
-  const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json()).catch(()=>({ok:false,items:[]}));
+  const m=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})}).then(r=>r.json());
+  const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json());
   if(m.ok) menu=m.items; if(c.ok) complements=c.items;
   renderMenu();
 }
-
-/* ====== GRID ====== */
 function renderMenu(){
   const grid=$("#menuGrid");grid.innerHTML="";
-  menu.forEach(item=>{
+  menu.forEach(i=>{
     const el=document.createElement("div");el.className="card";
     el.innerHTML=`
-      <img src="${item.img}" alt="">
+      <img src="${i.img}" alt="">
       <div class="body">
-        <div class="name">${item.name}</div>
-        <div class="price">${BRL(item.price)}</div>
-        <button class="btn addBtn">Adicionar</button>
+        <div class="name">${i.name}</div>
+        <div class="price">${BRL(i.price)}</div>
+        <button class="btn">Adicionar</button>
       </div>`;
-    // abrir popup ao clicar no card (imagem/nome/corpo)
-    el.addEventListener("click", (e)=> {
-      // se clicou no botão, não abre o popup
-      if(e.target && e.target.classList.contains("addBtn")) return;
-      openItem(item);
-    });
-    // botão "Adicionar" funciona (adiciona direto)
-    el.querySelector(".addBtn").addEventListener("click",(e)=>{
-      e.stopPropagation();
-      current=item; qty=1;
-      addCurrent({fromPopup:false}); // sem complements/qty custom
-    });
+    el.querySelector(".name").onclick=()=>openItem(i);
+    el.querySelector("img").onclick=()=>openItem(i);
+    el.querySelector(".btn").onclick=()=>{current=i;qty=1;addCurrent();};
     grid.appendChild(el);
   });
 }
-
-/* ====== POPUP ====== */
 function openItem(item){
   current=item; qty=1;
-  // mídia: vídeo (se houver) ou imagem
-  const media=$("#pMedia");
-  const vid = item.video || item.videoUrl || item.media?.video;
-  media.innerHTML = vid
-    ? `<video src="${vid}" controls playsinline></video>`
-    : `<img src="${item.img}" alt="">`;
-
-  $("#pName").textContent=item.name||"";
+  $("#pImg").src=item.img;
+  $("#pName").textContent=item.name;
   $("#pDesc").textContent=item.desc||"";
   $("#pPrice").textContent=BRL(item.price);
   $("#pQty").textContent=qty;
-
-  // ingredientes (string "a, b, c" ou array)
-  const ingRaw = item.ingredients || item.ingredientes || "";
-  let chipsHTML="";
-  if (Array.isArray(ingRaw)) {
-    chipsHTML = ingRaw.map(i=>`<span class="chip">${i}</span>`).join("");
-  } else if (typeof ingRaw === "string" && ingRaw.trim()) {
-    chipsHTML = ingRaw.split(/[,;|]/).map(s=>s.trim()).filter(Boolean).map(i=>`<span class="chip">${i}</span>`).join("");
-  }
-  $("#pIngredients").innerHTML = chipsHTML ? `<div class="chips">${chipsHTML}</div>` : "";
-
-  // complements (se não for bebida/complemento)
   let html="";
-  if(item.cat!=="Bebidas" && item.cat!=="Complementos"){
-    html="<h4 style='margin:10px 0 6px 0'>Complementos</h4><div class='comps'>";
+  if(item.cat!=="Bebidas"&&item.cat!=="Complementos"){
+    html="<h4>Complementos</h4><div class='comps'>";
     complements.forEach(c=>{
       html+=`<label><span>${c.name} +${BRL(c.price)}</span><input type='checkbox' data-id='${c.id}' data-price='${c.price}'></label>`;
     });
     html+="</div>";
   }
   $("#compBox").innerHTML=html;
-
-  $("#btnAddCart").onclick=()=>addCurrent({fromPopup:true});
   $("#dlgItem").showModal();
+  $("#btnAddCart").onclick=()=>addCurrent();
 }
-
 function changeQty(v){
   qty=Math.max(1,qty+v);
   $("#pQty").textContent=qty;
 }
-
-/* ====== CART ====== */
-function addCurrent({fromPopup}={}){
-  // só lê complements se veio do popup
-  let comps=[];
-  if(fromPopup){
-    comps=[...document.querySelectorAll("#compBox input:checked")]
-      .map(c=>({id:c.dataset.id,name:c.parentNode.querySelector("span").textContent.split("+")[0].trim(),price:+c.dataset.price}));
-  }
+function addCurrent(){
+  const comps=[...$("#compBox input:checked")].map(c=>({id:c.dataset.id,name:c.parentNode.textContent.trim(),price:+c.dataset.price}));
   cart.push({...current,qty,comps});
-  // fecha popup com segurança (só se estiver aberto)
-  const dlg=$("#dlgItem"); if(fromPopup && dlg && dlg.open) dlg.close();
-  renderCart(); toggleCart(true);
+  $("#dlgItem").close();
+  renderCart();toggleCart(true);
 }
-
 function renderCart(){
   $("#cartBadge").textContent=cart.length;
   $("#cartCount").textContent=cart.length+" itens";
   const box=$("#cartItems");box.innerHTML="";let total=0;
   cart.forEach(it=>{
     const extras=it.comps?.map(c=>c.name).join(", ");
-    const val=(Number(it.price)+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty; total+=val;
+    const val=(Number(it.price)+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;total+=val;
     const row=document.createElement("div");row.className="cartItem";
     row.innerHTML=`<img src="${it.img}"><div class="info"><div class="name">${it.qty}× ${it.name}</div><div class="extras">${extras||""}</div></div><div class="price">${BRL(val)}</div>`;
     box.appendChild(row);
@@ -281,11 +233,9 @@ function renderCart(){
   $("#trocoBox").style.display=$("#payMethod").value==="dinheiro"?"block":"none";
   document.getElementById("cartBar").style.display=cart.length? "flex":"none";
 }
-
 function toggleCart(o){$("#cartDrawer").classList.toggle("open",o)}
 $("#payMethod").addEventListener("change",()=>renderCart());
 
-/* ====== CHECKOUT ====== */
 function finalizar(){
   if(!cart.length){alert("Carrinho vazio");return}
   const nome=$("#clienteNome").value.trim();
@@ -303,11 +253,8 @@ function finalizar(){
   msg+=`\n*Total:* ${$("#grandTotal").textContent}\n*Pagamento:* ${pay.toUpperCase()}`;
   if(pay==="dinheiro"&&$("#trocoVal").value) msg+=`\n*Troco para:* ${$("#trocoVal").value}`;
   if($("#obs").value) msg+=`\n*Obs:* ${$("#obs").value}`;
-  // coloque aqui o número real do WhatsApp:
   window.open("https://wa.me/5577999999999?text="+encodeURIComponent(msg),"_blank");
 }
-
-/* start */
 loadData();
 </script>
 </body>
