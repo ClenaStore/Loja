@@ -11,7 +11,7 @@
   --txt:#f7f8fa;--muted:#cbd5e1;
   --shadow:0 8px 24px rgba(0,0,0,.35);
 }
-body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;overflow-x:hidden;}
 header{padding:14px 18px;position:sticky;top:0;z-index:50;
   background:linear-gradient(135deg,var(--brand),var(--brand-2));
   font-weight:800;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
@@ -35,14 +35,20 @@ h2{margin:10px 0 12px 0;border-left:5px solid var(--brand);padding-left:8px}
 .card .desc{font-size:13px;color:var(--muted)}
 .card .price{color:#facc15;font-weight:800;font-size:15px}
 .card .btn{margin-top:auto}
+
 /* Carrinho */
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;transition:.35s;z-index:99;}
+#overlay.show{opacity:1;pointer-events:auto;}
+
 #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:92vw;max-width:400px;
   background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
   transition:.35s;display:flex;flex-direction:column;z-index:100;box-shadow:-6px 0 20px rgba(0,0,0,.6)}
 #cartDrawer.open{transform:translateX(0)}
 .drawerHead{padding:18px;font-weight:800;border-bottom:1px solid var(--line);
   display:flex;justify-content:space-between;align-items:center;font-size:17px}
-.drawerBody{flex:1;overflow:auto;padding:16px;display:grid;gap:14px}
+.drawerBody{flex:1;overflow-y:auto;padding:16px;display:grid;gap:14px;scrollbar-width:none;}
+.drawerBody::-webkit-scrollbar{width:0;height:0}
 .cartItem{background:#1f2530;padding:12px;border-radius:12px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow)}
 .cartItem img{width:52px;height:52px;border-radius:10px;object-fit:cover}
 .cartItem .info{flex:1}
@@ -74,11 +80,14 @@ h2{margin:10px 0 12px 0;border-left:5px solid var(--brand);padding-left:8px}
   <div class="grid" id="drinks"></div>
 </section>
 
+<!-- Overlay -->
+<div id="overlay" onclick="toggleCart(false)"></div>
+
 <!-- Carrinho -->
 <aside id="cartDrawer">
   <div class="drawerHead">
     <span>🛒 Meu Carrinho</span>
-    <button class="btn secondary" onclick="toggleCart(false)">✖</button>
+    <button class="btn secondary" onclick="toggleCart(false)">✖ Fechar</button>
   </div>
   <div class="drawerBody" id="cartItems"></div>
   <div class="drawerFoot">
@@ -91,6 +100,7 @@ h2{margin:10px 0 12px 0;border-left:5px solid var(--brand);padding-left:8px}
     </div>
   </div>
 </aside>
+
 <div id="cartBar" onclick="toggleCart(true)">
   <span id="cartCount">0 itens</span>
   <span id="cartTotal">R$ 0,00</span>
@@ -119,10 +129,11 @@ const produtos={
   ]
 };
 
-let cart=[];
+let cart=JSON.parse(localStorage.getItem("cart")||"[]");
 
 function renderSection(list,id){
   const box=document.getElementById(id);
+  box.innerHTML="";
   list.forEach(p=>{
     const el=document.createElement("div");
     el.className="card";
@@ -138,12 +149,18 @@ function renderSection(list,id){
     box.appendChild(el);
   });
 }
+
 function addCart(p){
   const i=cart.findIndex(x=>x.name===p.name);
   if(i>=0)cart[i].qty++;else cart.push({...p,qty:1});
+  saveCart();
   renderCart();
-  toggleCart(true);
 }
+
+function saveCart(){
+  localStorage.setItem("cart",JSON.stringify(cart));
+}
+
 function renderCart(){
   document.getElementById("cartBadge").textContent=cart.length;
   document.getElementById("cartCount").textContent=cart.length+" itens";
@@ -161,13 +178,21 @@ function renderCart(){
   document.getElementById("cartTotal").textContent=BRL(total);
   document.getElementById("cartBar").style.display=cart.length?"flex":"none";
 }
-function toggleCart(o){document.getElementById("cartDrawer").classList.toggle("open",o);}
+
+function toggleCart(o){
+  document.getElementById("cartDrawer").classList.toggle("open",o);
+  document.getElementById("overlay").classList.toggle("show",o);
+}
+
 function finalizar(){
   if(!cart.length){alert("Carrinho vazio!");return;}
   const nome=document.getElementById("clienteNome").value.trim();
   const tel=document.getElementById("clienteTel").value.trim();
   const end=document.getElementById("clienteEnd").value.trim();
   if(!nome||!tel||!end){alert("Preencha nome, telefone e endereço");return;}
+  localStorage.setItem("clienteNome",nome);
+  localStorage.setItem("clienteTel",tel);
+  localStorage.setItem("clienteEnd",end);
   let msg=`*🍔 Pedido - Clena Foods*\n\n*Cliente:* ${nome}\n*Contato:* ${tel}\n*Endereço:* ${end}\n\n*Itens:*\n`;
   let total=0;
   cart.forEach(it=>{
@@ -176,11 +201,22 @@ function finalizar(){
   });
   msg+=`\n*Total:* ${BRL(total)}\n\nObrigado pelo pedido!`;
   window.open("https://wa.me/5577999999999?text="+encodeURIComponent(msg),"_blank");
+  localStorage.removeItem("cart");
+  cart=[];
+  renderCart();
+  toggleCart(false);
 }
 
-renderSection(produtos.promo,"promo");
-renderSection(produtos.burgers,"burger");
-renderSection(produtos.drinks,"drinks");
+// Restaurar dados salvos
+window.addEventListener("DOMContentLoaded",()=>{
+  renderSection(produtos.promo,"promo");
+  renderSection(produtos.burgers,"burger");
+  renderSection(produtos.drinks,"drinks");
+  renderCart();
+  document.getElementById("clienteNome").value=localStorage.getItem("clienteNome")||"";
+  document.getElementById("clienteTel").value=localStorage.getItem("clienteTel")||"";
+  document.getElementById("clienteEnd").value=localStorage.getItem("clienteEnd")||"";
+});
 </script>
 </body>
 </html>
