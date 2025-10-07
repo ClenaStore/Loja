@@ -36,11 +36,12 @@ h2{margin:10px 0 12px 0;border-left:5px solid var(--brand);padding-left:8px}
 .card .price{color:#facc15;font-weight:800;font-size:15px}
 .card .btn{margin-top:auto}
 
-/* Carrinho */
+/* Overlay */
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(2px);
   opacity:0;pointer-events:none;transition:.35s;z-index:99;}
 #overlay.show{opacity:1;pointer-events:auto;}
 
+/* Carrinho */
 #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:92vw;max-width:400px;
   background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
   transition:.35s;display:flex;flex-direction:column;z-index:100;box-shadow:-6px 0 20px rgba(0,0,0,.6)}
@@ -49,11 +50,16 @@ h2{margin:10px 0 12px 0;border-left:5px solid var(--brand);padding-left:8px}
   display:flex;justify-content:space-between;align-items:center;font-size:17px}
 .drawerBody{flex:1;overflow-y:auto;padding:16px;display:grid;gap:14px;scrollbar-width:none;}
 .drawerBody::-webkit-scrollbar{width:0;height:0}
-.cartItem{background:#1f2530;padding:12px;border-radius:12px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow)}
+.cartItem{background:#1f2530;padding:12px;border-radius:12px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow)}
 .cartItem img{width:52px;height:52px;border-radius:10px;object-fit:cover}
 .cartItem .info{flex:1}
 .cartItem .name{font-weight:700;font-size:15px}
 .cartItem .price{font-weight:800;font-size:15px}
+.qtyBox{display:flex;align-items:center;gap:6px;margin-top:6px;}
+.qtyBox button{background:#2b3240;border:0;width:28px;height:28px;border-radius:6px;
+  color:#fff;font-size:18px;font-weight:800;cursor:pointer;}
+.qtyBox span{min-width:26px;text-align:center;font-weight:700}
+.trashBtn{background:none;border:0;color:#f87171;font-size:18px;cursor:pointer;padding:4px;}
 .drawerFoot{padding:16px;border-top:1px solid var(--line);display:grid;gap:12px}
 #grandTotal{font-size:20px;color:#facc15;font-weight:900}
 #cartBar{position:fixed;bottom:0;left:0;right:0;background:var(--brand);
@@ -80,7 +86,6 @@ h2{margin:10px 0 12px 0;border-left:5px solid var(--brand);padding-left:8px}
   <div class="grid" id="drinks"></div>
 </section>
 
-<!-- Overlay -->
 <div id="overlay" onclick="toggleCart(false)"></div>
 
 <!-- Carrinho -->
@@ -161,6 +166,20 @@ function saveCart(){
   localStorage.setItem("cart",JSON.stringify(cart));
 }
 
+function changeQty(name,delta){
+  const i=cart.findIndex(x=>x.name===name);
+  if(i>=0){
+    cart[i].qty+=delta;
+    if(cart[i].qty<=0) cart.splice(i,1);
+    saveCart();renderCart();
+  }
+}
+
+function removeItem(name){
+  cart=cart.filter(x=>x.name!==name);
+  saveCart();renderCart();
+}
+
 function renderCart(){
   document.getElementById("cartBadge").textContent=cart.length;
   document.getElementById("cartCount").textContent=cart.length+" itens";
@@ -171,7 +190,18 @@ function renderCart(){
     const val=it.price*it.qty; total+=val;
     const row=document.createElement("div");
     row.className="cartItem";
-    row.innerHTML=`<img src="${it.img}"><div class="info"><div class="name">${it.qty}× ${it.name}</div></div><div class="price">${BRL(val)}</div>`;
+    row.innerHTML=`
+      <img src="${it.img}">
+      <div class="info">
+        <div class="name">${it.name}</div>
+        <div class="qtyBox">
+          <button onclick="changeQty('${it.name}',-1)">-</button>
+          <span>${it.qty}</span>
+          <button onclick="changeQty('${it.name}',1)">+</button>
+        </div>
+      </div>
+      <div class="price">${BRL(val)}</div>
+      <button class="trashBtn" onclick="removeItem('${it.name}')">🗑</button>`;
     box.appendChild(row);
   });
   document.getElementById("grandTotal").textContent=BRL(total);
@@ -202,9 +232,7 @@ function finalizar(){
   msg+=`\n*Total:* ${BRL(total)}\n\nObrigado pelo pedido!`;
   window.open("https://wa.me/5577999999999?text="+encodeURIComponent(msg),"_blank");
   localStorage.removeItem("cart");
-  cart=[];
-  renderCart();
-  toggleCart(false);
+  cart=[];renderCart();toggleCart(false);
 }
 
 // Restaurar dados salvos
