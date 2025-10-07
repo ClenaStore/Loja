@@ -11,7 +11,9 @@
   --txt:#f7f8fa;--muted:#cbd5e1;
   --shadow:0 8px 24px rgba(0,0,0,.35);
 }
-body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;overflow-x:hidden;}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;overflow-x:hidden;transition:.3s ease;}
+body.no-scroll{overflow:hidden;} /* 👈 Bloqueia rolagem do fundo */
+
 header{padding:14px 18px;position:sticky;top:0;z-index:50;
   background:linear-gradient(135deg,var(--brand),var(--brand-2));
   font-weight:800;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
@@ -158,13 +160,10 @@ function renderSection(list,id){
 function addCart(p){
   const i=cart.findIndex(x=>x.name===p.name);
   if(i>=0)cart[i].qty++;else cart.push({...p,qty:1});
-  saveCart();
-  renderCart();
+  saveCart();renderCart();
 }
 
-function saveCart(){
-  localStorage.setItem("cart",JSON.stringify(cart));
-}
+function saveCart(){localStorage.setItem("cart",JSON.stringify(cart));}
 
 function changeQty(name,delta){
   const i=cart.findIndex(x=>x.name===name);
@@ -212,6 +211,7 @@ function renderCart(){
 function toggleCart(o){
   document.getElementById("cartDrawer").classList.toggle("open",o);
   document.getElementById("overlay").classList.toggle("show",o);
+  document.body.classList.toggle("no-scroll",o); // 👈 Bloqueia scroll da página
 }
 
 function finalizar(){
