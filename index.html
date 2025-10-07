@@ -1,88 +1,60 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Clena Foods • Cardápio</title>
-  <style>
-    :root{
-      --bg:#0e0f12; --panel:#14161a; --line:#262b36;
-      --brand:#e63946; --brand-2:#ff8f1f;
-      --txt:#f7f8fa; --muted:#cbd5e1;
-      --shadow:0 8px 24px rgba(0,0,0,.35);
-    }
-    body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
-    /* Header */
-    header{padding:14px 18px;position:sticky;top:0;z-index:50;
-      background:linear-gradient(135deg,var(--brand),var(--brand-2));
-      font-weight:800;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
-    header img{width:38px;height:38px;border-radius:10px}
-    header h1{font-size:18px;margin:0;letter-spacing:.4px;flex:1}
-    .btn{border:0;padding:10px 16px;border-radius:12px;
-      background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
-      font-weight:700;cursor:pointer;text-align:center;transition:.25s;box-shadow:0 4px 8px rgba(0,0,0,.25)}
-    .btn:hover{filter:brightness(1.15);transform:translateY(-2px)}
-    .btn.secondary{background:#2b3240;color:var(--txt);box-shadow:none}
-    /* Banner */
-    .banner{position:relative;width:100%;height:240px;overflow:hidden}
-    .banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-      opacity:0;transition:opacity 1s ease}
-    .banner img.active{opacity:1}
-    .banner::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent)}
-    /* Grid */
-    .page{padding:20px;display:grid;gap:20px;grid-template-columns:1fr 1fr}
-    @media(min-width:900px){.page{grid-template-columns:repeat(3,1fr)}}
-    .card{background:#1b1f27;border:1px solid var(--line);border-radius:18px;overflow:hidden;
-      display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.25s}
-    .card:hover{transform:translateY(-4px) scale(1.02)}
-    .card img{width:100%;height:160px;object-fit:cover;cursor:pointer}
-    .card .body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
-    .card .name{font-weight:700;font-size:16px;cursor:pointer}
-    .card .price{color:#facc15;font-weight:800;font-size:15px}
-    .card .btn{margin-top:auto}
-    /* Carrinho */
-    #cartDrawer{position:fixed;top:0;right:0;bottom:0;width:92vw;max-width:400px;
-      background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
-      transition:.35s;display:flex;flex-direction:column;z-index:100;box-shadow:-6px 0 20px rgba(0,0,0,.6)}
-    #cartDrawer.open{transform:translateX(0)}
-    .drawerHead{padding:18px;font-weight:800;border-bottom:1px solid var(--line);
-      display:flex;justify-content:space-between;align-items:center;font-size:17px}
-    .drawerBody{flex:1;overflow:auto;padding:16px;display:grid;gap:14px}
-    .cartItem{background:#1f2530;padding:12px;border-radius:12px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow)}
-    .cartItem img{width:52px;height:52px;border-radius:10px;object-fit:cover}
-    .cartItem .info{flex:1}
-    .cartItem .name{font-weight:700;font-size:15px}
-    .cartItem .extras{font-size:12px;color:var(--muted)}
-    .cartItem .price{font-weight:800;font-size:15px}
-    .drawerFoot{padding:16px;border-top:1px solid var(--line);display:grid;gap:12px}
-    #grandTotal{font-size:20px;color:#facc15;font-weight:900}
-    /* Popup */
-    dialog{border:0;border-radius:20px;max-width:440px;width:92%;background:#181c23;
-      color:var(--txt);padding:18px;box-shadow:var(--shadow)}
-    dialog::backdrop{background:rgba(0,0,0,.65)}
-    .popup-body img{width:100%;max-height:220px;object-fit:cover;display:block;
-      margin:0 auto 14px auto;border-radius:14px;background:#000}
-    .popup-body h3{margin:0;font-size:20px;font-weight:800}
-    .popup-body p{margin:6px 0 12px 0;color:var(--muted);font-size:14px}
-    .popup-body strong{font-size:17px;color:#facc15}
-    .comps{display:grid;gap:8px;margin:14px 0}
-    .comps label{background:#222730;padding:10px 12px;border-radius:12px;display:flex;
-      justify-content:space-between;align-items:center;cursor:pointer;transition:.2s}
-    .comps label:hover{background:#2e3648}
-    /* quantidade */
-    .qtyBox{display:flex;align-items:center;gap:16px;margin:16px 0}
-    .qtyBox button{width:42px;height:42px;border-radius:50%;border:0;
-      background:var(--brand);color:#fff;font-size:22px;font-weight:bold;cursor:pointer;transition:.25s}
-    .qtyBox button:hover{filter:brightness(1.1);transform:scale(1.05)}
-    .qtyVal{min-width:36px;text-align:center;font-weight:800;font-size:17px}
-    input,select,textarea{width:100%;padding:12px;border-radius:12px;background:#0f1115;
-      border:1px solid var(--line);color:var(--txt);font-size:15px}
-    /* Barra de resumo (mobile) */
-    #cartBar{position:fixed;bottom:0;left:0;right:0;background:var(--brand);
-      padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
-      font-weight:800;color:#fff;font-size:15px;z-index:90;cursor:pointer;display:none}
-    #cartBar span{font-size:16px}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>Clena Foods • Cardápio</title>
+<style>
+:root{
+  --bg:#0e0f12;--panel:#14161a;--line:#262b36;
+  --brand:#e63946;--brand-2:#ff8f1f;
+  --txt:#f7f8fa;--muted:#cbd5e1;
+  --shadow:0 8px 24px rgba(0,0,0,.35);
+}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;}
+header{padding:14px 18px;position:sticky;top:0;z-index:50;
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));
+  font-weight:800;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+header img{width:38px;height:38px;border-radius:10px}
+header h1{font-size:18px;margin:0;letter-spacing:.4px;flex:1}
+.btn{border:0;padding:10px 16px;border-radius:12px;
+  background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
+  font-weight:700;cursor:pointer;text-align:center;transition:.25s;box-shadow:0 4px 8px rgba(0,0,0,.25)}
+.btn:hover{filter:brightness(1.15);transform:translateY(-2px)}
+.btn.secondary{background:#2b3240;color:var(--txt);box-shadow:none}
+section{padding:20px}
+h2{margin:10px 0 12px 0;border-left:5px solid var(--brand);padding-left:8px}
+.grid{display:grid;gap:20px;grid-template-columns:1fr 1fr}
+@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+.card{background:#1b1f27;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.25s}
+.card:hover{transform:translateY(-4px) scale(1.02)}
+.card img{width:100%;height:160px;object-fit:cover}
+.card .body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card .name{font-weight:700;font-size:16px}
+.card .desc{font-size:13px;color:var(--muted)}
+.card .price{color:#facc15;font-weight:800;font-size:15px}
+.card .btn{margin-top:auto}
+/* Carrinho */
+#cartDrawer{position:fixed;top:0;right:0;bottom:0;width:92vw;max-width:400px;
+  background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
+  transition:.35s;display:flex;flex-direction:column;z-index:100;box-shadow:-6px 0 20px rgba(0,0,0,.6)}
+#cartDrawer.open{transform:translateX(0)}
+.drawerHead{padding:18px;font-weight:800;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;font-size:17px}
+.drawerBody{flex:1;overflow:auto;padding:16px;display:grid;gap:14px}
+.cartItem{background:#1f2530;padding:12px;border-radius:12px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow)}
+.cartItem img{width:52px;height:52px;border-radius:10px;object-fit:cover}
+.cartItem .info{flex:1}
+.cartItem .name{font-weight:700;font-size:15px}
+.cartItem .price{font-weight:800;font-size:15px}
+.drawerFoot{padding:16px;border-top:1px solid var(--line);display:grid;gap:12px}
+#grandTotal{font-size:20px;color:#facc15;font-weight:900}
+#cartBar{position:fixed;bottom:0;left:0;right:0;background:var(--brand);
+  padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
+  font-weight:800;color:#fff;font-size:15px;z-index:90;cursor:pointer;display:none}
+#cartBar span{font-size:16px}
+</style>
 </head>
 <body>
 <header>
@@ -91,15 +63,16 @@
   <button class="btn secondary" onclick="toggleCart(true)">🛒 <span id="cartBadge">0</span></button>
 </header>
 
-<!-- Banner -->
-<div class="banner">
-  <img src="https://source.unsplash.com/1200x400/?burger" class="active">
-  <img src="https://source.unsplash.com/1200x400/?pizza">
-  <img src="https://source.unsplash.com/1200x400/?drinks">
-</div>
+<section>
+  <h2>Promoção</h2>
+  <div class="grid" id="promo"></div>
 
-<!-- Produtos -->
-<main class="page" id="menuGrid"></main>
+  <h2>Hambúrguer</h2>
+  <div class="grid" id="burger"></div>
+
+  <h2>Bebidas</h2>
+  <div class="grid" id="drinks"></div>
+</section>
 
 <!-- Carrinho -->
 <aside id="cartDrawer">
@@ -111,151 +84,103 @@
   <div class="drawerFoot">
     <div><b>Total:</b> <span id="grandTotal">R$ 0,00</span></div>
     <div style="display:grid;gap:8px">
-      <select id="payMethod">
-        <option value="">Forma de pagamento</option>
-        <option value="pix">PIX</option>
-        <option value="credito">Crédito</option>
-        <option value="debito">Débito</option>
-        <option value="dinheiro">Dinheiro</option>
-      </select>
-      <div id="trocoBox" style="display:none">
-        <label>Troco para: <input id="trocoVal" placeholder="Ex.: 100"/></label>
-      </div>
       <input id="clienteNome" placeholder="Seu nome"/>
       <input id="clienteTel" placeholder="WhatsApp"/>
       <textarea id="clienteEnd" placeholder="Endereço completo"></textarea>
-      <textarea id="obs" placeholder="Observações"></textarea>
-      <button class="btn" onclick="finalizar()">Enviar Pedido</button>
+      <button class="btn" onclick="finalizar()">Enviar pelo WhatsApp</button>
     </div>
   </div>
 </aside>
-
-<!-- Barra de resumo mobile -->
 <div id="cartBar" onclick="toggleCart(true)">
   <span id="cartCount">0 itens</span>
   <span id="cartTotal">R$ 0,00</span>
 </div>
 
-<!-- Popup produto -->
-<dialog id="dlgItem">
-  <div class="popup-body">
-    <img id="pImg"><h3 id="pName"></h3><p id="pDesc"></p>
-    <strong id="pPrice"></strong>
-    <div id="compBox"></div>
-    <div class="qtyBox">
-      <button onclick="changeQty(-1)">-</button>
-      <span class="qtyVal" id="pQty">1</span>
-      <button onclick="changeQty(1)">+</button>
-    </div>
-    <div style="margin-top:12px;display:flex;gap:12px">
-      <button class="btn" id="btnAddCart">Adicionar</button>
-      <button class="btn secondary" onclick="dlgItem.close()">Cancelar</button>
-    </div>
-  </div>
-</dialog>
-
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbwbOlm3qbzOa89xKn9-MBQOnATbYOYGBJS-xMo2ppDEzWlX3qtvLzadysBdvo5o7dui/exec";
-let menu=[],complements=[],cart=[],current=null, qty=1;
-const $=s=>document.querySelector(s);
-const BRL=v=>"R$ "+Number(v).toFixed(2).replace(".",",");
+const BRL=v=>"R$ "+v.toFixed(2).replace(".",",");
 
-// Banner loop
-let bIx=0;const banners=document.querySelectorAll(".banner img");
-setInterval(()=>{banners[bIx].classList.remove("active");bIx=(bIx+1)%banners.length;banners[bIx].classList.add("active")},4000);
+const produtos={
+  promo:[{name:"Promoção! Dois X-Egg",desc:"Pão, hambúrguer de carne bovina, queijo, ovo frito, alface...",price:49.90,img:"https://source.unsplash.com/400x300/?burger"}],
+  burgers:[
+    {name:"X-Tudo duplo",desc:"Pão, hambúrguer de carne bovina, queijo, presunto, ovo, bacon, alface...",price:39.90,img:"https://source.unsplash.com/400x300/?x-tudo"},
+    {name:"X-Tudo",desc:"Pão, hambúrguer de carne bovina, queijo, presunto, ovo, alface...",price:32.90,img:"https://source.unsplash.com/400x300/?burger-cheese"},
+    {name:"X-Bacon",desc:"Pão, hambúrguer de carne bovina, queijo e bacon.",price:25.90,img:"https://source.unsplash.com/400x300/?bacon-burger"},
+    {name:"X-Egg",desc:"Pão, hambúrguer de carne bovina, queijo e ovo.",price:28.90,img:"https://source.unsplash.com/400x300/?egg-burger"},
+    {name:"X-Burger",desc:"Hambúrguer tradicional de carne bovina e queijo.",price:14.90,img:"https://source.unsplash.com/400x300/?classic-burger"},
+    {name:"X-Salada",desc:"Pão, hambúrguer de carne bovina, queijo, alface, tomate.",price:18.90,img:"https://source.unsplash.com/400x300/?salad-burger"},
+    {name:"X-Frango",desc:"Pão, filé de frango, queijo, alface e tomate.",price:25.00,img:"https://source.unsplash.com/400x300/?chicken-burger"},
+    {name:"X-Calabresa",desc:"Pão, hambúrguer de carne bovina, calabresa e queijo.",price:28.00,img:"https://source.unsplash.com/400x300/?calabresa-burger"},
+    {name:"Mega Clena",desc:"Pão, hambúrguer 150g, queijo, bacon, ovo, calabresa e molho especial.",price:49.90,img:"https://source.unsplash.com/400x300/?mega-burger"}
+  ],
+  drinks:[
+    {name:"Coca-Cola Lata 350ml",price:5.50,img:"https://source.unsplash.com/400x300/?coca-cola"},
+    {name:"Guaraná Antarctica Lata 350ml",price:5.50,img:"https://source.unsplash.com/400x300/?guarana"},
+    {name:"Fanta Laranja Lata 350ml",price:5.50,img:"https://source.unsplash.com/400x300/?fanta"}
+  ]
+};
 
-// Carregar dados
-async function loadData(){
-  const m=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getMenu"})}).then(r=>r.json());
-  const c=await fetch(API_URL,{method:"POST",body:JSON.stringify({acao:"getComplements"})}).then(r=>r.json());
-  if(m.ok) menu=m.items; if(c.ok) complements=c.items;
-  renderMenu();
-}
-function renderMenu(){
-  const grid=$("#menuGrid");grid.innerHTML="";
-  menu.forEach(i=>{
-    const el=document.createElement("div");el.className="card";
+let cart=[];
+
+function renderSection(list,id){
+  const box=document.getElementById(id);
+  list.forEach(p=>{
+    const el=document.createElement("div");
+    el.className="card";
     el.innerHTML=`
-      <img src="${i.img}" alt="">
+      <img src="${p.img}" alt="${p.name}">
       <div class="body">
-        <div class="name">${i.name}</div>
-        <div class="price">${BRL(i.price)}</div>
+        <div class="name">${p.name}</div>
+        ${p.desc?`<div class="desc">${p.desc}</div>`:""}
+        <div class="price">${BRL(p.price)}</div>
         <button class="btn">Adicionar</button>
       </div>`;
-    el.querySelector(".name").onclick=()=>openItem(i);
-    el.querySelector("img").onclick=()=>openItem(i);
-    el.querySelector(".btn").onclick=()=>{current=i;qty=1;addCurrent();};
-    grid.appendChild(el);
+    el.querySelector(".btn").onclick=()=>addCart(p);
+    box.appendChild(el);
   });
 }
-function openItem(item){
-  current=item; qty=1;
-  $("#pImg").src=item.img;
-  $("#pName").textContent=item.name;
-  $("#pDesc").textContent=item.desc||"";
-  $("#pPrice").textContent=BRL(item.price);
-  $("#pQty").textContent=qty;
-  let html="";
-  if(item.cat!=="Bebidas"&&item.cat!=="Complementos"){
-    html="<h4>Complementos</h4><div class='comps'>";
-    complements.forEach(c=>{
-      html+=`<label><span>${c.name} +${BRL(c.price)}</span><input type='checkbox' data-id='${c.id}' data-price='${c.price}'></label>`;
-    });
-    html+="</div>";
-  }
-  $("#compBox").innerHTML=html;
-  $("#dlgItem").showModal();
-  $("#btnAddCart").onclick=()=>addCurrent();
-}
-function changeQty(v){
-  qty=Math.max(1,qty+v);
-  $("#pQty").textContent=qty;
-}
-function addCurrent(){
-  const comps=[...$("#compBox input:checked")].map(c=>({id:c.dataset.id,name:c.parentNode.textContent.trim(),price:+c.dataset.price}));
-  cart.push({...current,qty,comps});
-  $("#dlgItem").close();
-  renderCart();toggleCart(true);
+function addCart(p){
+  const i=cart.findIndex(x=>x.name===p.name);
+  if(i>=0)cart[i].qty++;else cart.push({...p,qty:1});
+  renderCart();
+  toggleCart(true);
 }
 function renderCart(){
-  $("#cartBadge").textContent=cart.length;
-  $("#cartCount").textContent=cart.length+" itens";
-  const box=$("#cartItems");box.innerHTML="";let total=0;
+  document.getElementById("cartBadge").textContent=cart.length;
+  document.getElementById("cartCount").textContent=cart.length+" itens";
+  const box=document.getElementById("cartItems");
+  box.innerHTML="";
+  let total=0;
   cart.forEach(it=>{
-    const extras=it.comps?.map(c=>c.name).join(", ");
-    const val=(Number(it.price)+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;total+=val;
-    const row=document.createElement("div");row.className="cartItem";
-    row.innerHTML=`<img src="${it.img}"><div class="info"><div class="name">${it.qty}× ${it.name}</div><div class="extras">${extras||""}</div></div><div class="price">${BRL(val)}</div>`;
+    const val=it.price*it.qty; total+=val;
+    const row=document.createElement("div");
+    row.className="cartItem";
+    row.innerHTML=`<img src="${it.img}"><div class="info"><div class="name">${it.qty}× ${it.name}</div></div><div class="price">${BRL(val)}</div>`;
     box.appendChild(row);
   });
-  $("#grandTotal").textContent=BRL(total);
-  $("#cartTotal").textContent=BRL(total);
-  $("#trocoBox").style.display=$("#payMethod").value==="dinheiro"?"block":"none";
-  document.getElementById("cartBar").style.display=cart.length? "flex":"none";
+  document.getElementById("grandTotal").textContent=BRL(total);
+  document.getElementById("cartTotal").textContent=BRL(total);
+  document.getElementById("cartBar").style.display=cart.length?"flex":"none";
 }
-function toggleCart(o){$("#cartDrawer").classList.toggle("open",o)}
-$("#payMethod").addEventListener("change",()=>renderCart());
-
+function toggleCart(o){document.getElementById("cartDrawer").classList.toggle("open",o);}
 function finalizar(){
-  if(!cart.length){alert("Carrinho vazio");return}
-  const nome=$("#clienteNome").value.trim();
-  const tel=$("#clienteTel").value.trim();
-  const end=$("#clienteEnd").value.trim();
-  if(!nome||!tel||!end){alert("Preencha nome, telefone e endereço");return}
-  localStorage.setItem("cf_end",end);
-  const pay=$("#payMethod").value;
+  if(!cart.length){alert("Carrinho vazio!");return;}
+  const nome=document.getElementById("clienteNome").value.trim();
+  const tel=document.getElementById("clienteTel").value.trim();
+  const end=document.getElementById("clienteEnd").value.trim();
+  if(!nome||!tel||!end){alert("Preencha nome, telefone e endereço");return;}
   let msg=`*🍔 Pedido - Clena Foods*\n\n*Cliente:* ${nome}\n*Contato:* ${tel}\n*Endereço:* ${end}\n\n*Itens:*\n`;
+  let total=0;
   cart.forEach(it=>{
-    const extras=it.comps?.map(c=>c.name).join(", ");
-    const val=(Number(it.price)+(it.comps||[]).reduce((a,b)=>a+b.price,0))*it.qty;
-    msg+=`• ${it.qty}× ${it.name} ${extras?`(${extras})`:""} — *${BRL(val)}*\n`;
+    const val=it.price*it.qty; total+=val;
+    msg+=`• ${it.qty}× ${it.name} — *${BRL(val)}*\n`;
   });
-  msg+=`\n*Total:* ${$("#grandTotal").textContent}\n*Pagamento:* ${pay.toUpperCase()}`;
-  if(pay==="dinheiro"&&$("#trocoVal").value) msg+=`\n*Troco para:* ${$("#trocoVal").value}`;
-  if($("#obs").value) msg+=`\n*Obs:* ${$("#obs").value}`;
+  msg+=`\n*Total:* ${BRL(total)}\n\nObrigado pelo pedido!`;
   window.open("https://wa.me/5577999999999?text="+encodeURIComponent(msg),"_blank");
 }
-loadData();
+
+renderSection(produtos.promo,"promo");
+renderSection(produtos.burgers,"burger");
+renderSection(produtos.drinks,"drinks");
 </script>
 </body>
 </html>
