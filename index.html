@@ -1,250 +1,455 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-<title>Clena Foods • Cardápio</title>
-<style>
-:root{
-  --bg:#0e0f12;--panel:#14161a;--line:#262b36;
-  --brand:#e63946;--brand-2:#ff8f1f;
-  --txt:#f7f8fa;--muted:#cbd5e1;
-  --shadow:0 8px 24px rgba(0,0,0,.35);
-}
-body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;overflow-x:hidden;transition:.3s ease;}
-body.no-scroll{overflow:hidden;} /* 👈 Bloqueia rolagem do fundo */
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Bolão - Compra de Cotas</title>
 
-header{padding:14px 18px;position:sticky;top:0;z-index:50;
-  background:linear-gradient(135deg,var(--brand),var(--brand-2));
-  font-weight:800;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
-header img{width:38px;height:38px;border-radius:10px}
-header h1{font-size:18px;margin:0;letter-spacing:.4px;flex:1}
-.btn{border:0;padding:10px 16px;border-radius:12px;
-  background:linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;
-  font-weight:700;cursor:pointer;text-align:center;transition:.25s;box-shadow:0 4px 8px rgba(0,0,0,.25)}
-.btn:hover{filter:brightness(1.15);transform:translateY(-2px)}
-.btn.secondary{background:#2b3240;color:var(--txt);box-shadow:none}
-section{padding:20px}
-h2{margin:10px 0 12px 0;border-left:5px solid var(--brand);padding-left:8px}
-.grid{display:grid;gap:20px;grid-template-columns:1fr 1fr}
-@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
-.card{background:#1b1f27;border:1px solid var(--line);border-radius:18px;overflow:hidden;
-  display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.25s}
-.card:hover{transform:translateY(-4px) scale(1.02)}
-.card img{width:100%;height:160px;object-fit:cover}
-.card .body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
-.card .name{font-weight:700;font-size:16px}
-.card .desc{font-size:13px;color:var(--muted)}
-.card .price{color:#facc15;font-weight:800;font-size:15px}
-.card .btn{margin-top:auto}
+  <!-- Mercado Pago SDK v2 (client) -->
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
 
-/* Overlay */
-#overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(2px);
-  opacity:0;pointer-events:none;transition:.35s;z-index:99;}
-#overlay.show{opacity:1;pointer-events:auto;}
-
-/* Carrinho */
-#cartDrawer{position:fixed;top:0;right:0;bottom:0;width:92vw;max-width:400px;
-  background:#161a22;border-left:1px solid var(--line);transform:translateX(100%);
-  transition:.35s;display:flex;flex-direction:column;z-index:100;box-shadow:-6px 0 20px rgba(0,0,0,.6)}
-#cartDrawer.open{transform:translateX(0)}
-.drawerHead{padding:18px;font-weight:800;border-bottom:1px solid var(--line);
-  display:flex;justify-content:space-between;align-items:center;font-size:17px}
-.drawerBody{flex:1;overflow-y:auto;padding:16px;display:grid;gap:14px;scrollbar-width:none;}
-.drawerBody::-webkit-scrollbar{width:0;height:0}
-.cartItem{background:#1f2530;padding:12px;border-radius:12px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow)}
-.cartItem img{width:52px;height:52px;border-radius:10px;object-fit:cover}
-.cartItem .info{flex:1}
-.cartItem .name{font-weight:700;font-size:15px}
-.cartItem .price{font-weight:800;font-size:15px}
-.qtyBox{display:flex;align-items:center;gap:6px;margin-top:6px;}
-.qtyBox button{background:#2b3240;border:0;width:28px;height:28px;border-radius:6px;
-  color:#fff;font-size:18px;font-weight:800;cursor:pointer;}
-.qtyBox span{min-width:26px;text-align:center;font-weight:700}
-.trashBtn{background:none;border:0;color:#f87171;font-size:18px;cursor:pointer;padding:4px;}
-.drawerFoot{padding:16px;border-top:1px solid var(--line);display:grid;gap:12px}
-#grandTotal{font-size:20px;color:#facc15;font-weight:900}
-#cartBar{position:fixed;bottom:0;left:0;right:0;background:var(--brand);
-  padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
-  font-weight:800;color:#fff;font-size:15px;z-index:90;cursor:pointer;display:none}
-#cartBar span{font-size:16px}
-</style>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --accent:#ff8f1f; --muted:#9aa6b2; --white:#ffffff;
+      --glass: rgba(255,255,255,0.03);
+      --success: #16a34a;
+      font-family: Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#071022 0%, #0f1724 100%);color:var(--white);-webkit-font-smoothing:antialiased}
+    .wrap{max-width:1100px;margin:28px auto;padding:20px}
+    header.hero{
+      display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:center;margin-bottom:18px;
+    }
+    .cover{
+      background:var(--glass);padding:28px;border-radius:14px;box-shadow:0 6px 30px rgba(2,6,23,0.6);
+    }
+    .title{font-size:28px;margin:0 0 6px}
+    .sub{color:var(--muted);font-size:14px;margin-bottom:12px}
+    .prize{
+      display:flex;align-items:center;gap:12px;
+    }
+    .prize .value{
+      font-weight:700;font-size:28px;color:var(--accent)
+    }
+    .stats{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+    .chip{background:rgba(255,255,255,0.04);padding:8px 10px;border-radius:999px;font-size:13px;color:var(--muted)}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:18px;border-radius:12px;
+      box-shadow:0 6px 18px rgba(2,6,23,0.6);
+    }
+    form{display:flex;flex-direction:column;gap:12px}
+    label{font-size:13px;color:var(--muted)}
+    input[type="text"],input[type="email"],select,textarea{
+      background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:8px;color:var(--white);
+      font-size:15px;
+    }
+    .row{display:flex;gap:12px}
+    .col{flex:1}
+    .actions{display:flex;gap:10px;align-items:center}
+    button{
+      background:var(--accent);border:none;color:#000;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;
+    }
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--white)}
+    .muted{color:var(--muted);font-size:13px}
+    .sales-list{max-height:280px;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px}
+    .sale-item{display:flex;justify-content:space-between;gap:8px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+    @media(max-width:880px){
+      header.hero{grid-template-columns:1fr; padding-bottom:12px}
+      .cover{order:2}
+    }
+    .badge{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.25);color:var(--muted)}
+    .small{font-size:13px}
+    .success{color:var(--success);font-weight:700}
+  </style>
 </head>
 <body>
-<header>
-  <img src="https://github.com/ClenaStore/foods/blob/main/paste/ChatGPT%20Image%2027%20de%20ago.%20de%202025,%2019_35_02.png?raw=true" alt="logo">
-  <h1>CLENA FOODS</h1>
-  <button class="btn secondary" onclick="toggleCart(true)">🛒 <span id="cartBadge">0</span></button>
-</header>
+  <div class="wrap">
 
-<section>
-  <h2>Promoção</h2>
-  <div class="grid" id="promo"></div>
+    <!-- CONFIG: troque estes valores -->
+    <script>
+      // ========== CONFIGURE AQUI ==========
+      // Chave pública do Mercado Pago (APENAS PUBLIC_KEY)
+      const PUBLIC_KEY_MERCADOPAGO = 'SEU_PUBLIC_KEY_AQUI';
 
-  <h2>Hambúrguer</h2>
-  <div class="grid" id="burger"></div>
+      // Endpoints que você deve implementar:
+      // 1) Criar preference/payment (servidor) - faz a chamada ao Mercado Pago com sua secret key
+      const ENDPOINT_CREATE_PREFERENCE = 'https://seu-backend.com/api/create_preference'; // POST
+      // 2) Registrar venda pendente antes do pagamento (opcional) - registra na planilha que gerou intenção
+      const ENDPOINT_REGISTER_PENDING = 'https://seu-backend.com/api/register_pending'; // POST
+      // 3) Listar vendas / status (GET) - front polla esse endpoint para vendas em tempo real
+      const ENDPOINT_GET_SALES = 'https://seu-backend.com/api/sales'; // GET
+      // ====================================
+    </script>
 
-  <h2>Bebidas</h2>
-  <div class="grid" id="drinks"></div>
-</section>
+    <header class="hero">
+      <div class="cover card">
+        <h1 class="title">Bolão — Compre sua(s) cota(s)</h1>
+        <p class="sub">Participe do bolão comprando cotas. Ganhador(es) divide(m) o prêmio acumulado.</p>
 
-<div id="overlay" onclick="toggleCart(false)"></div>
-
-<!-- Carrinho -->
-<aside id="cartDrawer">
-  <div class="drawerHead">
-    <span>🛒 Meu Carrinho</span>
-    <button class="btn secondary" onclick="toggleCart(false)">✖ Fechar</button>
-  </div>
-  <div class="drawerBody" id="cartItems"></div>
-  <div class="drawerFoot">
-    <div><b>Total:</b> <span id="grandTotal">R$ 0,00</span></div>
-    <div style="display:grid;gap:8px">
-      <input id="clienteNome" placeholder="Seu nome"/>
-      <input id="clienteTel" placeholder="WhatsApp"/>
-      <textarea id="clienteEnd" placeholder="Endereço completo"></textarea>
-      <button class="btn" onclick="finalizar()">Enviar pelo WhatsApp</button>
-    </div>
-  </div>
-</aside>
-
-<div id="cartBar" onclick="toggleCart(true)">
-  <span id="cartCount">0 itens</span>
-  <span id="cartTotal">R$ 0,00</span>
-</div>
-
-<script>
-const BRL=v=>"R$ "+v.toFixed(2).replace(".",",");
-
-const produtos={
-  promo:[{name:"Promoção! Dois X-Egg",desc:"Pão, hambúrguer de carne bovina, queijo, ovo frito, alface...",price:49.90,img:"https://source.unsplash.com/400x300/?burger"}],
-  burgers:[
-    {name:"X-Tudo duplo",desc:"Pão, hambúrguer de carne bovina, queijo, presunto, ovo, bacon, alface...",price:39.90,img:"https://source.unsplash.com/400x300/?x-tudo"},
-    {name:"X-Tudo",desc:"Pão, hambúrguer de carne bovina, queijo, presunto, ovo, alface...",price:32.90,img:"https://source.unsplash.com/400x300/?burger-cheese"},
-    {name:"X-Bacon",desc:"Pão, hambúrguer de carne bovina, queijo e bacon.",price:25.90,img:"https://source.unsplash.com/400x300/?bacon-burger"},
-    {name:"X-Egg",desc:"Pão, hambúrguer de carne bovina, queijo e ovo.",price:28.90,img:"https://source.unsplash.com/400x300/?egg-burger"},
-    {name:"X-Burger",desc:"Hambúrguer tradicional de carne bovina e queijo.",price:14.90,img:"https://source.unsplash.com/400x300/?classic-burger"},
-    {name:"X-Salada",desc:"Pão, hambúrguer de carne bovina, queijo, alface, tomate.",price:18.90,img:"https://source.unsplash.com/400x300/?salad-burger"},
-    {name:"X-Frango",desc:"Pão, filé de frango, queijo, alface e tomate.",price:25.00,img:"https://source.unsplash.com/400x300/?chicken-burger"},
-    {name:"X-Calabresa",desc:"Pão, hambúrguer de carne bovina, calabresa e queijo.",price:28.00,img:"https://source.unsplash.com/400x300/?calabresa-burger"},
-    {name:"Mega Clena",desc:"Pão, hambúrguer 150g, queijo, bacon, ovo, calabresa e molho especial.",price:49.90,img:"https://source.unsplash.com/400x300/?mega-burger"}
-  ],
-  drinks:[
-    {name:"Coca-Cola Lata 350ml",price:5.50,img:"https://source.unsplash.com/400x300/?coca-cola"},
-    {name:"Guaraná Antarctica Lata 350ml",price:5.50,img:"https://source.unsplash.com/400x300/?guarana"},
-    {name:"Fanta Laranja Lata 350ml",price:5.50,img:"https://source.unsplash.com/400x300/?fanta"}
-  ]
-};
-
-let cart=JSON.parse(localStorage.getItem("cart")||"[]");
-
-function renderSection(list,id){
-  const box=document.getElementById(id);
-  box.innerHTML="";
-  list.forEach(p=>{
-    const el=document.createElement("div");
-    el.className="card";
-    el.innerHTML=`
-      <img src="${p.img}" alt="${p.name}">
-      <div class="body">
-        <div class="name">${p.name}</div>
-        ${p.desc?`<div class="desc">${p.desc}</div>`:""}
-        <div class="price">${BRL(p.price)}</div>
-        <button class="btn">Adicionar</button>
-      </div>`;
-    el.querySelector(".btn").onclick=()=>addCart(p);
-    box.appendChild(el);
-  });
-}
-
-function addCart(p){
-  const i=cart.findIndex(x=>x.name===p.name);
-  if(i>=0)cart[i].qty++;else cart.push({...p,qty:1});
-  saveCart();renderCart();
-}
-
-function saveCart(){localStorage.setItem("cart",JSON.stringify(cart));}
-
-function changeQty(name,delta){
-  const i=cart.findIndex(x=>x.name===name);
-  if(i>=0){
-    cart[i].qty+=delta;
-    if(cart[i].qty<=0) cart.splice(i,1);
-    saveCart();renderCart();
-  }
-}
-
-function removeItem(name){
-  cart=cart.filter(x=>x.name!==name);
-  saveCart();renderCart();
-}
-
-function renderCart(){
-  document.getElementById("cartBadge").textContent=cart.length;
-  document.getElementById("cartCount").textContent=cart.length+" itens";
-  const box=document.getElementById("cartItems");
-  box.innerHTML="";
-  let total=0;
-  cart.forEach(it=>{
-    const val=it.price*it.qty; total+=val;
-    const row=document.createElement("div");
-    row.className="cartItem";
-    row.innerHTML=`
-      <img src="${it.img}">
-      <div class="info">
-        <div class="name">${it.name}</div>
-        <div class="qtyBox">
-          <button onclick="changeQty('${it.name}',-1)">-</button>
-          <span>${it.qty}</span>
-          <button onclick="changeQty('${it.name}',1)">+</button>
+        <div class="prize">
+          <div>
+            <div class="muted small">Prêmio acumulado</div>
+            <div class="value" id="prizeValue">R$ 0,00</div>
+            <div class="muted small">Cotas vendidas: <span id="soldCount">0</span> • Valor por cota: <span id="unitPriceTxt">R$ 10,00</span></div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div class="badge" id="drawDateBadge">Sorteio: dd/mm/aaaa</div>
+            <div style="height:10px"></div>
+            <button id="btnRules" class="ghost">Regras</button>
+          </div>
         </div>
+
+        <div class="stats" style="margin-top:14px">
+          <div class="chip">Organizador: <strong>SEU NOME</strong></div>
+          <div class="chip">Forma de pagamento: Mercado Pago</div>
+          <div class="chip">Envio de e-mail: automático</div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="row">
+          <div class="card" style="flex:1">
+            <h3 style="margin:0 0 8px">Comprar cotas</h3>
+
+            <form id="buyForm">
+              <div class="row">
+                <div class="col">
+                  <label for="name">Nome</label>
+                  <input id="name" type="text" placeholder="Seu nome" required>
+                </div>
+                <div class="col">
+                  <label for="email">Email</label>
+                  <input id="email" type="email" placeholder="seu@exemplo.com" required>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <label for="qty">Quantidade de cotas</label>
+                  <select id="qty">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label for="unitPrice">Valor por cota (R$)</label>
+                  <input id="unitPrice" type="text" value="10.00" required>
+                </div>
+              </div>
+
+              <label for="guess">Palpite / mensagem (opcional)</label>
+              <input id="guess" type="text" placeholder="Seu palpite ou observação">
+
+              <div class="actions">
+                <button type="submit" id="btnBuy">Comprar e pagar</button>
+                <button type="button" id="btnSaveDraft" class="ghost">Salvar rascunho</button>
+                <div style="margin-left:auto" id="statusArea"></div>
+              </div>
+
+              <div id="mpCheckoutContainer" style="margin-top:8px"></div>
+            </form>
+          </div>
+
+          <div class="card" style="width:360px">
+            <h3 style="margin:0 0 8px">Vendas (tempo real)</h3>
+            <div class="muted small">Últimas vendas registradas na planilha</div>
+            <div style="height:12px"></div>
+            <div class="sales-list" id="salesList">
+              <!-- vendas aparecerão aqui -->
+            </div>
+
+            <div style="height:12px"></div>
+            <div class="small muted">Total bruto: <strong id="totalGross">R$ 0,00</strong></div>
+          </div>
+        </div>
+
       </div>
-      <div class="price">${BRL(val)}</div>
-      <button class="trashBtn" onclick="removeItem('${it.name}')">🗑</button>`;
-    box.appendChild(row);
+
+      <div class="card" style="padding:20px">
+        <h3 style="margin-top:0">Capa do bolão</h3>
+        <div style="height:12px"></div>
+        <div style="background:url('https://images.unsplash.com/photo-1542856391-7e2f6b2f0f2c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=') center/cover; height:240px;border-radius:10px"></div>
+        <div style="height:12px"></div>
+        <div class="muted small">Descrição curta do bolão, valor por cota e regras rápidas.</div>
+        <div style="height:8px"></div>
+        <div class="small muted">Regras: 1) Cada cota corresponde a um número; 2) Em caso de empate, prêmio dividido; 3) Pagamento confirmado via Mercado Pago será gravado e confirmado por email.</div>
+      </div>
+    </header>
+
+    <section>
+      <div class="card" style="padding:12px">
+        <h3 style="margin:0 0 8px">Histórico / Observações</h3>
+        <p class="muted small">As compras são registradas em uma planilha Google (via backend). Após confirmação de pagamento o comprador recebe um e-mail com o comprovante e o(s) número(s) da(s) cota(s) atribuídas.</p>
+      </div>
+    </section>
+
+    <footer>Deploy na Vercel • Integre o backend para criar 'preference' e lidar com IPN/notifications.</footer>
+  </div>
+
+  <script>
+  // ---------- Utilitários ----------
+  function moneyBR(value){
+    return value.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  }
+  function parseNumber(v){
+    const n = parseFloat(String(v).replace(',', '.'));
+    return isNaN(n)?0:n;
+  }
+  function qs(sel){return document.querySelector(sel)}
+
+  // ---------- Estado inicial ----------
+  let pollInterval = null;
+  let mp = null; // Mercado Pago SDK
+  let lastSalesETag = null;
+  const buyForm = qs('#buyForm');
+  const nameInput = qs('#name');
+  const emailInput = qs('#email');
+  const qtyInput = qs('#qty');
+  const unitPriceInput = qs('#unitPrice');
+  const guessInput = qs('#guess');
+  const salesList = qs('#salesList');
+  const soldCountEl = qs('#soldCount');
+  const prizeValueEl = qs('#prizeValue');
+  const totalGrossEl = qs('#totalGross');
+  const unitPriceTxt = qs('#unitPriceTxt');
+  const statusArea = qs('#statusArea');
+  const drawDateBadge = qs('#drawDateBadge');
+
+  // Config defaults
+  const defaultUnitPrice = 10.00;
+  const defaultDrawDate = new Date();
+  defaultDrawDate.setDate(defaultDrawDate.getDate() + 7); // semana que vem
+  drawDateBadge.textContent = 'Sorteio: ' + defaultDrawDate.toLocaleDateString();
+
+  // initialize
+  (function init(){
+    // Load saved draft
+    const draft = JSON.parse(localStorage.getItem('bolao_draft')||'{}');
+    if(draft.name) nameInput.value = draft.name;
+    if(draft.email) emailInput.value = draft.email;
+    if(draft.qty) qtyInput.value = draft.qty;
+    unitPriceInput.value = draft.unitPrice ?? defaultUnitPrice.toFixed(2);
+    unitPriceTxt.textContent = 'R$ ' + Number(unitPriceInput.value).toFixed(2);
+    if(draft.guess) guessInput.value = draft.guess;
+
+    // init MercadoPago client (client only needs public key)
+    try{
+      if(!PUBLIC_KEY_MERCADOPAGO || PUBLIC_KEY_MERCADOPAGO.includes('SEU_PUBLIC_KEY')){
+        console.warn('Coloque sua PUBLIC_KEY_MERCADOPAGO no topo do index.');
+      }
+      mp = new MercadoPago(PUBLIC_KEY_MERCADOPAGO, {locale: 'pt-BR'});
+    }catch(e){
+      console.warn('SDK Mercado Pago não inicializado: ', e);
+    }
+
+    // start polling vendas
+    startPollingSales();
+
+    // unit price change reflect
+    unitPriceInput.addEventListener('input', ()=> {
+      unitPriceTxt.textContent = 'R$ ' + parseNumber(unitPriceInput.value).toFixed(2);
+    });
+  })();
+
+  // ---------- Polling vendas (tempo real via endpoint GET) ----------
+  async function fetchSales(){
+    try{
+      const url = ENDPOINT_GET_SALES + '?_=' + Date.now();
+      const res = await fetch(url, {cache:'no-store'});
+      if(!res.ok) throw new Error('Erro ao buscar vendas');
+      const data = await res.json(); // espera { sales: [...], totalGross: number }
+      renderSales(data);
+    }catch(err){
+      console.warn('fetchSales:', err);
+    }
+  }
+
+  function startPollingSales(){
+    fetchSales();
+    if(pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(fetchSales, 8000);
+  }
+
+  function renderSales(data){
+    if(!data) return;
+    const sales = data.sales || [];
+    salesList.innerHTML = '';
+    let soldCount = 0;
+    let gross = 0;
+    for(const s of sales){
+      soldCount += Number(s.qty||0);
+      gross += parseNumber(s.amount || 0);
+      const el = document.createElement('div');
+      el.className = 'sale-item';
+      el.innerHTML = `<div>
+          <div style="font-weight:700">${s.name}</div>
+          <div class="muted small">${(new Date(s.date||s.created_at||Date.now())).toLocaleString()}</div>
+        </div>
+        <div style="text-align:right">
+          <div>${s.qty} x ${moneyBR(parseNumber(s.unitPrice||unitPriceInput.value))}</div>
+          <div class="muted small">${moneyBR(parseNumber(s.amount|| (s.qty*unitPriceInput.value)))}</div>
+        </div>`;
+      salesList.appendChild(el);
+    }
+    soldCountEl.textContent = soldCount;
+    unitPriceTxt.textContent = 'R$ ' + Number(unitPriceInput.value).toFixed(2);
+    prizeValueEl.textContent = moneyBR(gross);
+    totalGrossEl.textContent = moneyBR(gross);
+  }
+
+  // ---------- Form submit: cria intenção / pre-registra e redireciona para MP ----------
+  buyForm.addEventListener('submit', async (ev)=>{
+    ev.preventDefault();
+    setStatus('Gerando preferência de pagamento...', false);
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const qty = Number(qtyInput.value);
+    const unitPrice = parseNumber(unitPriceInput.value);
+    const guess = guessInput.value.trim();
+
+    if(!name || !email || qty <= 0 || unitPrice <= 0){
+      setStatus('Preencha nome, email e quantidade/valor válidos', true);
+      return;
+    }
+
+    const total = Number((qty * unitPrice).toFixed(2));
+
+    // 1) opcional: registra intenção pendente no backend (gera ID interno)
+    let pendingRecord = null;
+    try{
+      const pendingResp = await fetch(ENDPOINT_REGISTER_PENDING, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          name, email, qty, unitPrice, total, guess, created_at: new Date().toISOString()
+        })
+      });
+      if(pendingResp.ok) pendingRecord = await pendingResp.json();
+    }catch(e){
+      console.warn('register_pending falhou (continua):', e);
+    }
+
+    // 2) pedir ao backend para criar preference do Mercado Pago (backend usa secret key)
+    try{
+      const prefResp = await fetch(ENDPOINT_CREATE_PREFERENCE, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          name, email, qty, unitPrice, total, guess, pendingId: pendingRecord?.id || null, redirect: true
+        })
+      });
+      if(!prefResp.ok) throw new Error('Erro ao criar preference');
+      const prefJson = await prefResp.json();
+      // Resposta esperada do backend: { init_point: 'https://...', preference_id: '...' } ou { preferenceId }
+      if(prefJson.init_point){
+        // redireciona para checkout tradicional
+        window.location.href = prefJson.init_point;
+      }else if(prefJson.preference_id){
+        // usa checkout do SDK (checkout CP)
+        if(mp && mp.checkout){
+          mp.checkout({
+            preference: { id: prefJson.preference_id }
+          });
+        }else{
+          // fallback: abrir URL se backend retornou checkout_url
+          if(prefJson.checkout_url) window.location.href = prefJson.checkout_url;
+          else throw new Error('SDK não disponível e sem URL de checkout');
+        }
+      }else if(prefJson.checkout_url){
+        window.location.href = prefJson.checkout_url;
+      }else{
+        throw new Error('Resposta inválida do backend ao criar preference: ' + JSON.stringify(prefJson));
+      }
+
+      // salva rascunho como comprado (apenas local)
+      const saved = { name, email, qty, unitPrice, guess, created_at: new Date().toISOString() };
+      localStorage.setItem('last_purchase', JSON.stringify(saved));
+      setStatus('Redirecionando para o pagamento...', false);
+    }catch(err){
+      console.error(err);
+      setStatus('Erro ao iniciar pagamento: ' + (err.message||err), true);
+    }
   });
-  document.getElementById("grandTotal").textContent=BRL(total);
-  document.getElementById("cartTotal").textContent=BRL(total);
-  document.getElementById("cartBar").style.display=cart.length?"flex":"none";
-}
 
-function toggleCart(o){
-  document.getElementById("cartDrawer").classList.toggle("open",o);
-  document.getElementById("overlay").classList.toggle("show",o);
-  document.body.classList.toggle("no-scroll",o); // 👈 Bloqueia scroll da página
-}
-
-function finalizar(){
-  if(!cart.length){alert("Carrinho vazio!");return;}
-  const nome=document.getElementById("clienteNome").value.trim();
-  const tel=document.getElementById("clienteTel").value.trim();
-  const end=document.getElementById("clienteEnd").value.trim();
-  if(!nome||!tel||!end){alert("Preencha nome, telefone e endereço");return;}
-  localStorage.setItem("clienteNome",nome);
-  localStorage.setItem("clienteTel",tel);
-  localStorage.setItem("clienteEnd",end);
-  let msg=`*🍔 Pedido - Clena Foods*\n\n*Cliente:* ${nome}\n*Contato:* ${tel}\n*Endereço:* ${end}\n\n*Itens:*\n`;
-  let total=0;
-  cart.forEach(it=>{
-    const val=it.price*it.qty; total+=val;
-    msg+=`• ${it.qty}× ${it.name} — *${BRL(val)}*\n`;
+  // ---------- botões auxiliares ----------
+  qs('#btnSaveDraft').addEventListener('click', ()=>{
+    const draft = {
+      name: nameInput.value.trim(),
+      email: emailInput.value.trim(),
+      qty: qtyInput.value,
+      unitPrice: unitPriceInput.value,
+      guess: guessInput.value
+    };
+    localStorage.setItem('bolao_draft', JSON.stringify(draft));
+    setStatus('Rascunho salvo localmente', false);
+    setTimeout(()=>setStatus('', false), 2500);
   });
-  msg+=`\n*Total:* ${BRL(total)}\n\nObrigado pelo pedido!`;
-  window.open("https://wa.me/5577998253249?text="+encodeURIComponent(msg),"_blank");
-  localStorage.removeItem("cart");
-  cart=[];renderCart();toggleCart(false);
-}
 
-// Restaurar dados salvos
-window.addEventListener("DOMContentLoaded",()=>{
-  renderSection(produtos.promo,"promo");
-  renderSection(produtos.burgers,"burger");
-  renderSection(produtos.drinks,"drinks");
-  renderCart();
-  document.getElementById("clienteNome").value=localStorage.getItem("clienteNome")||"";
-  document.getElementById("clienteTel").value=localStorage.getItem("clienteTel")||"";
-  document.getElementById("clienteEnd").value=localStorage.getItem("clienteEnd")||"";
-});
-</script>
+  qs('#btnRules').addEventListener('click', ()=>{
+    alert('Regras rápidas:\\n- Cada cota vale o valor exibido.\\n- Pagamentos confirmados via Mercado Pago são registrados e recebem email.\\n- Em caso de empate o prêmio será dividido entre os vencedores.');
+  });
+
+  // ---------- status helper ----------
+  function setStatus(text, isError){
+    statusArea.innerHTML = text ? `<div class="${isError? 'muted' : 'small'}" style="${isError? 'color:#f87171':''}">${text}</div>` : '';
+  }
+
+  // ---------- On load: tenta ler query params (retorno de MP) para mostrar mensagem ----------
+  (function checkReturnFromMP(){
+    const params = new URLSearchParams(location.search);
+    if(params.has('collection_id') || params.has('payment_id') || params.has('status')){
+      // redirect after payment (dependendo do fluxo MP) - informa ao usuário que o pagamento será confirmado pelo backend
+      setStatus('Pagamento processado pelo Mercado Pago. Estamos confirmando o status. Você receberá email com confirmação.', false);
+      // opcional: forçar update de vendas
+      setTimeout(fetchSales, 2500);
+    }
+  })();
+
+  // ---------- Exemplo de preenchimento fake (se backend não estiver pronto) ----------
+  // Se quiser testar sem backend, descomente este bloco para simular vendas:
+  /*
+  setTimeout(()=>{
+    renderSales({ sales:[
+      { name:'João', qty:2, unitPrice:10.0, amount:20, date: new Date().toISOString() },
+      { name:'Maria', qty:1, unitPrice:10.0, amount:10, date: new Date().toISOString() }
+    ]});
+  },800);
+  */
+
+  // ---------- Fim do script ----------
+  </script>
+
+  <!--
+    ====== BACKEND (recomendações rápidas) ======
+    1) /api/create_preference (POST) ->
+       Recebe: { name, email, qty, unitPrice, total, guess, pendingId }
+       Faz: cria preference no Mercado Pago usando SDK server com SECRET_KEY:
+         Exemplo (Node): mercadopago.preferences.create({ items: [{ title:'Cotas', quantity: qty, unit_price: unitPrice }], payer:{email}, back_urls:{success, pending, failure}, notification_url: 'https://seu-backend.com/api/mp_webhook' })
+       Retorna: { init_point, preference_id, checkout_url }
+
+    2) /api/register_pending (POST) ->
+       Recebe pré-dados para registrar intenção na planilha (opcional).
+       Use para guardar um ID interno que você passa para a preference.
+
+    3) /api/mp_webhook (POST) -> (chamado pelo Mercado Pago)
+       Recebe notification do Mercado Pago. Deve:
+         - Verificar pagamento via API do Mercado Pago (payment_id)
+         - Se pago, gravar na Planilha Google: name,email,qty,unitPrice,total,guess,payment_id,status,created_at
+         - Enviar e-mail de confirmação para o comprador (Apps Script MailApp ou serviço externo)
+         - Retornar 200 ao Mercado Pago
+       OBS: esse endpoint é crítico para confirmar pagamentos e registrar as vendas de fato.
+
+    4) /api/sales (GET) ->
+       Deve retornar JSON:
+         { sales: [{ name, qty, unitPrice, amount, date, payment_id, status }, ...], totalGross: number }
+       O front faz polling e atualiza o prêmio acumulado = soma(amount)
+  -->
+
 </body>
 </html>
