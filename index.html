@@ -1,455 +1,135 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Bolão - Compra de Cotas</title>
-
-  <!-- Mercado Pago SDK v2 (client) -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Bazar Online • Pagamento Seguro</title>
   <script src="https://sdk.mercadopago.com/js/v2"></script>
-
   <style>
     :root{
-      --bg:#0f1724; --card:#0b1220; --accent:#ff8f1f; --muted:#9aa6b2; --white:#ffffff;
-      --glass: rgba(255,255,255,0.03);
-      --success: #16a34a;
-      font-family: Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --bg:#0f1724;--card:#0b1220;--accent:#ff8f1f;--muted:#9aa6b2;--white:#fff;--success:#16a34a;
+      font-family:Inter,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#071022 0%, #0f1724 100%);color:var(--white);-webkit-font-smoothing:antialiased}
-    .wrap{max-width:1100px;margin:28px auto;padding:20px}
-    header.hero{
-      display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:center;margin-bottom:18px;
-    }
-    .cover{
-      background:var(--glass);padding:28px;border-radius:14px;box-shadow:0 6px 30px rgba(2,6,23,0.6);
-    }
-    .title{font-size:28px;margin:0 0 6px}
-    .sub{color:var(--muted);font-size:14px;margin-bottom:12px}
-    .prize{
-      display:flex;align-items:center;gap:12px;
-    }
-    .prize .value{
-      font-weight:700;font-size:28px;color:var(--accent)
-    }
-    .stats{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
-    .chip{background:rgba(255,255,255,0.04);padding:8px 10px;border-radius:999px;font-size:13px;color:var(--muted)}
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      padding:18px;border-radius:12px;
-      box-shadow:0 6px 18px rgba(2,6,23,0.6);
-    }
-    form{display:flex;flex-direction:column;gap:12px}
-    label{font-size:13px;color:var(--muted)}
-    input[type="text"],input[type="email"],select,textarea{
-      background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:8px;color:var(--white);
-      font-size:15px;
-    }
-    .row{display:flex;gap:12px}
-    .col{flex:1}
-    .actions{display:flex;gap:10px;align-items:center}
-    button{
-      background:var(--accent);border:none;color:#000;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;
-    }
-    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--white)}
-    .muted{color:var(--muted);font-size:13px}
-    .sales-list{max-height:280px;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px}
-    .sale-item{display:flex;justify-content:space-between;gap:8px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)}
-    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
-    @media(max-width:880px){
-      header.hero{grid-template-columns:1fr; padding-bottom:12px}
-      .cover{order:2}
-    }
-    .badge{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.25);color:var(--muted)}
-    .small{font-size:13px}
-    .success{color:var(--success);font-weight:700}
+    body{margin:0;background:linear-gradient(180deg,#071022,#0f1724);color:var(--white);}
+    header{padding:20px;text-align:center;background:rgba(255,255,255,0.03);box-shadow:0 2px 10px rgba(0,0,0,0.2)}
+    h1{margin:0;font-size:26px;color:var(--accent)}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px;display:grid;gap:20px;grid-template-columns:2fr 1fr;}
+    .produtos{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;}
+    .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.6);transition:.3s}
+    .card:hover{transform:translateY(-3px);}
+    .card img{width:100%;height:180px;object-fit:cover;border-radius:8px}
+    .info{padding:8px 0}
+    .info h3{margin:4px 0;font-size:17px}
+    .info p{margin:0;font-size:13px;color:var(--muted)}
+    .price{color:var(--accent);font-weight:700;margin:6px 0}
+    button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer}
+    #carrinho{background:var(--card);border-radius:12px;padding:16px;max-height:600px;overflow:auto;}
+    #carrinho h2{font-size:18px;margin-top:0;color:var(--accent)}
+    .item-carrinho{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .total{margin-top:12px;font-size:16px;font-weight:700;color:var(--success)}
+    #finalizar{margin-top:10px;width:100%}
+    footer{text-align:center;padding:10px;color:var(--muted);font-size:13px;margin-top:20px}
   </style>
 </head>
 <body>
+  <header>
+    <h1>🛍️ Bazar Online</h1>
+    <p>Escolha seus produtos e pague online com Mercado Pago</p>
+  </header>
+
   <div class="wrap">
+    <section class="produtos" id="listaProdutos"></section>
 
-    <!-- CONFIG: troque estes valores -->
-    <script>
-      // ========== CONFIGURE AQUI ==========
-      // Chave pública do Mercado Pago (APENAS PUBLIC_KEY)
-      const PUBLIC_KEY_MERCADOPAGO = 'SEU_PUBLIC_KEY_AQUI';
-
-      // Endpoints que você deve implementar:
-      // 1) Criar preference/payment (servidor) - faz a chamada ao Mercado Pago com sua secret key
-      const ENDPOINT_CREATE_PREFERENCE = 'https://seu-backend.com/api/create_preference'; // POST
-      // 2) Registrar venda pendente antes do pagamento (opcional) - registra na planilha que gerou intenção
-      const ENDPOINT_REGISTER_PENDING = 'https://seu-backend.com/api/register_pending'; // POST
-      // 3) Listar vendas / status (GET) - front polla esse endpoint para vendas em tempo real
-      const ENDPOINT_GET_SALES = 'https://seu-backend.com/api/sales'; // GET
-      // ====================================
-    </script>
-
-    <header class="hero">
-      <div class="cover card">
-        <h1 class="title">Bolão — Compre sua(s) cota(s)</h1>
-        <p class="sub">Participe do bolão comprando cotas. Ganhador(es) divide(m) o prêmio acumulado.</p>
-
-        <div class="prize">
-          <div>
-            <div class="muted small">Prêmio acumulado</div>
-            <div class="value" id="prizeValue">R$ 0,00</div>
-            <div class="muted small">Cotas vendidas: <span id="soldCount">0</span> • Valor por cota: <span id="unitPriceTxt">R$ 10,00</span></div>
-          </div>
-          <div style="margin-left:auto;text-align:right">
-            <div class="badge" id="drawDateBadge">Sorteio: dd/mm/aaaa</div>
-            <div style="height:10px"></div>
-            <button id="btnRules" class="ghost">Regras</button>
-          </div>
-        </div>
-
-        <div class="stats" style="margin-top:14px">
-          <div class="chip">Organizador: <strong>SEU NOME</strong></div>
-          <div class="chip">Forma de pagamento: Mercado Pago</div>
-          <div class="chip">Envio de e-mail: automático</div>
-        </div>
-
-        <div style="height:14px"></div>
-
-        <div class="row">
-          <div class="card" style="flex:1">
-            <h3 style="margin:0 0 8px">Comprar cotas</h3>
-
-            <form id="buyForm">
-              <div class="row">
-                <div class="col">
-                  <label for="name">Nome</label>
-                  <input id="name" type="text" placeholder="Seu nome" required>
-                </div>
-                <div class="col">
-                  <label for="email">Email</label>
-                  <input id="email" type="email" placeholder="seu@exemplo.com" required>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <label for="qty">Quantidade de cotas</label>
-                  <select id="qty">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                  </select>
-                </div>
-                <div class="col">
-                  <label for="unitPrice">Valor por cota (R$)</label>
-                  <input id="unitPrice" type="text" value="10.00" required>
-                </div>
-              </div>
-
-              <label for="guess">Palpite / mensagem (opcional)</label>
-              <input id="guess" type="text" placeholder="Seu palpite ou observação">
-
-              <div class="actions">
-                <button type="submit" id="btnBuy">Comprar e pagar</button>
-                <button type="button" id="btnSaveDraft" class="ghost">Salvar rascunho</button>
-                <div style="margin-left:auto" id="statusArea"></div>
-              </div>
-
-              <div id="mpCheckoutContainer" style="margin-top:8px"></div>
-            </form>
-          </div>
-
-          <div class="card" style="width:360px">
-            <h3 style="margin:0 0 8px">Vendas (tempo real)</h3>
-            <div class="muted small">Últimas vendas registradas na planilha</div>
-            <div style="height:12px"></div>
-            <div class="sales-list" id="salesList">
-              <!-- vendas aparecerão aqui -->
-            </div>
-
-            <div style="height:12px"></div>
-            <div class="small muted">Total bruto: <strong id="totalGross">R$ 0,00</strong></div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="card" style="padding:20px">
-        <h3 style="margin-top:0">Capa do bolão</h3>
-        <div style="height:12px"></div>
-        <div style="background:url('https://images.unsplash.com/photo-1542856391-7e2f6b2f0f2c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=') center/cover; height:240px;border-radius:10px"></div>
-        <div style="height:12px"></div>
-        <div class="muted small">Descrição curta do bolão, valor por cota e regras rápidas.</div>
-        <div style="height:8px"></div>
-        <div class="small muted">Regras: 1) Cada cota corresponde a um número; 2) Em caso de empate, prêmio dividido; 3) Pagamento confirmado via Mercado Pago será gravado e confirmado por email.</div>
-      </div>
-    </header>
-
-    <section>
-      <div class="card" style="padding:12px">
-        <h3 style="margin:0 0 8px">Histórico / Observações</h3>
-        <p class="muted small">As compras são registradas em uma planilha Google (via backend). Após confirmação de pagamento o comprador recebe um e-mail com o comprovante e o(s) número(s) da(s) cota(s) atribuídas.</p>
-      </div>
-    </section>
-
-    <footer>Deploy na Vercel • Integre o backend para criar 'preference' e lidar com IPN/notifications.</footer>
+    <aside id="carrinho">
+      <h2>Seu Carrinho</h2>
+      <div id="itensCarrinho"></div>
+      <div class="total">Total: R$ <span id="totalCarrinho">0,00</span></div>
+      <button id="finalizar">Pagar com Mercado Pago</button>
+      <div id="mpCheckoutContainer" style="margin-top:10px"></div>
+    </aside>
   </div>
 
+  <footer>© 2025 Bazar Online • Pagamentos via Mercado Pago</footer>
+
   <script>
-  // ---------- Utilitários ----------
-  function moneyBR(value){
-    return value.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-  }
-  function parseNumber(v){
-    const n = parseFloat(String(v).replace(',', '.'));
-    return isNaN(n)?0:n;
-  }
-  function qs(sel){return document.querySelector(sel)}
+    const PUBLIC_KEY_MP = 'SEU_PUBLIC_KEY_MERCADOPAGO';
+    const ENDPOINT_PRODUTOS = 'https://seu-gas-url/exec?action=listarProdutos';
+    const ENDPOINT_CREATE_PREFERENCE = 'https://seu-backend.com/api/create_preference';
 
-  // ---------- Estado inicial ----------
-  let pollInterval = null;
-  let mp = null; // Mercado Pago SDK
-  let lastSalesETag = null;
-  const buyForm = qs('#buyForm');
-  const nameInput = qs('#name');
-  const emailInput = qs('#email');
-  const qtyInput = qs('#qty');
-  const unitPriceInput = qs('#unitPrice');
-  const guessInput = qs('#guess');
-  const salesList = qs('#salesList');
-  const soldCountEl = qs('#soldCount');
-  const prizeValueEl = qs('#prizeValue');
-  const totalGrossEl = qs('#totalGross');
-  const unitPriceTxt = qs('#unitPriceTxt');
-  const statusArea = qs('#statusArea');
-  const drawDateBadge = qs('#drawDateBadge');
+    const listaProdutos = document.querySelector('#listaProdutos');
+    const itensCarrinho = document.querySelector('#itensCarrinho');
+    const totalCarrinho = document.querySelector('#totalCarrinho');
+    let carrinho = [];
+    let mp = new MercadoPago(PUBLIC_KEY_MP,{locale:'pt-BR'});
 
-  // Config defaults
-  const defaultUnitPrice = 10.00;
-  const defaultDrawDate = new Date();
-  defaultDrawDate.setDate(defaultDrawDate.getDate() + 7); // semana que vem
-  drawDateBadge.textContent = 'Sorteio: ' + defaultDrawDate.toLocaleDateString();
-
-  // initialize
-  (function init(){
-    // Load saved draft
-    const draft = JSON.parse(localStorage.getItem('bolao_draft')||'{}');
-    if(draft.name) nameInput.value = draft.name;
-    if(draft.email) emailInput.value = draft.email;
-    if(draft.qty) qtyInput.value = draft.qty;
-    unitPriceInput.value = draft.unitPrice ?? defaultUnitPrice.toFixed(2);
-    unitPriceTxt.textContent = 'R$ ' + Number(unitPriceInput.value).toFixed(2);
-    if(draft.guess) guessInput.value = draft.guess;
-
-    // init MercadoPago client (client only needs public key)
-    try{
-      if(!PUBLIC_KEY_MERCADOPAGO || PUBLIC_KEY_MERCADOPAGO.includes('SEU_PUBLIC_KEY')){
-        console.warn('Coloque sua PUBLIC_KEY_MERCADOPAGO no topo do index.');
+    async function carregarProdutos(){
+      try{
+        const res = await fetch(ENDPOINT_PRODUTOS);
+        const data = await res.json();
+        renderProdutos(data);
+      }catch(e){
+        console.error('Erro ao carregar produtos',e);
+        listaProdutos.innerHTML = '<p>Erro ao carregar produtos.</p>';
       }
-      mp = new MercadoPago(PUBLIC_KEY_MERCADOPAGO, {locale: 'pt-BR'});
-    }catch(e){
-      console.warn('SDK Mercado Pago não inicializado: ', e);
     }
 
-    // start polling vendas
-    startPollingSales();
+    function renderProdutos(data){
+      listaProdutos.innerHTML = '';
+      data.forEach(prod=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${prod.foto}" alt="${prod.nome}">
+          <div class="info">
+            <h3>${prod.nome}</h3>
+            <p>${prod.descricao}</p>
+            <div class="price">R$ ${Number(prod.valor).toFixed(2)}</div>
+            <button onclick='addCarrinho(${JSON.stringify(prod)})'>Adicionar</button>
+          </div>`;
+        listaProdutos.appendChild(card);
+      });
+    }
 
-    // unit price change reflect
-    unitPriceInput.addEventListener('input', ()=> {
-      unitPriceTxt.textContent = 'R$ ' + parseNumber(unitPriceInput.value).toFixed(2);
+    function addCarrinho(prod){
+      const existente = carrinho.find(i=>i.nome===prod.nome);
+      if(existente) existente.qtd++;
+      else carrinho.push({...prod,qtd:1});
+      renderCarrinho();
+    }
+
+    function renderCarrinho(){
+      itensCarrinho.innerHTML = '';
+      let total=0;
+      carrinho.forEach((item,i)=>{
+        const div=document.createElement('div');
+        div.className='item-carrinho';
+        const subtotal=item.qtd*item.valor;
+        total+=subtotal;
+        div.innerHTML=`<span>${item.qtd}x ${item.nome}</span><strong>R$ ${subtotal.toFixed(2)}</strong>`;
+        itensCarrinho.appendChild(div);
+      });
+      totalCarrinho.textContent=total.toFixed(2);
+    }
+
+    document.querySelector('#finalizar').addEventListener('click', async()=>{
+      if(carrinho.length===0){alert('Carrinho vazio');return;}
+      const items = carrinho.map(i=>({title:i.nome,quantity:i.qtd,unit_price:Number(i.valor)}));
+      try{
+        const resp = await fetch(ENDPOINT_CREATE_PREFERENCE,{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({items})
+        });
+        const pref=await resp.json();
+        if(pref.init_point) window.location.href=pref.init_point;
+        else if(pref.preference_id) mp.checkout({preference:{id:pref.preference_id}});
+        else alert('Erro ao iniciar pagamento.');
+      }catch(err){
+        alert('Erro ao criar pagamento: '+err);
+      }
     });
-  })();
 
-  // ---------- Polling vendas (tempo real via endpoint GET) ----------
-  async function fetchSales(){
-    try{
-      const url = ENDPOINT_GET_SALES + '?_=' + Date.now();
-      const res = await fetch(url, {cache:'no-store'});
-      if(!res.ok) throw new Error('Erro ao buscar vendas');
-      const data = await res.json(); // espera { sales: [...], totalGross: number }
-      renderSales(data);
-    }catch(err){
-      console.warn('fetchSales:', err);
-    }
-  }
-
-  function startPollingSales(){
-    fetchSales();
-    if(pollInterval) clearInterval(pollInterval);
-    pollInterval = setInterval(fetchSales, 8000);
-  }
-
-  function renderSales(data){
-    if(!data) return;
-    const sales = data.sales || [];
-    salesList.innerHTML = '';
-    let soldCount = 0;
-    let gross = 0;
-    for(const s of sales){
-      soldCount += Number(s.qty||0);
-      gross += parseNumber(s.amount || 0);
-      const el = document.createElement('div');
-      el.className = 'sale-item';
-      el.innerHTML = `<div>
-          <div style="font-weight:700">${s.name}</div>
-          <div class="muted small">${(new Date(s.date||s.created_at||Date.now())).toLocaleString()}</div>
-        </div>
-        <div style="text-align:right">
-          <div>${s.qty} x ${moneyBR(parseNumber(s.unitPrice||unitPriceInput.value))}</div>
-          <div class="muted small">${moneyBR(parseNumber(s.amount|| (s.qty*unitPriceInput.value)))}</div>
-        </div>`;
-      salesList.appendChild(el);
-    }
-    soldCountEl.textContent = soldCount;
-    unitPriceTxt.textContent = 'R$ ' + Number(unitPriceInput.value).toFixed(2);
-    prizeValueEl.textContent = moneyBR(gross);
-    totalGrossEl.textContent = moneyBR(gross);
-  }
-
-  // ---------- Form submit: cria intenção / pre-registra e redireciona para MP ----------
-  buyForm.addEventListener('submit', async (ev)=>{
-    ev.preventDefault();
-    setStatus('Gerando preferência de pagamento...', false);
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim();
-    const qty = Number(qtyInput.value);
-    const unitPrice = parseNumber(unitPriceInput.value);
-    const guess = guessInput.value.trim();
-
-    if(!name || !email || qty <= 0 || unitPrice <= 0){
-      setStatus('Preencha nome, email e quantidade/valor válidos', true);
-      return;
-    }
-
-    const total = Number((qty * unitPrice).toFixed(2));
-
-    // 1) opcional: registra intenção pendente no backend (gera ID interno)
-    let pendingRecord = null;
-    try{
-      const pendingResp = await fetch(ENDPOINT_REGISTER_PENDING, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          name, email, qty, unitPrice, total, guess, created_at: new Date().toISOString()
-        })
-      });
-      if(pendingResp.ok) pendingRecord = await pendingResp.json();
-    }catch(e){
-      console.warn('register_pending falhou (continua):', e);
-    }
-
-    // 2) pedir ao backend para criar preference do Mercado Pago (backend usa secret key)
-    try{
-      const prefResp = await fetch(ENDPOINT_CREATE_PREFERENCE, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          name, email, qty, unitPrice, total, guess, pendingId: pendingRecord?.id || null, redirect: true
-        })
-      });
-      if(!prefResp.ok) throw new Error('Erro ao criar preference');
-      const prefJson = await prefResp.json();
-      // Resposta esperada do backend: { init_point: 'https://...', preference_id: '...' } ou { preferenceId }
-      if(prefJson.init_point){
-        // redireciona para checkout tradicional
-        window.location.href = prefJson.init_point;
-      }else if(prefJson.preference_id){
-        // usa checkout do SDK (checkout CP)
-        if(mp && mp.checkout){
-          mp.checkout({
-            preference: { id: prefJson.preference_id }
-          });
-        }else{
-          // fallback: abrir URL se backend retornou checkout_url
-          if(prefJson.checkout_url) window.location.href = prefJson.checkout_url;
-          else throw new Error('SDK não disponível e sem URL de checkout');
-        }
-      }else if(prefJson.checkout_url){
-        window.location.href = prefJson.checkout_url;
-      }else{
-        throw new Error('Resposta inválida do backend ao criar preference: ' + JSON.stringify(prefJson));
-      }
-
-      // salva rascunho como comprado (apenas local)
-      const saved = { name, email, qty, unitPrice, guess, created_at: new Date().toISOString() };
-      localStorage.setItem('last_purchase', JSON.stringify(saved));
-      setStatus('Redirecionando para o pagamento...', false);
-    }catch(err){
-      console.error(err);
-      setStatus('Erro ao iniciar pagamento: ' + (err.message||err), true);
-    }
-  });
-
-  // ---------- botões auxiliares ----------
-  qs('#btnSaveDraft').addEventListener('click', ()=>{
-    const draft = {
-      name: nameInput.value.trim(),
-      email: emailInput.value.trim(),
-      qty: qtyInput.value,
-      unitPrice: unitPriceInput.value,
-      guess: guessInput.value
-    };
-    localStorage.setItem('bolao_draft', JSON.stringify(draft));
-    setStatus('Rascunho salvo localmente', false);
-    setTimeout(()=>setStatus('', false), 2500);
-  });
-
-  qs('#btnRules').addEventListener('click', ()=>{
-    alert('Regras rápidas:\\n- Cada cota vale o valor exibido.\\n- Pagamentos confirmados via Mercado Pago são registrados e recebem email.\\n- Em caso de empate o prêmio será dividido entre os vencedores.');
-  });
-
-  // ---------- status helper ----------
-  function setStatus(text, isError){
-    statusArea.innerHTML = text ? `<div class="${isError? 'muted' : 'small'}" style="${isError? 'color:#f87171':''}">${text}</div>` : '';
-  }
-
-  // ---------- On load: tenta ler query params (retorno de MP) para mostrar mensagem ----------
-  (function checkReturnFromMP(){
-    const params = new URLSearchParams(location.search);
-    if(params.has('collection_id') || params.has('payment_id') || params.has('status')){
-      // redirect after payment (dependendo do fluxo MP) - informa ao usuário que o pagamento será confirmado pelo backend
-      setStatus('Pagamento processado pelo Mercado Pago. Estamos confirmando o status. Você receberá email com confirmação.', false);
-      // opcional: forçar update de vendas
-      setTimeout(fetchSales, 2500);
-    }
-  })();
-
-  // ---------- Exemplo de preenchimento fake (se backend não estiver pronto) ----------
-  // Se quiser testar sem backend, descomente este bloco para simular vendas:
-  /*
-  setTimeout(()=>{
-    renderSales({ sales:[
-      { name:'João', qty:2, unitPrice:10.0, amount:20, date: new Date().toISOString() },
-      { name:'Maria', qty:1, unitPrice:10.0, amount:10, date: new Date().toISOString() }
-    ]});
-  },800);
-  */
-
-  // ---------- Fim do script ----------
+    carregarProdutos();
   </script>
-
-  <!--
-    ====== BACKEND (recomendações rápidas) ======
-    1) /api/create_preference (POST) ->
-       Recebe: { name, email, qty, unitPrice, total, guess, pendingId }
-       Faz: cria preference no Mercado Pago usando SDK server com SECRET_KEY:
-         Exemplo (Node): mercadopago.preferences.create({ items: [{ title:'Cotas', quantity: qty, unit_price: unitPrice }], payer:{email}, back_urls:{success, pending, failure}, notification_url: 'https://seu-backend.com/api/mp_webhook' })
-       Retorna: { init_point, preference_id, checkout_url }
-
-    2) /api/register_pending (POST) ->
-       Recebe pré-dados para registrar intenção na planilha (opcional).
-       Use para guardar um ID interno que você passa para a preference.
-
-    3) /api/mp_webhook (POST) -> (chamado pelo Mercado Pago)
-       Recebe notification do Mercado Pago. Deve:
-         - Verificar pagamento via API do Mercado Pago (payment_id)
-         - Se pago, gravar na Planilha Google: name,email,qty,unitPrice,total,guess,payment_id,status,created_at
-         - Enviar e-mail de confirmação para o comprador (Apps Script MailApp ou serviço externo)
-         - Retornar 200 ao Mercado Pago
-       OBS: esse endpoint é crítico para confirmar pagamentos e registrar as vendas de fato.
-
-    4) /api/sales (GET) ->
-       Deve retornar JSON:
-         { sales: [{ name, qty, unitPrice, amount, date, payment_id, status }, ...], totalGross: number }
-       O front faz polling e atualiza o prêmio acumulado = soma(amount)
-  -->
-
 </body>
 </html>
