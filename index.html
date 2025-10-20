@@ -1,135 +1,111 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>Bazar Online • Pagamento Seguro</title>
-  <script src="https://sdk.mercadopago.com/js/v2"></script>
-  <style>
-    :root{
-      --bg:#0f1724;--card:#0b1220;--accent:#ff8f1f;--muted:#9aa6b2;--white:#fff;--success:#16a34a;
-      font-family:Inter,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#071022,#0f1724);color:var(--white);}
-    header{padding:20px;text-align:center;background:rgba(255,255,255,0.03);box-shadow:0 2px 10px rgba(0,0,0,0.2)}
-    h1{margin:0;font-size:26px;color:var(--accent)}
-    .wrap{max-width:1100px;margin:0 auto;padding:20px;display:grid;gap:20px;grid-template-columns:2fr 1fr;}
-    .produtos{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;}
-    .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.6);transition:.3s}
-    .card:hover{transform:translateY(-3px);}
-    .card img{width:100%;height:180px;object-fit:cover;border-radius:8px}
-    .info{padding:8px 0}
-    .info h3{margin:4px 0;font-size:17px}
-    .info p{margin:0;font-size:13px;color:var(--muted)}
-    .price{color:var(--accent);font-weight:700;margin:6px 0}
-    button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer}
-    #carrinho{background:var(--card);border-radius:12px;padding:16px;max-height:600px;overflow:auto;}
-    #carrinho h2{font-size:18px;margin-top:0;color:var(--accent)}
-    .item-carrinho{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-    .total{margin-top:12px;font-size:16px;font-weight:700;color:var(--success)}
-    #finalizar{margin-top:10px;width:100%}
-    footer{text-align:center;padding:10px;color:var(--muted);font-size:13px;margin-top:20px}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfólio — Analista de Dados & Programador</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f1ec;--card:#fff;--accent:#0ea5e9;--ink:#1a1a1a;--muted:#555;
+  --radius:12px;--shadow:0 4px 10px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:var(--bg);color:var(--ink);line-height:1.6;}
+header{background:var(--card);box-shadow:var(--shadow);position:sticky;top:0;z-index:10;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;}
+nav a.logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:var(--accent);text-decoration:none;}
+nav ul{list-style:none;display:flex;gap:1.5rem;}
+nav ul li a{text-decoration:none;color:var(--ink);font-weight:500;transition:.3s;}
+nav ul li a:hover{color:var(--accent);}
+section{padding:4rem 2rem;max-width:1000px;margin:auto;}
+.hero{text-align:center;}
+.hero h1{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.5rem;}
+.hero p{color:var(--muted);margin-bottom:1.5rem;}
+.hero button{background:var(--accent);color:#fff;border:none;padding:.8rem 1.5rem;border-radius:var(--radius);cursor:pointer;transition:.3s;}
+.hero button:hover{opacity:.9;}
+.sobre,.projetos,.contato{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem;margin-top:3rem;}
+h2.section-title{text-align:center;margin-bottom:1rem;font-family:'Playfair Display',serif;color:var(--accent);}
+.projetos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
+.card{background:var(--bg);border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow);transition:.3s;}
+.card:hover{transform:translateY(-5px);}
+.card h3{margin-bottom:.5rem;color:var(--accent);}
+.card p{font-size:.9rem;color:var(--muted);}
+footer{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;}
+form{display:flex;flex-direction:column;gap:1rem;}
+input,textarea{padding:.8rem;border:1px solid #ccc;border-radius:var(--radius);font-size:.95rem;}
+button.enviar{background:var(--accent);color:#fff;border:none;padding:.8rem;border-radius:var(--radius);cursor:pointer;font-weight:600;}
+button.enviar:hover{opacity:.9;}
+@media(max-width:600px){
+  nav ul{display:none;}
+  nav{flex-direction:column;}
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>🛍️ Bazar Online</h1>
-    <p>Escolha seus produtos e pague online com Mercado Pago</p>
-  </header>
 
-  <div class="wrap">
-    <section class="produtos" id="listaProdutos"></section>
+<header>
+  <nav>
+    <a href="#" class="logo">Gabriel Silva</a>
+    <ul>
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#projetos">Projetos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+</header>
 
-    <aside id="carrinho">
-      <h2>Seu Carrinho</h2>
-      <div id="itensCarrinho"></div>
-      <div class="total">Total: R$ <span id="totalCarrinho">0,00</span></div>
-      <button id="finalizar">Pagar com Mercado Pago</button>
-      <div id="mpCheckoutContainer" style="margin-top:10px"></div>
-    </aside>
+<section class="hero">
+  <h1>Analista de Dados & Programador de Sistemas</h1>
+  <p>Transformando dados e ideias em soluções inteligentes e eficientes.</p>
+  <button onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">Entrar em Contato</button>
+</section>
+
+<section id="sobre" class="sobre">
+  <h2 class="section-title">Sobre Mim</h2>
+  <p>Sou um analista de dados e programador especializado em desenvolver sistemas integrados e dashboards interativos. Tenho experiência com Google Apps Script, Python, SQL, HTML, CSS, JavaScript e integrações com APIs. Busco transformar informações complexas em soluções que otimizam processos e ajudam empresas a tomarem decisões baseadas em dados.</p>
+</section>
+
+<section id="projetos" class="projetos">
+  <h2 class="section-title">Projetos em Destaque</h2>
+  <div class="projetos-grid">
+    <div class="card">
+      <h3>Painel de Metas de Faturamento</h3>
+      <p>Dashboard interativo que consolida dados de vendas e metas de diferentes filiais, com gráficos e análise de desempenho em tempo real via Google Sheets + Apps Script.</p>
+    </div>
+    <div class="card">
+      <h3>Sistema de Reservas</h3>
+      <p>Aplicação web integrada ao Google Sheets para controle de reservas, relatórios e status automáticos, com layout responsivo para dispositivos móveis.</p>
+    </div>
+    <div class="card">
+      <h3>Integração Financeira F360</h3>
+      <p>Automação de relatórios financeiros e remessas bancárias Sicredi, conectando dados do PDV Varejo Fácil com planilhas e APIs de gestão.</p>
+    </div>
   </div>
+</section>
 
-  <footer>© 2025 Bazar Online • Pagamentos via Mercado Pago</footer>
+<section id="contato" class="contato">
+  <h2 class="section-title">Contato</h2>
+  <form id="formContato">
+    <input type="text" name="nome" placeholder="Seu nome" required>
+    <input type="email" name="email" placeholder="Seu e-mail" required>
+    <textarea name="mensagem" rows="4" placeholder="Escreva sua mensagem..." required></textarea>
+    <button type="submit" class="enviar">Enviar Mensagem</button>
+  </form>
+</section>
 
-  <script>
-    const PUBLIC_KEY_MP = 'SEU_PUBLIC_KEY_MERCADOPAGO';
-    const ENDPOINT_PRODUTOS = 'https://seu-gas-url/exec?action=listarProdutos';
-    const ENDPOINT_CREATE_PREFERENCE = 'https://seu-backend.com/api/create_preference';
+<footer>
+  © 2025 Gabriel Silva — Todos os direitos reservados.
+</footer>
 
-    const listaProdutos = document.querySelector('#listaProdutos');
-    const itensCarrinho = document.querySelector('#itensCarrinho');
-    const totalCarrinho = document.querySelector('#totalCarrinho');
-    let carrinho = [];
-    let mp = new MercadoPago(PUBLIC_KEY_MP,{locale:'pt-BR'});
+<script>
+document.getElementById('formContato').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const dados = Object.fromEntries(new FormData(e.target).entries());
+  alert('Mensagem enviada com sucesso! Obrigado, '+dados.nome+'.');
+  e.target.reset();
+});
+</script>
 
-    async function carregarProdutos(){
-      try{
-        const res = await fetch(ENDPOINT_PRODUTOS);
-        const data = await res.json();
-        renderProdutos(data);
-      }catch(e){
-        console.error('Erro ao carregar produtos',e);
-        listaProdutos.innerHTML = '<p>Erro ao carregar produtos.</p>';
-      }
-    }
-
-    function renderProdutos(data){
-      listaProdutos.innerHTML = '';
-      data.forEach(prod=>{
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <img src="${prod.foto}" alt="${prod.nome}">
-          <div class="info">
-            <h3>${prod.nome}</h3>
-            <p>${prod.descricao}</p>
-            <div class="price">R$ ${Number(prod.valor).toFixed(2)}</div>
-            <button onclick='addCarrinho(${JSON.stringify(prod)})'>Adicionar</button>
-          </div>`;
-        listaProdutos.appendChild(card);
-      });
-    }
-
-    function addCarrinho(prod){
-      const existente = carrinho.find(i=>i.nome===prod.nome);
-      if(existente) existente.qtd++;
-      else carrinho.push({...prod,qtd:1});
-      renderCarrinho();
-    }
-
-    function renderCarrinho(){
-      itensCarrinho.innerHTML = '';
-      let total=0;
-      carrinho.forEach((item,i)=>{
-        const div=document.createElement('div');
-        div.className='item-carrinho';
-        const subtotal=item.qtd*item.valor;
-        total+=subtotal;
-        div.innerHTML=`<span>${item.qtd}x ${item.nome}</span><strong>R$ ${subtotal.toFixed(2)}</strong>`;
-        itensCarrinho.appendChild(div);
-      });
-      totalCarrinho.textContent=total.toFixed(2);
-    }
-
-    document.querySelector('#finalizar').addEventListener('click', async()=>{
-      if(carrinho.length===0){alert('Carrinho vazio');return;}
-      const items = carrinho.map(i=>({title:i.nome,quantity:i.qtd,unit_price:Number(i.valor)}));
-      try{
-        const resp = await fetch(ENDPOINT_CREATE_PREFERENCE,{
-          method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({items})
-        });
-        const pref=await resp.json();
-        if(pref.init_point) window.location.href=pref.init_point;
-        else if(pref.preference_id) mp.checkout({preference:{id:pref.preference_id}});
-        else alert('Erro ao iniciar pagamento.');
-      }catch(err){
-        alert('Erro ao criar pagamento: '+err);
-      }
-    });
-
-    carregarProdutos();
-  </script>
 </body>
 </html>
