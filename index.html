@@ -8,45 +8,48 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
-  --bg:#0c0f15;
-  --card:#161a23;
-  --accent:#00bcd4;
-  --accent2:#0097a7;
-  --ink:#f1f5f9;
+  --bg:#0c1117;
+  --card:#10161d;
+  --accent:#00c6ff;
+  --accent2:#0072ff;
+  --ink:#e2e8f0;
   --muted:#94a3b8;
-  --radius:18px;
-  --shadow:0 8px 24px rgba(0,0,0,.35);
+  --radius:16px;
+  --shadow:0 8px 28px rgba(0,0,0,.35);
 }
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background:var(--bg);color:var(--ink);overflow-x:hidden;}
-header{position:sticky;top:0;z-index:50;background:rgba(12,15,21,.85);backdrop-filter:blur(8px);box-shadow:var(--shadow);}
+body{background:var(--bg);color:var(--ink);overflow-x:hidden;scroll-behavior:smooth;}
+header{position:sticky;top:0;z-index:50;background:rgba(16,22,29,.85);backdrop-filter:blur(12px);box-shadow:var(--shadow);}
 nav{max-width:1200px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;}
-nav a.logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:600;color:var(--accent);text-decoration:none;letter-spacing:1px;}
+nav a.logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:600;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
 nav ul{list-style:none;display:flex;gap:2rem;}
 nav ul li a{text-decoration:none;color:var(--ink);font-weight:500;transition:.3s;}
 nav ul li a:hover{color:var(--accent);}
-.hero{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;}
-.hero h1{font-family:'Playfair Display',serif;font-size:2.6rem;color:var(--accent);margin-bottom:1rem;}
-.hero p{color:var(--muted);max-width:600px;margin-bottom:2rem;font-size:1.1rem;}
-.hero button{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border:none;padding:1rem 2rem;border-radius:var(--radius);font-weight:600;font-size:1rem;cursor:pointer;transition:.3s;}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;overflow:hidden;}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(0,198,255,.2),transparent 70%),linear-gradient(180deg,rgba(0,114,255,.2),transparent 70%);z-index:0;animation:floatBG 10s infinite alternate ease-in-out;}
+@keyframes floatBG{0%{transform:translateY(0);}100%{transform:translateY(-30px);}}
+.hero h1{font-family:'Playfair Display',serif;font-size:2.8rem;margin-bottom:.7rem;z-index:1;}
+.hero h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{color:var(--muted);max-width:600px;margin-bottom:2rem;font-size:1.1rem;z-index:1;}
+.hero button{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border:none;padding:1rem 2rem;border-radius:var(--radius);font-weight:600;font-size:1rem;cursor:pointer;transition:.3s;z-index:1;}
 .hero button:hover{transform:scale(1.05);}
-section{max-width:1100px;margin:auto;padding:4rem 2rem;}
-h2.section-title{text-align:center;margin-bottom:1rem;font-family:'Playfair Display',serif;color:var(--accent);font-size:1.8rem;}
+section{max-width:1200px;margin:auto;padding:5rem 2rem;}
+.card-section{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem;margin-top:3rem;}
+h2.section-title{text-align:center;margin-bottom:1.5rem;font-family:'Playfair Display',serif;font-size:1.9rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 p.descricao{text-align:center;color:var(--muted);margin-bottom:2rem;font-size:1rem;}
-.card-section{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem;margin-top:2rem;}
 .chart-container{position:relative;height:280px;margin:2rem 0;}
-.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.8rem;}
-.app-card{background:#11141b;border-radius:var(--radius);padding:1.5rem;text-align:center;transition:.3s;box-shadow:var(--shadow);}
-.app-card:hover{transform:translateY(-6px);box-shadow:0 0 25px rgba(0,188,212,.4);}
-.app-card img{width:70px;height:70px;margin-bottom:.8rem;}
-.app-card h3{color:var(--accent);margin-bottom:.4rem;font-size:1.15rem;}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;}
+.app-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:1.8rem;text-align:center;backdrop-filter:blur(10px);transition:.3s;cursor:pointer;}
+.app-card:hover{transform:translateY(-6px);box-shadow:0 0 25px rgba(0,198,255,.4);}
+.app-card img{width:70px;height:70px;margin-bottom:.8rem;filter:drop-shadow(0 0 5px rgba(0,198,255,.4));}
+.app-card h3{color:var(--accent);margin-bottom:.5rem;font-size:1.1rem;}
 .app-card p{color:var(--muted);font-size:.9rem;}
 form{display:flex;flex-direction:column;gap:1rem;max-width:500px;margin:auto;}
-input,textarea{padding:.9rem;border:none;border-radius:var(--radius);background:#0f131b;color:#fff;}
+input,textarea{padding:1rem;border:none;border-radius:var(--radius);background:#0f141b;color:#fff;}
 button.enviar{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border:none;padding:.9rem;border-radius:var(--radius);cursor:pointer;font-weight:600;}
 button.enviar:hover{opacity:.9;}
 footer{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;}
-@media(max-width:600px){
+@media(max-width:700px){
   nav ul{display:none;}
   .hero h1{font-size:2rem;}
   section{padding:3rem 1rem;}
@@ -61,69 +64,66 @@ footer{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;}
     <ul>
       <li><a href="#sobre">Sobre</a></li>
       <li><a href="#graficos">Análises</a></li>
-      <li><a href="#apps">Aplicativos</a></li>
+      <li><a href="#apps">Sistemas</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
   </nav>
 </header>
 
 <section class="hero">
-  <h1>CB Systems — Soluções Inteligentes</h1>
-  <p>Criamos sistemas e dashboards personalizados que transformam dados em decisões estratégicas.  
-  Automação, integração e performance em um único ecossistema digital.</p>
-  <button onclick="document.getElementById('apps').scrollIntoView({behavior:'smooth'})">Conheça Nossos Sistemas</button>
+  <h1><span>CB Systems</span> — Tecnologia e Inovação</h1>
+  <p>Desenvolvemos soluções digitais, automações e painéis inteligentes que conectam dados, pessoas e resultados.</p>
+  <button onclick="document.getElementById('apps').scrollIntoView({behavior:'smooth'})">Explorar Sistemas</button>
 </section>
 
 <section id="sobre" class="card-section">
-  <h2 class="section-title">Sobre a CB Systems</h2>
-  <p class="descricao">Somos uma empresa especializada em desenvolvimento de sistemas, automações e análises de dados.  
-  Nossos projetos unem tecnologia, design e inteligência para impulsionar resultados.</p>
+  <h2 class="section-title">Sobre a Empresa</h2>
+  <p class="descricao">A <b>CB Systems</b> é especializada em desenvolvimento de sistemas, dashboards e integrações.  
+  Unimos design moderno, automação e inteligência de dados para transformar a forma como empresas operam.</p>
 </section>
 
 <section id="graficos" class="card-section">
-  <h2 class="section-title">Análises Interativas</h2>
-  <p class="descricao">Exemplo de gráficos usados em nossos dashboards corporativos — combinando visual atraente e interatividade.</p>
-
+  <h2 class="section-title">Indicadores de Performance</h2>
+  <p class="descricao">Gráficos interativos simulando métricas de faturamento, produtividade e especialização técnica.</p>
   <div class="chart-container"><canvas id="grafico1"></canvas></div>
   <div class="chart-container"><canvas id="grafico2"></canvas></div>
   <div class="chart-container"><canvas id="grafico3"></canvas></div>
 </section>
 
 <section id="apps" class="card-section">
-  <h2 class="section-title">Aplicativos & Sistemas</h2>
-  <p class="descricao">Explore nossos sistemas integrados — clique em um deles para abrir seu painel.</p>
-
+  <h2 class="section-title">Soluções e Sistemas</h2>
+  <p class="descricao">Clique para conhecer nossos sistemas corporativos integrados.</p>
   <div class="app-grid">
     <div class="app-card" onclick="window.location.href='metas.html'">
       <img src="https://cdn-icons-png.flaticon.com/512/553/553416.png">
       <h3>📊 Painel de Metas</h3>
-      <p>Monitore o desempenho de vendas e metas em tempo real.</p>
+      <p>Monitore resultados e metas com gráficos em tempo real.</p>
     </div>
     <div class="app-card" onclick="window.location.href='reservas.html'">
       <img src="https://cdn-icons-png.flaticon.com/512/3262/3262263.png">
-      <h3>📅 Reservas</h3>
-      <p>Gestão de reservas integrada ao Google Sheets.</p>
+      <h3>📅 Sistema de Reservas</h3>
+      <p>Gerencie reservas e agendas com integração ao Google Sheets.</p>
     </div>
     <div class="app-card" onclick="window.location.href='financeiro.html'">
       <img src="https://cdn-icons-png.flaticon.com/512/2920/2920316.png">
-      <h3>💰 Financeiro F360</h3>
-      <p>Controle financeiro e integração bancária automatizada.</p>
+      <h3>💰 Controle Financeiro</h3>
+      <p>Controle contas, remessas e relatórios automatizados.</p>
     </div>
     <div class="app-card" onclick="window.location.href='doacoes.html'">
       <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png">
       <h3>🤝 Painel de Doações</h3>
-      <p>Transparência e relatórios completos de doações.</p>
+      <p>Monitore doações, beneficiários e relatórios sociais.</p>
     </div>
   </div>
 </section>
 
 <section id="contato" class="card-section">
   <h2 class="section-title">Contato</h2>
-  <p class="descricao">Entre em contato conosco e descubra como podemos otimizar seus processos.</p>
+  <p class="descricao">Entre em contato com nossa equipe e descubra como podemos ajudar seu negócio a evoluir.</p>
   <form id="formContato">
     <input type="text" name="nome" placeholder="Seu nome" required>
     <input type="email" name="email" placeholder="Seu e-mail" required>
-    <textarea name="mensagem" rows="4" placeholder="Escreva sua mensagem..." required></textarea>
+    <textarea name="mensagem" rows="4" placeholder="Mensagem..." required></textarea>
     <button type="submit" class="enviar">Enviar Mensagem</button>
   </form>
 </section>
@@ -133,75 +133,20 @@ footer{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;}
 </footer>
 
 <script>
-// Formulário simples
+// envio simulado
 document.getElementById('formContato').addEventListener('submit',e=>{
   e.preventDefault();
-  alert('Mensagem enviada com sucesso! Obrigado por entrar em contato.');
+  alert('Mensagem enviada com sucesso!');
   e.target.reset();
 });
 
-// Gráficos bonitos com gradiente
-function criarGradiente(ctx, color1, color2) {
-  const grad = ctx.createLinearGradient(0,0,0,300);
-  grad.addColorStop(0, color1);
-  grad.addColorStop(1, color2);
-  return grad;
-}
-
-const g1 = document.getElementById('grafico1').getContext('2d');
-const grad1 = criarGradiente(g1,'rgba(0,188,212,0.6)','rgba(0,151,167,0.1)');
-new Chart(g1,{
-  type:'line',
-  data:{
-    labels:['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-    datasets:[{
-      label:'Faturamento (mil R$)',
-      data:[12,15,20,22,25,24,30,28,34,38,40,44],
-      borderColor:'#00bcd4',
-      backgroundColor:grad1,
-      fill:true,
-      tension:0.4
-    }]
-  },
-  options:{
-    plugins:{legend:{labels:{color:'#fff'}}},
-    scales:{x:{ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8'},beginAtZero:true}}
-  }
-});
-
-const g2 = document.getElementById('grafico2').getContext('2d');
-const grad2 = criarGradiente(g2,'rgba(0,188,212,0.9)','rgba(0,151,167,0.3)');
-new Chart(g2,{
-  type:'bar',
-  data:{
-    labels:['Equipe A','Equipe B','Equipe C','Equipe D'],
-    datasets:[{
-      label:'Performance (%)',
-      data:[85,70,95,80],
-      backgroundColor:[grad2,grad2,grad2,grad2],
-      borderRadius:8
-    }]
-  },
-  options:{
-    plugins:{legend:{display:false}},
-    scales:{x:{ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8'},beginAtZero:true}}
-  }
-});
-
-const g3 = document.getElementById('grafico3').getContext('2d');
-new Chart(g3,{
-  type:'doughnut',
-  data:{
-    labels:['Automação','Integrações','Análises','Sistemas Web'],
-    datasets:[{
-      data:[30,25,25,20],
-      backgroundColor:['#00bcd4','#26c6da','#4dd0e1','#80deea']
-    }]
-  },
-  options:{
-    plugins:{legend:{position:'bottom',labels:{color:'#fff'}}}
-  }
-});
+function grad(ctx,a,b){let g=ctx.createLinearGradient(0,0,0,300);g.addColorStop(0,a);g.addColorStop(1,b);return g;}
+const g1=document.getElementById('grafico1').getContext('2d');
+new Chart(g1,{type:'line',data:{labels:['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out'],datasets:[{label:'Faturamento (R$ mil)',data:[12,18,22,28,26,34,36,40,44,50],borderColor:'#00c6ff',backgroundColor:grad(g1,'rgba(0,198,255,.6)','rgba(0,114,255,.1)'),fill:true,tension:0.4}]},options:{plugins:{legend:{labels:{color:'#fff'}}},scales:{x:{ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8'},beginAtZero:true}}}});
+const g2=document.getElementById('grafico2').getContext('2d');
+new Chart(g2,{type:'bar',data:{labels:['Equipe A','Equipe B','Equipe C','Equipe D'],datasets:[{data:[80,70,95,88],backgroundColor:['#00c6ff','#00bcd4','#26c6da','#4dd0e1'],borderRadius:10}]},options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8'},beginAtZero:true}}}});
+const g3=document.getElementById('grafico3').getContext('2d');
+new Chart(g3,{type:'doughnut',data:{labels:['Automação','APIs','Dashboards','Sistemas Web'],datasets:[{data:[30,25,25,20],backgroundColor:['#00c6ff','#26c6da','#80deea','#4dd0e1']}]},options:{plugins:{legend:{position:'bottom',labels:{color:'#fff'}}}}});
 </script>
 
 </body>
