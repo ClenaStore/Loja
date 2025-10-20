@@ -3,166 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>CB Systems — Soluções Inteligentes</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<title>Dashboard - CB Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
-  --bg:#0c1117;
-  --card:#10161d;
-  --accent:#00c6ff;
-  --accent2:#0072ff;
-  --ink:#e2e8f0;
-  --muted:#94a3b8;
-  --radius:16px;
-  --shadow:0 8px 28px rgba(0,0,0,.35);
+  --bg: #0d0e12;
+  --sidebar: #111217;
+  --card: #16181e;
+  --accent: #ffb300;
+  --accent-light: #ffd85a;
+  --text: #f1f1f1;
+  --muted: #9ca3af;
+  --radius: 10px;
 }
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background:var(--bg);color:var(--ink);overflow-x:hidden;scroll-behavior:smooth;}
-header{position:sticky;top:0;z-index:50;background:rgba(16,22,29,.85);backdrop-filter:blur(12px);box-shadow:var(--shadow);}
-nav{max-width:1200px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;}
-nav a.logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:600;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
-nav ul{list-style:none;display:flex;gap:2rem;}
-nav ul li a{text-decoration:none;color:var(--ink);font-weight:500;transition:.3s;}
-nav ul li a:hover{color:var(--accent);}
-.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;overflow:hidden;}
-.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(0,198,255,.2),transparent 70%),linear-gradient(180deg,rgba(0,114,255,.2),transparent 70%);z-index:0;animation:floatBG 10s infinite alternate ease-in-out;}
-@keyframes floatBG{0%{transform:translateY(0);}100%{transform:translateY(-30px);}}
-.hero h1{font-family:'Playfair Display',serif;font-size:2.8rem;margin-bottom:.7rem;z-index:1;}
-.hero h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero p{color:var(--muted);max-width:600px;margin-bottom:2rem;font-size:1.1rem;z-index:1;}
-.hero button{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border:none;padding:1rem 2rem;border-radius:var(--radius);font-weight:600;font-size:1rem;cursor:pointer;transition:.3s;z-index:1;}
-.hero button:hover{transform:scale(1.05);}
-section{max-width:1200px;margin:auto;padding:5rem 2rem;}
-.card-section{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem;margin-top:3rem;}
-h2.section-title{text-align:center;margin-bottom:1.5rem;font-family:'Playfair Display',serif;font-size:1.9rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-p.descricao{text-align:center;color:var(--muted);margin-bottom:2rem;font-size:1rem;}
-.chart-container{position:relative;height:280px;margin:2rem 0;}
-/* ==== Seção de Sistemas Fullscreen ==== */
-#apps{width:100%;max-width:none;margin:0;padding:4rem 0;background:linear-gradient(180deg,#0d1218,#0a0e13);border-top:1px solid rgba(255,255,255,0.1);border-bottom:1px solid rgba(255,255,255,0.1);position:relative;}
-.carousel-wrapper{overflow:hidden;width:100%;position:relative;}
-.app-carousel{display:flex;gap:1.5rem;width:max-content;animation:scrollApps 35s linear infinite;}
-.app-card{flex:0 0 260px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:1.8rem;text-align:center;backdrop-filter:blur(10px);transition:.3s;cursor:pointer;}
-.app-card:hover{transform:translateY(-6px);box-shadow:0 0 25px rgba(0,198,255,.4);}
-.app-card img{width:70px;height:70px;margin-bottom:.8rem;filter:drop-shadow(0 0 5px rgba(0,198,255,.4));}
-.app-card h3{color:var(--accent);margin-bottom:.5rem;font-size:1.1rem;}
-.app-card p{color:var(--muted);font-size:.9rem;}
-@keyframes scrollApps{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.app-carousel:hover{animation-play-state:paused;}
-/* Botões laterais */
-.carousel-btn{
-  position:absolute;top:50%;transform:translateY(-50%);
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.2);
-  color:var(--accent);
-  font-size:1.5rem;
-  padding:.7rem 1rem;
-  border-radius:50%;
-  cursor:pointer;
-  transition:.3s;
-  z-index:10;
-  backdrop-filter:blur(6px);
+body{background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;}
+/* Sidebar */
+.sidebar{
+  width:250px;background:var(--sidebar);display:flex;flex-direction:column;
+  justify-content:space-between;padding:1.5rem 0;position:fixed;height:100%;left:0;top:0;
 }
-.carousel-btn:hover{background:rgba(0,198,255,0.2);}
-.carousel-btn.left{left:10px;}
-.carousel-btn.right{right:10px;}
-form{display:flex;flex-direction:column;gap:1rem;max-width:500px;margin:auto;}
-input,textarea{padding:1rem;border:none;border-radius:var(--radius);background:#0f141b;color:#fff;}
-button.enviar{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border:none;padding:.9rem;border-radius:var(--radius);cursor:pointer;font-weight:600;}
-button.enviar:hover{opacity:.9;}
-footer{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;}
-@media(max-width:700px){
-  nav ul{display:none;}
-  .hero h1{font-size:2rem;}
-  section{padding:3rem 1rem;}
-  #apps{padding:3rem 0;}
-  .app-card{flex:0 0 220px;}
+.logo{display:flex;align-items:center;gap:.5rem;padding:0 1.5rem;margin-bottom:1rem;}
+.logo img{width:32px;height:32px;}
+.logo span{font-weight:600;font-size:1.2rem;color:var(--accent);}
+.nav{display:flex;flex-direction:column;gap:.5rem;padding:0 1rem;}
+.nav a{
+  text-decoration:none;color:var(--muted);display:flex;align-items:center;gap:.8rem;
+  padding:.7rem 1rem;border-radius:var(--radius);transition:.2s;
+}
+.nav a:hover, .nav a.active{background:rgba(255,179,0,0.15);color:var(--accent);}
+.nav a i{font-size:1.1rem;}
+.bottom{padding:0 1.5rem;}
+.bottom button{
+  background:none;border:none;color:var(--muted);display:flex;align-items:center;gap:.6rem;
+  cursor:pointer;font-size:.95rem;padding:.7rem 1rem;width:100%;border-radius:var(--radius);
+}
+.bottom button:hover{background:rgba(255,179,0,0.1);color:var(--accent);}
+
+/* Main */
+.main{margin-left:250px;flex:1;display:flex;flex-direction:column;height:100vh;overflow:auto;}
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;
+  border-bottom:1px solid #1e2028;background:var(--card);
+}
+.top-left span{
+  color:var(--accent);font-weight:600;margin-left:.4rem;
+}
+.status{display:flex;align-items:center;gap:1rem;font-size:.9rem;color:var(--muted);}
+.status .dot{width:10px;height:10px;border-radius:50%;background:red;}
+.status .tag{padding:.3rem .6rem;border-radius:5px;background:rgba(255,179,0,0.15);color:var(--accent);font-size:.8rem;font-weight:600;}
+.account{display:flex;align-items:center;gap:.5rem;font-size:.9rem;}
+.account select{
+  background:transparent;color:var(--accent);border:1px solid var(--accent);
+  border-radius:5px;padding:.2rem .5rem;cursor:pointer;
+}
+
+/* Content */
+.content{padding:2rem;}
+h1{font-size:1.6rem;font-weight:600;margin-bottom:.5rem;}
+h1 span{color:var(--accent);}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:2rem;}
+.card{
+  background:var(--card);border-radius:var(--radius);padding:1.2rem 1.5rem;
+  display:flex;flex-direction:column;gap:.5rem;box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+.card-title{color:var(--muted);font-size:.9rem;}
+.card-value{font-size:1.8rem;font-weight:600;color:var(--text);}
+.card small{color:#4ade80;font-size:.8rem;}
+.graphs{margin-top:3rem;display:grid;grid-template-columns:2fr 1fr;gap:2rem;}
+.graph{background:var(--card);border-radius:var(--radius);padding:1.5rem;}
+.graph h3{margin-bottom:1rem;color:var(--accent);}
+#chart7d{height:250px;}
+.graph2{background:var(--card);border-radius:var(--radius);padding:1.5rem;}
+.graph2 h3{margin-bottom:1rem;}
+.graph2 p{color:var(--muted);font-size:.9rem;}
+.graph2 button{
+  background:var(--accent);border:none;padding:.7rem 1.2rem;border-radius:var(--radius);
+  color:#000;font-weight:600;cursor:pointer;margin-top:1rem;
+}
+.graph2 button:hover{background:var(--accent-light);}
+
+@media(max-width:900px){
+  .sidebar{width:70px;}
+  .logo span{display:none;}
+  .nav a span{display:none;}
+  .main{margin-left:70px;}
+  .graphs{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
-<header>
-  <nav>
-    <a href="#" class="logo">CB Systems</a>
-    <ul>
-      <li><a href="#sobre">Sobre</a></li>
-      <li><a href="#graficos">Análises</a></li>
-      <li><a href="#apps">Sistemas</a></li>
-      <li><a href="#contato">Contato</a></li>
-    </ul>
-  </nav>
-</header>
-
-<section class="hero">
-  <h1><span>CB Systems</span> — Tecnologia e Inovação</h1>
-  <p>Desenvolvemos soluções digitais, automações e painéis inteligentes que conectam dados, pessoas e resultados.</p>
-  <button onclick="document.getElementById('apps').scrollIntoView({behavior:'smooth'})">Explorar Sistemas</button>
-</section>
-
-<section id="sobre" class="card-section">
-  <h2 class="section-title">Sobre a Empresa</h2>
-  <p class="descricao">A <b>CB Systems</b> é especializada em desenvolvimento de sistemas, dashboards e integrações.  
-  Unimos design moderno, automação e inteligência de dados para transformar a forma como empresas operam.</p>
-</section>
-
-<section id="graficos" class="card-section">
-  <h2 class="section-title">Indicadores de Performance</h2>
-  <p class="descricao">Gráficos interativos simulando métricas de faturamento, produtividade e especialização técnica.</p>
-  <div class="chart-container"><canvas id="grafico1"></canvas></div>
-  <div class="chart-container"><canvas id="grafico2"></canvas></div>
-  <div class="chart-container"><canvas id="grafico3"></canvas></div>
-</section>
-
-<section id="apps">
-  <h2 class="section-title">Soluções e Sistemas</h2>
-  <p class="descricao">Rolagem automática dos sistemas cadastrados — use as setas ou passe o mouse para pausar.</p>
-  <div class="carousel-wrapper">
-    <button class="carousel-btn left" onclick="scrollApps(-1)">⟵</button>
-    <div class="app-carousel" id="carousel">
-      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/553/553416.png"><h3>📊 Painel de Metas</h3><p>Monitore resultados e metas com gráficos em tempo real.</p></div>
-      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/3262/3262263.png"><h3>📅 Sistema de Reservas</h3><p>Gerencie reservas e agendas integradas ao Google Sheets.</p></div>
-      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/2920/2920316.png"><h3>💰 Controle Financeiro</h3><p>Controle contas, remessas e relatórios automatizados.</p></div>
-      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png"><h3>🤝 Painel de Doações</h3><p>Monitore doações, beneficiários e relatórios sociais.</p></div>
-      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png"><h3>📈 ABC de Vendas</h3><p>Análise de produtos mais vendidos e lucrativos.</p></div>
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div>
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png">
+      <span>CB Systems</span>
     </div>
-    <button class="carousel-btn right" onclick="scrollApps(1)">⟶</button>
+    <nav class="nav">
+      <a href="#" class="active"><i>📊</i><span>Métricas</span></a>
+      <a href="#"><i>🔌</i><span>Conexão</span></a>
+      <a href="#"><i>🧩</i><span>Funis</span></a>
+      <a href="#"><i>🤖</i><span>IA</span></a>
+      <a href="#"><i>📤</i><span>Disparos</span></a>
+      <a href="#"><i>👥</i><span>Contatos</span></a>
+      <a href="#"><i>🎓</i><span>Cursos</span></a>
+      <a href="#"><i>📣</i><span>Campanhas</span></a>
+      <a href="#"><i>💼</i><span>Parceiros</span></a>
+      <a href="#"><i>💬</i><span>Bate-papo</span></a>
+    </nav>
   </div>
-</section>
+  <div class="bottom">
+    <button><i>🚪</i><span>Sair</span></button>
+  </div>
+</aside>
 
-<section id="contato" class="card-section">
-  <h2 class="section-title">Contato</h2>
-  <p class="descricao">Entre em contato com nossa equipe e descubra como podemos ajudar seu negócio a evoluir.</p>
-  <form id="formContato">
-    <input type="text" name="nome" placeholder="Seu nome" required>
-    <input type="email" name="email" placeholder="Seu e-mail" required>
-    <textarea name="mensagem" rows="4" placeholder="Mensagem..." required></textarea>
-    <button type="submit" class="enviar">Enviar Mensagem</button>
-  </form>
-</section>
+<!-- Main -->
+<main class="main">
+  <div class="topbar">
+    <div class="top-left">
+      <b>Bem-vindo,</b><span>NALBERT</span>
+    </div>
+    <div class="status">
+      <div><span class="dot"></span> desconectado</div>
+      <div class="tag">API 2.0 Beta</div>
+    </div>
+    <div class="account">
+      Conta:
+      <select>
+        <option>Principal</option>
+      </select>
+    </div>
+  </div>
 
-<footer>© 2025 CB Systems — Soluções Inteligentes e Integradas</footer>
+  <div class="content">
+    <h1>Visão Geral</h1>
+    <p style="color:var(--muted);font-size:.95rem;">Aqui estão algumas métricas da sua operação:</p>
+
+    <div class="metrics">
+      <div class="card">
+        <div class="card-title">Disparos esse mês</div>
+        <div class="card-value">12</div>
+        <small>+0% em relação ao mês passado</small>
+      </div>
+      <div class="card">
+        <div class="card-title">Taxa de finalização</div>
+        <div class="card-value">100%</div>
+        <small>+0% em relação ao mês passado</small>
+      </div>
+      <div class="card">
+        <div class="card-title">Novos contatos</div>
+        <div class="card-value">1</div>
+        <small>+0% em relação ao mês passado</small>
+      </div>
+      <div class="card">
+        <div class="card-title">Funis ativos agora</div>
+        <div class="card-value">0</div>
+        <small>0 funis foram disparados hoje</small>
+      </div>
+    </div>
+
+    <div class="graphs">
+      <div class="graph">
+        <h3>Disparos nos últimos 7 dias</h3>
+        <canvas id="chart7d"></canvas>
+      </div>
+      <div class="graph2">
+        <h3>Disparos em andamento:</h3>
+        <p>Nenhum disparo em andamento</p>
+        <button>Ver todos os disparos</button>
+      </div>
+    </div>
+  </div>
+</main>
 
 <script>
-document.getElementById('formContato').addEventListener('submit',e=>{
-  e.preventDefault();
-  alert('Mensagem enviada com sucesso!');
-  e.target.reset();
+const ctx=document.getElementById('chart7d').getContext('2d');
+new Chart(ctx,{
+  type:'line',
+  data:{
+    labels:['Ter','Qua','Qui','Sex','Sáb','Dom','Seg'],
+    datasets:[{
+      label:'Disparos',
+      data:[0,0,2,10,5,1,0],
+      borderColor:'#ffb300',
+      backgroundColor:'rgba(255,179,0,0.2)',
+      tension:0.4,
+      fill:true,
+      pointRadius:4,
+      pointBackgroundColor:'#ffb300'
+    }]
+  },
+  options:{
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#9ca3af'}},
+      y:{ticks:{color:'#9ca3af'},beginAtZero:true}
+    }
+  }
 });
-
-// controle manual do carrossel
-function scrollApps(dir){
-  const el=document.getElementById('carousel');
-  el.scrollBy({left:dir*300,behavior:'smooth'});
-}
-
-function grad(ctx,a,b){let g=ctx.createLinearGradient(0,0,0,300);g.addColorStop(0,a);g.addColorStop(1,b);return g;}
-const g1=document.getElementById('grafico1').getContext('2d');
-new Chart(g1,{type:'line',data:{labels:['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out'],datasets:[{label:'Faturamento (R$ mil)',data:[12,18,22,28,26,34,36,40,44,50],borderColor:'#00c6ff',backgroundColor:grad(g1,'rgba(0,198,255,.6)','rgba(0,114,255,.1)'),fill:true,tension:0.4}]},options:{plugins:{legend:{labels:{color:'#fff'}}},scales:{x:{ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8'},beginAtZero:true}}}});
-const g2=document.getElementById('grafico2').getContext('2d');
-new Chart(g2,{type:'bar',data:{labels:['Equipe A','Equipe B','Equipe C','Equipe D'],datasets:[{data:[80,70,95,88],backgroundColor:['#00c6ff','#00bcd4','#26c6da','#4dd0e1'],borderRadius:10}]},options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8'},beginAtZero:true}}}});
-const g3=document.getElementById('grafico3').getContext('2d');
-new Chart(g3,{type:'doughnut',data:{labels:['Automação','APIs','Dashboards','Sistemas Web'],datasets:[{data:[30,25,25,20],backgroundColor:['#00c6ff','#26c6da','#80deea','#4dd0e1']}]},options:{plugins:{legend:{position:'bottom',labels:{color:'#fff'}}}}});
 </script>
+
 </body>
 </html>
