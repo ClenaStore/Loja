@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portfólio — Analista de Dados & Programador</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
   --bg:#f4f1ec;--card:#fff;--accent:#0ea5e9;--ink:#1a1a1a;--muted:#555;
@@ -24,7 +25,7 @@ section{padding:4rem 2rem;max-width:1000px;margin:auto;}
 .hero p{color:var(--muted);margin-bottom:1.5rem;}
 .hero button{background:var(--accent);color:#fff;border:none;padding:.8rem 1.5rem;border-radius:var(--radius);cursor:pointer;transition:.3s;}
 .hero button:hover{opacity:.9;}
-.sobre,.projetos,.contato{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem;margin-top:3rem;}
+.sobre,.projetos,.contato,.graficos{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem;margin-top:3rem;}
 h2.section-title{text-align:center;margin-bottom:1rem;font-family:'Playfair Display',serif;color:var(--accent);}
 .projetos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
 .card{background:var(--bg);border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow);transition:.3s;}
@@ -36,6 +37,7 @@ form{display:flex;flex-direction:column;gap:1rem;}
 input,textarea{padding:.8rem;border:1px solid #ccc;border-radius:var(--radius);font-size:.95rem;}
 button.enviar{background:var(--accent);color:#fff;border:none;padding:.8rem;border-radius:var(--radius);cursor:pointer;font-weight:600;}
 button.enviar:hover{opacity:.9;}
+.chart-container{position:relative;height:250px;margin:2rem 0;}
 @media(max-width:600px){
   nav ul{display:none;}
   nav{flex-direction:column;}
@@ -49,6 +51,7 @@ button.enviar:hover{opacity:.9;}
     <a href="#" class="logo">Gabriel Silva</a>
     <ul>
       <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#graficos">Gráficos</a></li>
       <li><a href="#projetos">Projetos</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
@@ -64,6 +67,19 @@ button.enviar:hover{opacity:.9;}
 <section id="sobre" class="sobre">
   <h2 class="section-title">Sobre Mim</h2>
   <p>Sou um analista de dados e programador especializado em desenvolver sistemas integrados e dashboards interativos. Tenho experiência com Google Apps Script, Python, SQL, HTML, CSS, JavaScript e integrações com APIs. Busco transformar informações complexas em soluções que otimizam processos e ajudam empresas a tomarem decisões baseadas em dados.</p>
+</section>
+
+<section id="graficos" class="graficos">
+  <h2 class="section-title">Análises e Visualizações</h2>
+  <p style="text-align:center;color:var(--muted);margin-bottom:1rem;">Exemplos de gráficos interativos simulando KPIs de performance e vendas.</p>
+
+  <div class="chart-container">
+    <canvas id="chartVendas"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="chartLinguagens"></canvas>
+  </div>
 </section>
 
 <section id="projetos" class="projetos">
@@ -99,11 +115,52 @@ button.enviar:hover{opacity:.9;}
 </footer>
 
 <script>
-document.getElementById('formContato').addEventListener('submit', async (e)=>{
+document.getElementById('formContato').addEventListener('submit', (e)=>{
   e.preventDefault();
-  const dados = Object.fromEntries(new FormData(e.target).entries());
-  alert('Mensagem enviada com sucesso! Obrigado, '+dados.nome+'.');
+  const nome = e.target.nome.value;
+  alert('Mensagem enviada com sucesso! Obrigado, '+nome+'.');
   e.target.reset();
+});
+
+// Gráfico de Vendas (linhas)
+const ctxVendas = document.getElementById('chartVendas');
+new Chart(ctxVendas, {
+  type: 'line',
+  data: {
+    labels: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out'],
+    datasets: [{
+      label: 'Vendas (mil R$)',
+      data: Array.from({length:10},()=>Math.floor(Math.random()*20+10)),
+      borderColor: '#0ea5e9',
+      backgroundColor: 'rgba(14,165,233,0.2)',
+      tension: 0.3,
+      fill: true
+    }]
+  },
+  options: {
+    responsive:true,
+    plugins:{legend:{display:true}},
+    scales:{y:{beginAtZero:true}}
+  }
+});
+
+// Gráfico de Linguagens (pizza)
+const ctxLang = document.getElementById('chartLinguagens');
+new Chart(ctxLang, {
+  type: 'doughnut',
+  data: {
+    labels: ['Python','JavaScript','Google Apps Script','SQL','HTML/CSS'],
+    datasets: [{
+      data:[35,25,20,10,10],
+      backgroundColor:['#2563eb','#0ea5e9','#22c55e','#f59e0b','#9333ea']
+    }]
+  },
+  options:{
+    responsive:true,
+    plugins:{
+      legend:{position:'bottom'}
+    }
+  }
 });
 </script>
 
