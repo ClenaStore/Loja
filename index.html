@@ -38,42 +38,34 @@ section{max-width:1200px;margin:auto;padding:5rem 2rem;}
 h2.section-title{text-align:center;margin-bottom:1.5rem;font-family:'Playfair Display',serif;font-size:1.9rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 p.descricao{text-align:center;color:var(--muted);margin-bottom:2rem;font-size:1rem;}
 .chart-container{position:relative;height:280px;margin:2rem 0;}
-/* ====== SEÇÃO DE SISTEMAS FULLSCREEN ====== */
-#apps {
-  width:100%;
-  max-width:none;
-  margin:0;
-  padding:4rem 0;
-  border-top:1px solid rgba(255,255,255,0.1);
-  border-bottom:1px solid rgba(255,255,255,0.1);
-  background:linear-gradient(180deg,#0d1218,#0a0e13);
-}
-#apps h2.section-title{margin-bottom:.5rem;}
-#apps p.descricao{margin-bottom:2.5rem;}
-.app-carousel{
-  display:flex;
-  gap:1.5rem;
-  animation:scrollApps 35s linear infinite;
-  width:max-content;
-  padding:1rem 0;
-}
-.app-card{
-  flex:0 0 260px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:var(--radius);
-  padding:1.8rem;
-  text-align:center;
-  backdrop-filter:blur(10px);
-  transition:.3s;
-  cursor:pointer;
-}
+/* ==== Seção de Sistemas Fullscreen ==== */
+#apps{width:100%;max-width:none;margin:0;padding:4rem 0;background:linear-gradient(180deg,#0d1218,#0a0e13);border-top:1px solid rgba(255,255,255,0.1);border-bottom:1px solid rgba(255,255,255,0.1);position:relative;}
+.carousel-wrapper{overflow:hidden;width:100%;position:relative;}
+.app-carousel{display:flex;gap:1.5rem;width:max-content;animation:scrollApps 35s linear infinite;}
+.app-card{flex:0 0 260px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:1.8rem;text-align:center;backdrop-filter:blur(10px);transition:.3s;cursor:pointer;}
 .app-card:hover{transform:translateY(-6px);box-shadow:0 0 25px rgba(0,198,255,.4);}
 .app-card img{width:70px;height:70px;margin-bottom:.8rem;filter:drop-shadow(0 0 5px rgba(0,198,255,.4));}
 .app-card h3{color:var(--accent);margin-bottom:.5rem;font-size:1.1rem;}
 .app-card p{color:var(--muted);font-size:.9rem;}
 @keyframes scrollApps{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 .app-carousel:hover{animation-play-state:paused;}
+/* Botões laterais */
+.carousel-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.2);
+  color:var(--accent);
+  font-size:1.5rem;
+  padding:.7rem 1rem;
+  border-radius:50%;
+  cursor:pointer;
+  transition:.3s;
+  z-index:10;
+  backdrop-filter:blur(6px);
+}
+.carousel-btn:hover{background:rgba(0,198,255,0.2);}
+.carousel-btn.left{left:10px;}
+.carousel-btn.right{right:10px;}
 form{display:flex;flex-direction:column;gap:1rem;max-width:500px;margin:auto;}
 input,textarea{padding:1rem;border:none;border-radius:var(--radius);background:#0f141b;color:#fff;}
 button.enviar{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border:none;padding:.9rem;border-radius:var(--radius);cursor:pointer;font-weight:600;}
@@ -122,19 +114,19 @@ footer{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;}
   <div class="chart-container"><canvas id="grafico3"></canvas></div>
 </section>
 
-<!-- ====== SEÇÃO FULLSCREEN COM ROLAGEM AUTOMÁTICA ====== -->
 <section id="apps">
   <h2 class="section-title">Soluções e Sistemas</h2>
-  <p class="descricao">Rolagem automática dos sistemas cadastrados — passe o mouse para pausar.</p>
-  <div class="app-carousel">
-    <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/553/553416.png"><h3>📊 Painel de Metas</h3><p>Monitore resultados e metas com gráficos em tempo real.</p></div>
-    <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/3262/3262263.png"><h3>📅 Sistema de Reservas</h3><p>Gerencie reservas e agendas integradas ao Google Sheets.</p></div>
-    <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/2920/2920316.png"><h3>💰 Controle Financeiro</h3><p>Controle contas, remessas e relatórios automatizados.</p></div>
-    <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png"><h3>🤝 Painel de Doações</h3><p>Monitore doações, beneficiários e relatórios sociais.</p></div>
-    <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png"><h3>📈 ABC de Vendas</h3><p>Análise de produtos mais vendidos e lucrativos.</p></div>
-    <!-- duplicação para loop -->
-    <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/553/553416.png"><h3>📊 Painel de Metas</h3><p>Monitore resultados e metas com gráficos em tempo real.</p></div>
-    <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/3262/3262263.png"><h3>📅 Sistema de Reservas</h3><p>Gerencie reservas e agendas integradas ao Google Sheets.</p></div>
+  <p class="descricao">Rolagem automática dos sistemas cadastrados — use as setas ou passe o mouse para pausar.</p>
+  <div class="carousel-wrapper">
+    <button class="carousel-btn left" onclick="scrollApps(-1)">⟵</button>
+    <div class="app-carousel" id="carousel">
+      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/553/553416.png"><h3>📊 Painel de Metas</h3><p>Monitore resultados e metas com gráficos em tempo real.</p></div>
+      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/3262/3262263.png"><h3>📅 Sistema de Reservas</h3><p>Gerencie reservas e agendas integradas ao Google Sheets.</p></div>
+      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/2920/2920316.png"><h3>💰 Controle Financeiro</h3><p>Controle contas, remessas e relatórios automatizados.</p></div>
+      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png"><h3>🤝 Painel de Doações</h3><p>Monitore doações, beneficiários e relatórios sociais.</p></div>
+      <div class="app-card"><img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png"><h3>📈 ABC de Vendas</h3><p>Análise de produtos mais vendidos e lucrativos.</p></div>
+    </div>
+    <button class="carousel-btn right" onclick="scrollApps(1)">⟶</button>
   </div>
 </section>
 
@@ -157,6 +149,13 @@ document.getElementById('formContato').addEventListener('submit',e=>{
   alert('Mensagem enviada com sucesso!');
   e.target.reset();
 });
+
+// controle manual do carrossel
+function scrollApps(dir){
+  const el=document.getElementById('carousel');
+  el.scrollBy({left:dir*300,behavior:'smooth'});
+}
+
 function grad(ctx,a,b){let g=ctx.createLinearGradient(0,0,0,300);g.addColorStop(0,a);g.addColorStop(1,b);return g;}
 const g1=document.getElementById('grafico1').getContext('2d');
 new Chart(g1,{type:'line',data:{labels:['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out'],datasets:[{label:'Faturamento (R$ mil)',data:[12,18,22,28,26,34,36,40,44,50],borderColor:'#00c6ff',backgroundColor:grad(g1,'rgba(0,198,255,.6)','rgba(0,114,255,.1)'),fill:true,tension:0.4}]},options:{plugins:{legend:{labels:{color:'#fff'}}},scales:{x:{ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8'},beginAtZero:true}}}});
