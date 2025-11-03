@@ -216,25 +216,33 @@ nav a:hover{color:var(--primary);}
   box-shadow:0 0 30px rgba(0,0,0,.4);
   overflow:hidden;
   position:relative;
+  display:flex;
+  flex-direction:column;
+}
+.popup-header{
+  background:var(--primary);
+  color:white;
+  padding:12px 20px;
+  font-weight:600;
+  font-size:1.1rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.popup-header span{
+  font-family:'Playfair Display',serif;
 }
 .popup-content iframe{
+  flex:1;
   width:100%;
-  height:100%;
   border:none;
 }
 .close-popup{
-  position:absolute;
-  top:10px;
-  right:15px;
-  background:var(--primary);
+  background:transparent;
   color:white;
   border:none;
-  border-radius:50%;
-  width:35px;
-  height:35px;
-  font-size:1.2rem;
+  font-size:1.3rem;
   cursor:pointer;
-  box-shadow:0 0 10px rgba(0,0,0,.3);
 }
 
 /* RESPONSIVE */
@@ -290,7 +298,10 @@ nav a:hover{color:var(--primary);}
 <!-- POPUP -->
 <div class="popup" id="popup">
   <div class="popup-content">
-    <button class="close-popup" id="closePopup">&times;</button>
+    <div class="popup-header">
+      <span id="popupTitle">Sistema</span>
+      <button class="close-popup" id="closePopup">&times;</button>
+    </div>
     <iframe id="popupFrame"></iframe>
   </div>
 </div>
@@ -302,7 +313,7 @@ const cards = [
     descricao: "Gere QR Codes ilimitados com o selo Vitlício integrado.", 
     categoria: "sistemas", 
     imagem: "https://images.unsplash.com/photo-1629904853693-0b6f3e9a5e84?auto=format&fit=crop&w=900&q=60", 
-    link: "./qrcode.html" // 👈 agora aponta corretamente pro arquivo qrcode.html
+    link: "./qrcode.html" 
   },
   { 
     nome: "Sistema de Pedidos", 
@@ -341,10 +352,10 @@ const cards = [
   }
 ];
 
-
 const container=document.getElementById("cardsContainer");
 const popup=document.getElementById("popup");
 const popupFrame=document.getElementById("popupFrame");
+const popupTitle=document.getElementById("popupTitle");
 const closePopup=document.getElementById("closePopup");
 
 function renderCards(filter="all", search=""){
@@ -364,6 +375,7 @@ function renderCards(filter="all", search=""){
     el.addEventListener("click",()=>{
       popup.classList.add("active");
       popupFrame.src=c.link;
+      popupTitle.textContent=c.nome;
     });
     container.appendChild(el);
   });
@@ -394,5 +406,6 @@ popup.addEventListener("click",e=>{
   }
 });
 </script>
+
 </body>
 </html>
