@@ -62,9 +62,7 @@ nav a:hover{color:var(--primary);}
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
   max-width:1200px;margin:100px auto 40px;padding:20px;gap:40px;
 }
-.hero-text{
-  flex:1 1 400px;
-}
+.hero-text{flex:1 1 400px;}
 .hero-text h1{
   font-family:'Playfair Display',serif;
   font-size:2.6rem;
@@ -198,6 +196,47 @@ nav a:hover{color:var(--primary);}
   overflow:hidden;
 }
 
+/* POPUP */
+.popup{
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:200;
+}
+.popup.active{display:flex;}
+.popup-content{
+  background:white;
+  border-radius:var(--radius);
+  width:90%;
+  max-width:1000px;
+  height:80%;
+  box-shadow:0 0 30px rgba(0,0,0,.4);
+  overflow:hidden;
+  position:relative;
+}
+.popup-content iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+.close-popup{
+  position:absolute;
+  top:10px;
+  right:15px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  border-radius:50%;
+  width:35px;
+  height:35px;
+  font-size:1.2rem;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(0,0,0,.3);
+}
+
 /* RESPONSIVE */
 @media(max-width:900px){
   .hero{
@@ -232,7 +271,7 @@ nav a:hover{color:var(--primary);}
     </button>
   </div>
   <div class="hero-img">
-    <img src="https://github.com/ClenaStore/Loja/blob/main/paste/ChatGPT%20Image%203%20de%20nov.%20de%202025,%2010_52_41.png?raw=true" alt="Programador animado CB Systems">
+    <img src="https://github.com/ClenaStore/Loja/blob/main/paste/ChatGPT%20Image%203%20de%20nov.%20de%202025,%2010_52_41.png?raw=true" alt="Programador CB Systems">
   </div>
 </section>
 
@@ -248,6 +287,14 @@ nav a:hover{color:var(--primary);}
 
 <section class="grid" id="cardsContainer"></section>
 
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <button class="close-popup" id="closePopup">&times;</button>
+    <iframe id="popupFrame"></iframe>
+  </div>
+</div>
+
 <script>
 const cards = [
   { nome:"Painel Financeiro", descricao:"Controle suas finanças diárias com relatórios e metas automáticas.", categoria:"sistemas", imagem:"https://images.unsplash.com/photo-1629904853693-0b6f3e9a5e84?auto=format&fit=crop&w=900&q=60", link:"financeiro/index.html" },
@@ -259,6 +306,10 @@ const cards = [
 ];
 
 const container=document.getElementById("cardsContainer");
+const popup=document.getElementById("popup");
+const popupFrame=document.getElementById("popupFrame");
+const closePopup=document.getElementById("closePopup");
+
 function renderCards(filter="all", search=""){
   container.innerHTML="";
   const filtrados=cards.filter(c=>{
@@ -273,7 +324,10 @@ function renderCards(filter="all", search=""){
     <div class="card-content">
       <h3>${c.nome}</h3><p>${c.descricao}</p>
     </div>`;
-    el.addEventListener("click",()=>window.open(c.link,'_blank'));
+    el.addEventListener("click",()=>{
+      popup.classList.add("active");
+      popupFrame.src=c.link;
+    });
     container.appendChild(el);
   });
 }
@@ -286,9 +340,21 @@ document.querySelectorAll(".filter-btn").forEach(btn=>{
     renderCards(btn.dataset.category, document.getElementById("searchInput").value.toLowerCase());
   });
 });
+
 document.getElementById("searchInput").addEventListener("input",e=>{
   const cat=document.querySelector(".filter-btn.active").dataset.category;
   renderCards(cat,e.target.value.toLowerCase());
+});
+
+closePopup.addEventListener("click",()=>{
+  popup.classList.remove("active");
+  popupFrame.src="";
+});
+popup.addEventListener("click",e=>{
+  if(e.target===popup){
+    popup.classList.remove("active");
+    popupFrame.src="";
+  }
 });
 </script>
 </body>
