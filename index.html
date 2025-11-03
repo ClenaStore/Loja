@@ -297,13 +297,50 @@ nav a:hover{color:var(--primary);}
 
 <script>
 const cards = [
-  { nome:"Gerador de QR CODE", descricao:"Gere QR CODE ilimitado grátis", categoria:"sistemas", imagem:"https://images.unsplash.com/photo-1629904853693-0b6f3e9a5e84?auto=format&fit=crop&w=900&q=60", link:"financeiro/index.html" },
-  { nome:"Sistema de Pedidos", descricao:"Gerencie pedidos, status e notificações em tempo real para delivery.", categoria:"sistemas", imagem:"https://images.unsplash.com/photo-1607083205681-2f9a0c935a70?auto=format&fit=crop&w=900&q=60", link:"pedidos/index.html" },
-  { nome:"Painel RH Jobs", descricao:"Controle de vagas, candidatos e avaliações internas simplificado.", categoria:"sistemas", imagem:"https://images.unsplash.com/photo-1581091012184-7c1cc77b8a8b?auto=format&fit=crop&w=900&q=60", link:"rh/index.html" },
-  { nome:"Sistema de Requisições", descricao:"Controle de solicitações internas e aprovações com histórico automático.", categoria:"sistemas", imagem:"https://images.unsplash.com/photo-1521790797524-b2497295b8a0?auto=format&fit=crop&w=900&q=60", link:"requisicoes/index.html" },
-  { nome:"Jogo Memória Neon", descricao:"Desafie sua mente em um jogo de memória com visual moderno e intuitivo.", categoria:"jogos", imagem:"https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?auto=format&fit=crop&w=900&q=60", link:"jogos/memoria/index.html" },
-  { nome:"Corrida Cibernética", descricao:"Corra em um universo digital com trilha sonora intensa e cores vivas.", categoria:"jogos", imagem:"https://images.unsplash.com/photo-1618172193763-2dce730b43b9?auto=format&fit=crop&w=900&q=60", link:"jogos/corrida/index.html" }
+  { 
+    nome: "Gerador de QR CODE", 
+    descricao: "Gere QR Codes ilimitados com o selo Vitlício integrado.", 
+    categoria: "sistemas", 
+    imagem: "https://images.unsplash.com/photo-1629904853693-0b6f3e9a5e84?auto=format&fit=crop&w=900&q=60", 
+    link: "qrcode.html" // 👈 agora abre o qrcode.html dentro do popup
+  },
+  { 
+    nome: "Sistema de Pedidos", 
+    descricao: "Gerencie pedidos, status e notificações em tempo real para delivery.", 
+    categoria: "sistemas", 
+    imagem: "https://images.unsplash.com/photo-1607083205681-2f9a0c935a70?auto=format&fit=crop&w=900&q=60", 
+    link: "pedidos/index.html" 
+  },
+  { 
+    nome: "Painel RH Jobs", 
+    descricao: "Controle de vagas, candidatos e avaliações internas simplificado.", 
+    categoria: "sistemas", 
+    imagem: "https://images.unsplash.com/photo-1581091012184-7c1cc77b8a8b?auto=format&fit=crop&w=900&q=60", 
+    link: "rh/index.html" 
+  },
+  { 
+    nome: "Sistema de Requisições", 
+    descricao: "Controle de solicitações internas e aprovações com histórico automático.", 
+    categoria: "sistemas", 
+    imagem: "https://images.unsplash.com/photo-1521790797524-b2497295b8a0?auto=format&fit=crop&w=900&q=60", 
+    link: "requisicoes/index.html" 
+  },
+  { 
+    nome: "Jogo Memória Neon", 
+    descricao: "Desafie sua mente em um jogo de memória com visual moderno e intuitivo.", 
+    categoria: "jogos", 
+    imagem: "https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?auto=format&fit=crop&w=900&q=60", 
+    link: "jogos/memoria/index.html" 
+  },
+  { 
+    nome: "Corrida Cibernética", 
+    descricao: "Corra em um universo digital com trilha sonora intensa e cores vivas.", 
+    categoria: "jogos", 
+    imagem: "https://images.unsplash.com/photo-1618172193763-2dce730b43b9?auto=format&fit=crop&w=900&q=60", 
+    link: "jogos/corrida/index.html" 
+  }
 ];
+
 
 const container=document.getElementById("cardsContainer");
 const popup=document.getElementById("popup");
