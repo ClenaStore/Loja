@@ -63,6 +63,7 @@ nav a:hover{color:var(--primary);}
   max-width:1200px;
   margin:100px auto 40px;
   padding:20px;
+  gap:40px;
 }
 .hero-text{
   flex:1 1 400px;
@@ -70,7 +71,7 @@ nav a:hover{color:var(--primary);}
 }
 .hero-text h1{
   font-family:'Playfair Display',serif;
-  font-size:2.4rem;
+  font-size:2.6rem;
   margin-bottom:15px;
   color:var(--primary);
 }
@@ -95,12 +96,14 @@ nav a:hover{color:var(--primary);}
   transform:translateY(-2px);
 }
 .hero-img{
-  flex:1 1 400px;
+  flex:1 1 500px;
   text-align:center;
 }
 .hero-img img{
   width:100%;
   max-width:500px;
+  border-radius:var(--radius);
+  box-shadow:0 8px 25px rgba(0,0,0,0.08);
 }
 
 /* SEARCH BAR */
@@ -194,12 +197,27 @@ nav a:hover{color:var(--primary);}
 /* RESPONSIVE */
 @media(max-width:1100px){.grid{grid-template-columns:repeat(4,1fr);}}
 @media(max-width:900px){
-  .hero{flex-direction:column-reverse;text-align:center;}
-  .hero-text{padding-right:0;}
+  .hero{
+    flex-direction:column;
+    text-align:center;
+    margin-top:90px;
+  }
+  .hero-text{
+    padding:0;
+  }
+  .hero-text h1{font-size:2rem;}
+  .hero-img img{
+    max-width:350px;
+    margin-top:10px;
+  }
   .grid{grid-template-columns:repeat(3,1fr);}
 }
-@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:400px){.grid{grid-template-columns:repeat(1,1fr);}}
+@media(max-width:600px){
+  .grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:400px){
+  .grid{grid-template-columns:repeat(1,1fr);}
+}
 </style>
 </head>
 <body>
@@ -220,10 +238,12 @@ nav a:hover{color:var(--primary);}
   <div class="hero-text">
     <h1>Soluções digitais sob medida para o seu negócio.</h1>
     <p>Sistemas gratuitos e projetos personalizados.</p>
-    <button class="cta" onclick="window.open('https://wa.me/5577999999999?text=Olá! Gostaria de um projeto personalizado.','_blank')">Solicite seu sistema exclusivo</button>
+    <button class="cta" onclick="window.open('https://wa.me/5577999999999?text=Olá! Gostaria de um projeto personalizado.','_blank')">
+      Solicite seu sistema exclusivo
+    </button>
   </div>
   <div class="hero-img">
-    <img src="https://cdni.iconscout.com/illustration/premium/thumb/developer-team-discussing-project-4315428-3606179.png" alt="Equipe de desenvolvimento de sistemas">
+    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/developer-team-8395286-6699298.png?f=webp" alt="Equipe de desenvolvimento de sistemas">
   </div>
 </section>
 
@@ -270,7 +290,6 @@ function renderCards(filter="all", search=""){
 }
 renderCards();
 
-// FILTROS
 document.querySelectorAll(".filter-btn").forEach(btn=>{
   btn.addEventListener("click",()=>{
     document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
@@ -278,8 +297,6 @@ document.querySelectorAll(".filter-btn").forEach(btn=>{
     renderCards(btn.dataset.category, document.getElementById("searchInput").value.toLowerCase());
   });
 });
-
-// PESQUISA
 document.getElementById("searchInput").addEventListener("input",e=>{
   const cat=document.querySelector(".filter-btn.active").dataset.category;
   renderCards(cat,e.target.value.toLowerCase());
