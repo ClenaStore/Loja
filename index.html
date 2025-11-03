@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Sistemas Grátis • CB Systems</title>
+<title>CB Systems • Sistemas Grátis</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -30,12 +30,14 @@ body{
   overflow-x:hidden;
 }
 
-/* HEADER */
+/* HEADER FIXO */
 header{
-  position:sticky;
+  position:fixed;
   top:0;
-  z-index:50;
-  background:rgba(5,1,15,0.8);
+  left:0;
+  right:0;
+  z-index:100;
+  background:rgba(5,1,15,0.9);
   backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
   box-shadow:0 0 20px rgba(0,255,255,0.15);
@@ -46,7 +48,7 @@ header{
   align-items:center;
   max-width:1300px;
   margin:0 auto;
-  padding:16px 24px;
+  padding:14px 24px;
 }
 .logo{
   font-family:'Orbitron',sans-serif;
@@ -59,7 +61,7 @@ header{
   color:#000;
   border:none;
   border-radius:var(--radius);
-  padding:10px 20px;
+  padding:10px 18px;
   font-weight:600;
   cursor:pointer;
   transition:.3s;
@@ -69,53 +71,33 @@ header{
   transform:scale(1.05);
   box-shadow:0 0 25px var(--accent2);
 }
-@media(max-width:700px){
-  .header-container{
-    flex-direction:column;
-    text-align:center;
-    gap:10px;
-  }
-  .logo{font-size:1.4rem;}
-  .header-btn{width:100%;max-width:280px;}
-}
 
-/* TITLE */
-.page-title{
-  text-align:center;
-  padding:60px 20px 30px;
-}
-.page-title h1{
-  font-family:'Orbitron',sans-serif;
-  font-size:2.4rem;
-  color:var(--accent);
-  text-shadow:0 0 25px var(--accent),0 0 50px var(--accent2);
-  letter-spacing:1px;
-  animation:glow 3s ease-in-out infinite alternate;
-}
-@keyframes glow{
-  from{text-shadow:0 0 10px var(--accent);}
-  to{text-shadow:0 0 30px var(--accent2);}
-}
-
-/* SEARCH */
+/* SEARCH FIXA */
 .search-bar{
+  position:fixed;
+  top:70px;
+  left:0;
+  right:0;
+  z-index:90;
   display:flex;
   justify-content:center;
-  margin:25px auto;
-  max-width:700px;
+  background:rgba(10,0,30,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:12px;
 }
 .search-bar input{
-  width:100%;
-  padding:14px 20px;
-  font-size:1rem;
+  width:90%;
+  max-width:700px;
+  padding:12px 18px;
   border:none;
   border-radius:var(--radius);
   background:var(--glass);
   color:var(--text);
+  font-size:1rem;
   outline:none;
-  backdrop-filter:blur(var(--blur));
   border:1px solid var(--border);
-  box-shadow:0 0 20px rgba(0,255,255,0.1);
+  box-shadow:0 0 15px rgba(0,255,255,0.15);
   transition:.3s;
 }
 .search-bar input:focus{
@@ -124,6 +106,7 @@ header{
 
 /* FILTERS */
 .filter-bar{
+  margin-top:130px;
   display:flex;
   justify-content:center;
   flex-wrap:wrap;
@@ -280,12 +263,15 @@ header{
   .grid{grid-template-columns:repeat(1,1fr);}
 }
 
-/* Ajustes gerais para mobile */
+/* MOBILE */
 @media(max-width:700px){
-  .grid{padding:0 15px 60px;}
-  .page-title{padding:40px 10px 20px;}
-  .page-title h1{font-size:1.8rem;}
-  .search-bar input{font-size:.9rem;padding:12px 16px;}
+  .header-container{
+    flex-direction:column;
+    text-align:center;
+    gap:10px;
+  }
+  .logo{font-size:1.4rem;}
+  .header-btn{width:100%;max-width:280px;}
 }
 </style>
 </head>
@@ -299,10 +285,6 @@ header{
     </button>
   </div>
 </header>
-
-<section class="page-title">
-  <h1>Sistemas Gratuitos CB Systems</h1>
-</section>
 
 <div class="search-bar">
   <input type="text" id="searchInput" placeholder="Pesquisar por nome ou descrição...">
@@ -324,113 +306,56 @@ header{
 
 <script>
 const cards = [
-  {
-    nome:"Painel Financeiro",
-    descricao:"Controle suas finanças diárias com relatórios e metas automáticas.",
-    categoria:"sistemas",
-    imagem:"https://images.unsplash.com/photo-1629904853693-0b6f3e9a5e84?auto=format&fit=crop&w=900&q=60",
-    video:"",
-    link:"financeiro/index.html"
-  },
-  {
-    nome:"Sistema de Pedidos",
-    descricao:"Gerencie pedidos, status e notificações em tempo real para delivery.",
-    categoria:"sistemas",
-    imagem:"https://images.unsplash.com/photo-1607083205681-2f9a0c935a70?auto=format&fit=crop&w=900&q=60",
-    video:"",
-    link:"pedidos/index.html"
-  },
-  {
-    nome:"Painel RH Jobs",
-    descricao:"Controle de vagas, candidatos e avaliações internas simplificado.",
-    categoria:"sistemas",
-    imagem:"https://images.unsplash.com/photo-1581091012184-7c1cc77b8a8b?auto=format&fit=crop&w=900&q=60",
-    video:"",
-    link:"rh/index.html"
-  },
-  {
-    nome:"Sistema de Requisições",
-    descricao:"Controle de solicitações internas e aprovações com histórico automático.",
-    categoria:"sistemas",
-    imagem:"https://images.unsplash.com/photo-1521790797524-b2497295b8a0?auto=format&fit=crop&w=900&q=60",
-    video:"",
-    link:"requisicoes/index.html"
-  },
-  {
-    nome:"Jogo Memória Neon",
-    descricao:"Desafie sua mente em um jogo de memória com visual futurista em neon.",
-    categoria:"jogos",
-    imagem:"https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?auto=format&fit=crop&w=900&q=60",
-    video:"https://www.w3schools.com/html/mov_bbb.mp4",
-    link:"jogos/memoria/index.html"
-  },
-  {
-    nome:"Corrida Cibernética",
-    descricao:"Corra em um universo digital com trilha sonora intensa e cores vivas.",
-    categoria:"jogos",
-    imagem:"https://images.unsplash.com/photo-1618172193763-2dce730b43b9?auto=format&fit=crop&w=900&q=60",
-    video:"",
-    link:"jogos/corrida/index.html"
-  }
+  { nome:"Painel Financeiro", descricao:"Controle suas finanças diárias com relatórios e metas automáticas.", categoria:"sistemas", imagem:"https://images.unsplash.com/photo-1629904853693-0b6f3e9a5e84?auto=format&fit=crop&w=900&q=60", video:"", link:"financeiro/index.html" },
+  { nome:"Sistema de Pedidos", descricao:"Gerencie pedidos, status e notificações em tempo real para delivery.", categoria:"sistemas", imagem:"https://images.unsplash.com/photo-1607083205681-2f9a0c935a70?auto=format&fit=crop&w=900&q=60", video:"", link:"pedidos/index.html" },
+  { nome:"Painel RH Jobs", descricao:"Controle de vagas, candidatos e avaliações internas simplificado.", categoria:"sistemas", imagem:"https://images.unsplash.com/photo-1581091012184-7c1cc77b8a8b?auto=format&fit=crop&w=900&q=60", video:"", link:"rh/index.html" },
+  { nome:"Sistema de Requisições", descricao:"Controle de solicitações internas e aprovações com histórico automático.", categoria:"sistemas", imagem:"https://images.unsplash.com/photo-1521790797524-b2497295b8a0?auto=format&fit=crop&w=900&q=60", video:"", link:"requisicoes/index.html" },
+  { nome:"Jogo Memória Neon", descricao:"Desafie sua mente em um jogo de memória com visual futurista em neon.", categoria:"jogos", imagem:"https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?auto=format&fit=crop&w=900&q=60", video:"https://www.w3schools.com/html/mov_bbb.mp4", link:"jogos/memoria/index.html" },
+  { nome:"Corrida Cibernética", descricao:"Corra em um universo digital com trilha sonora intensa e cores vivas.", categoria:"jogos", imagem:"https://images.unsplash.com/photo-1618172193763-2dce730b43b9?auto=format&fit=crop&w=900&q=60", video:"", link:"jogos/corrida/index.html" }
 ];
 
-// RENDERIZAÇÃO
-const container = document.getElementById("cardsContainer");
+const container=document.getElementById("cardsContainer");
 function renderCards(filter="all", search=""){
   container.innerHTML="";
-  const filtrados = cards.filter(c=>{
-    const matchCategoria = filter==="all" || c.categoria===filter;
-    const matchBusca = c.nome.toLowerCase().includes(search) || c.descricao.toLowerCase().includes(search);
-    return matchCategoria && matchBusca;
+  const filtrados=cards.filter(c=>{
+    const matchCat=filter==="all"||c.categoria===filter;
+    const matchBusca=c.nome.toLowerCase().includes(search)||c.descricao.toLowerCase().includes(search);
+    return matchCat&&matchBusca;
   });
   filtrados.forEach(c=>{
     const el=document.createElement("div");
     el.className="card";
-    el.innerHTML=`
-      <img src="${c.imagem}" alt="${c.nome}">
-      <div class="card-content">
-        <h3>${c.nome}</h3>
-        <p>${c.descricao}</p>
-      </div>
-    `;
+    el.innerHTML=`<img src="${c.imagem}" alt="${c.nome}">
+      <div class="card-content"><h3>${c.nome}</h3><p>${c.descricao}</p></div>`;
     el.addEventListener("click",()=>abrirPopup(c));
     container.appendChild(el);
   });
 }
 renderCards();
 
-// FILTROS
 document.querySelectorAll(".filter-btn").forEach(btn=>{
   btn.addEventListener("click",()=>{
     document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-    renderCards(btn.dataset.category, document.getElementById("searchInput").value.toLowerCase());
+    renderCards(btn.dataset.category,document.getElementById("searchInput").value.toLowerCase());
   });
 });
-
-// BUSCA
 document.getElementById("searchInput").addEventListener("input",e=>{
   const cat=document.querySelector(".filter-btn.active").dataset.category;
   renderCards(cat,e.target.value.toLowerCase());
 });
-
-// POPUP
 const popup=document.getElementById("popup");
 const popupContent=document.getElementById("popupContent");
 function abrirPopup(card){
   popup.classList.add("active");
   popupContent.innerHTML=`
     <button class="close-btn" id="closePopup">&times;</button>
-    ${card.video?`<video controls src="${card.video}"></video>`:`<img src="${card.imagem}" alt="${card.nome}">`}
-    <h2>${card.nome}</h2>
-    <p>${card.descricao}</p>
-    <button onclick="window.open('${card.link}','_blank')">Acessar</button>
-  `;
+    ${card.video?`<video controls src="${card.video}"></video>`:`<img src="${card.imagem}">`}
+    <h2>${card.nome}</h2><p>${card.descricao}</p>
+    <button onclick="window.open('${card.link}','_blank')">Acessar</button>`;
   document.getElementById("closePopup").addEventListener("click",()=>popup.classList.remove("active"));
 }
-popup.addEventListener("click",e=>{
-  if(e.target===popup) popup.classList.remove("active");
-});
+popup.addEventListener("click",e=>{if(e.target===popup)popup.classList.remove("active");});
 </script>
 </body>
 </html>
