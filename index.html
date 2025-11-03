@@ -2,207 +2,331 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dashboard - CB Systems</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Loja de Sistemas – Grupo DV</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0d0e12;
-  --sidebar: #111217;
-  --card: #16181e;
-  --accent: #ffb300;
-  --accent-light: #ffd85a;
-  --text: #f1f1f1;
-  --muted: #9ca3af;
-  --radius: 10px;
+:root{
+  --bg:#030014;
+  --card:#0e0428;
+  --accent:#00fff2;
+  --accent2:#ff00ff;
+  --text:#e0e0e0;
+  --radius:16px;
 }
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;}
-/* Sidebar */
-.sidebar{
-  width:250px;background:var(--sidebar);display:flex;flex-direction:column;
-  justify-content:space-between;padding:1.5rem 0;position:fixed;height:100%;left:0;top:0;
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:radial-gradient(circle at 20% 20%,#0a0020 0%,#000010 80%);
+  font-family:'Inter',sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
-.logo{display:flex;align-items:center;gap:.5rem;padding:0 1.5rem;margin-bottom:1rem;}
-.logo img{width:32px;height:32px;}
-.logo span{font-weight:600;font-size:1.2rem;color:var(--accent);}
-.nav{display:flex;flex-direction:column;gap:.5rem;padding:0 1rem;}
-.nav a{
-  text-decoration:none;color:var(--muted);display:flex;align-items:center;gap:.8rem;
-  padding:.7rem 1rem;border-radius:var(--radius);transition:.2s;
+header{
+  text-align:center;
+  padding:40px 20px 20px;
+  position:relative;
 }
-.nav a:hover, .nav a.active{background:rgba(255,179,0,0.15);color:var(--accent);}
-.nav a i{font-size:1.1rem;}
-.bottom{padding:0 1.5rem;}
-.bottom button{
-  background:none;border:none;color:var(--muted);display:flex;align-items:center;gap:.6rem;
-  cursor:pointer;font-size:.95rem;padding:.7rem 1rem;width:100%;border-radius:var(--radius);
+h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:2.3rem;
+  color:var(--accent);
+  text-shadow:0 0 20px var(--accent2),0 0 40px var(--accent);
+  animation:pulse 3s infinite alternate;
 }
-.bottom button:hover{background:rgba(255,179,0,0.1);color:var(--accent);}
-
-/* Main */
-.main{margin-left:250px;flex:1;display:flex;flex-direction:column;height:100vh;overflow:auto;}
-.topbar{
-  display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;
-  border-bottom:1px solid #1e2028;background:var(--card);
+@keyframes pulse{
+  from{filter:drop-shadow(0 0 10px var(--accent))}
+  to{filter:drop-shadow(0 0 25px var(--accent2))}
 }
-.top-left span{
-  color:var(--accent);font-weight:600;margin-left:.4rem;
+.search-bar{
+  max-width:700px;
+  margin:20px auto;
+  display:flex;
+  gap:10px;
 }
-.status{display:flex;align-items:center;gap:1rem;font-size:.9rem;color:var(--muted);}
-.status .dot{width:10px;height:10px;border-radius:50%;background:red;}
-.status .tag{padding:.3rem .6rem;border-radius:5px;background:rgba(255,179,0,0.15);color:var(--accent);font-size:.8rem;font-weight:600;}
-.account{display:flex;align-items:center;gap:.5rem;font-size:.9rem;}
-.account select{
-  background:transparent;color:var(--accent);border:1px solid var(--accent);
-  border-radius:5px;padding:.2rem .5rem;cursor:pointer;
+.search-bar input{
+  flex:1;
+  padding:12px 16px;
+  border-radius:var(--radius);
+  border:none;
+  outline:none;
+  font-size:1rem;
+  background:#120a2e;
+  color:var(--text);
+  box-shadow:0 0 10px var(--accent);
 }
-
-/* Content */
-.content{padding:2rem;}
-h1{font-size:1.6rem;font-weight:600;margin-bottom:.5rem;}
-h1 span{color:var(--accent);}
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:2rem;}
+.filter-bar{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+.filter-bar button{
+  background:transparent;
+  border:2px solid var(--accent);
+  color:var(--accent);
+  padding:8px 18px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:.3s;
+  font-weight:600;
+}
+.filter-bar button.active,
+.filter-bar button:hover{
+  background:var(--accent);
+  color:#000;
+  box-shadow:0 0 20px var(--accent);
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:25px;
+  padding:20px;
+  max-width:1200px;
+  margin:0 auto 60px;
+}
 .card{
-  background:var(--card);border-radius:var(--radius);padding:1.2rem 1.5rem;
-  display:flex;flex-direction:column;gap:.5rem;box-shadow:0 0 10px rgba(0,0,0,0.2);
+  background:var(--card);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:0 0 10px #000;
+  transition:.3s;
+  cursor:pointer;
+  position:relative;
 }
-.card-title{color:var(--muted);font-size:.9rem;}
-.card-value{font-size:1.8rem;font-weight:600;color:var(--text);}
-.card small{color:#4ade80;font-size:.8rem;}
-.graphs{margin-top:3rem;display:grid;grid-template-columns:2fr 1fr;gap:2rem;}
-.graph{background:var(--card);border-radius:var(--radius);padding:1.5rem;}
-.graph h3{margin-bottom:1rem;color:var(--accent);}
-#chart7d{height:250px;}
-.graph2{background:var(--card);border-radius:var(--radius);padding:1.5rem;}
-.graph2 h3{margin-bottom:1rem;}
-.graph2 p{color:var(--muted);font-size:.9rem;}
-.graph2 button{
-  background:var(--accent);border:none;padding:.7rem 1.2rem;border-radius:var(--radius);
-  color:#000;font-weight:600;cursor:pointer;margin-top:1rem;
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 0 20px var(--accent);
 }
-.graph2 button:hover{background:var(--accent-light);}
+.card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+.card-content{
+  padding:15px;
+}
+.card h3{
+  color:var(--accent);
+  font-family:'Orbitron',sans-serif;
+  font-size:1.1rem;
+  margin-bottom:8px;
+}
+.card p{
+  color:var(--text);
+  opacity:.85;
+  line-height:1.4;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
 
-@media(max-width:900px){
-  .sidebar{width:70px;}
-  .logo span{display:none;}
-  .nav a span{display:none;}
-  .main{margin-left:70px;}
-  .graphs{grid-template-columns:1fr;}
+/* POPUP */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:99;
+}
+.popup.active{display:flex;animation:fade .4s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.popup-content{
+  background:#0b0120;
+  border:2px solid var(--accent);
+  border-radius:var(--radius);
+  padding:20px;
+  max-width:700px;
+  width:90%;
+  color:var(--text);
+  box-shadow:0 0 25px var(--accent);
+  animation:pop .4s ease-out;
+}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.popup-content img, .popup-content video{
+  width:100%;
+  border-radius:var(--radius);
+  margin-bottom:15px;
+}
+.popup-content h2{
+  color:var(--accent);
+  font-family:'Orbitron',sans-serif;
+  margin-bottom:10px;
+}
+.popup-content p{margin-bottom:15px;line-height:1.5;}
+.popup-content button{
+  background:var(--accent);
+  color:#000;
+  border:none;
+  padding:10px 20px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  font-weight:600;
+  transition:.3s;
+}
+.popup-content button:hover{
+  background:var(--accent2);
+  color:#fff;
+  box-shadow:0 0 15px var(--accent2);
+}
+.close-btn{
+  position:absolute;
+  top:20px;right:20px;
+  background:none;
+  border:none;
+  color:var(--accent);
+  font-size:1.5rem;
+  cursor:pointer;
+}
+@media(max-width:700px){
+  .grid{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:600px){
+  .grid{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<aside class="sidebar">
-  <div>
-    <div class="logo">
-      <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png">
-      <span>CB Systems</span>
-    </div>
-    <nav class="nav">
-      <a href="#" class="active"><i>📊</i><span>Métricas</span></a>
-      <a href="#"><i>🔌</i><span>Conexão</span></a>
-      <a href="#"><i>🧩</i><span>Funis</span></a>
-      <a href="#"><i>🤖</i><span>IA</span></a>
-      <a href="#"><i>📤</i><span>Disparos</span></a>
-      <a href="#"><i>👥</i><span>Contatos</span></a>
-      <a href="#"><i>🎓</i><span>Cursos</span></a>
-      <a href="#"><i>📣</i><span>Campanhas</span></a>
-      <a href="#"><i>💼</i><span>Parceiros</span></a>
-      <a href="#"><i>💬</i><span>Bate-papo</span></a>
-    </nav>
-  </div>
-  <div class="bottom">
-    <button><i>🚪</i><span>Sair</span></button>
-  </div>
-</aside>
+<header>
+  <h1>💫 Loja de Sistemas Grupo DV</h1>
+</header>
 
-<!-- Main -->
-<main class="main">
-  <div class="topbar">
-    <div class="top-left">
-      <b>Bem-vindo,</b><span>NALBERT</span>
-    </div>
-    <div class="status">
-      <div><span class="dot"></span> desconectado</div>
-      <div class="tag">API 2.0 Beta</div>
-    </div>
-    <div class="account">
-      Conta:
-      <select>
-        <option>Principal</option>
-      </select>
-    </div>
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Pesquisar por nome ou descrição...">
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" data-category="all">Todos</button>
+  <button class="filter-btn" data-category="sistemas">Sistemas</button>
+  <button class="filter-btn" data-category="jogos">Jogos</button>
+</div>
+
+<section class="grid" id="cardsContainer">
+  <!-- Exemplo de cards -->
+</section>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-content" id="popupContent">
+    <button class="close-btn" id="closePopup">&times;</button>
   </div>
-
-  <div class="content">
-    <h1>Visão Geral</h1>
-    <p style="color:var(--muted);font-size:.95rem;">Aqui estão algumas métricas da sua operação:</p>
-
-    <div class="metrics">
-      <div class="card">
-        <div class="card-title">Disparos esse mês</div>
-        <div class="card-value">12</div>
-        <small>+0% em relação ao mês passado</small>
-      </div>
-      <div class="card">
-        <div class="card-title">Taxa de finalização</div>
-        <div class="card-value">100%</div>
-        <small>+0% em relação ao mês passado</small>
-      </div>
-      <div class="card">
-        <div class="card-title">Novos contatos</div>
-        <div class="card-value">1</div>
-        <small>+0% em relação ao mês passado</small>
-      </div>
-      <div class="card">
-        <div class="card-title">Funis ativos agora</div>
-        <div class="card-value">0</div>
-        <small>0 funis foram disparados hoje</small>
-      </div>
-    </div>
-
-    <div class="graphs">
-      <div class="graph">
-        <h3>Disparos nos últimos 7 dias</h3>
-        <canvas id="chart7d"></canvas>
-      </div>
-      <div class="graph2">
-        <h3>Disparos em andamento:</h3>
-        <p>Nenhum disparo em andamento</p>
-        <button>Ver todos os disparos</button>
-      </div>
-    </div>
-  </div>
-</main>
+</div>
 
 <script>
-const ctx=document.getElementById('chart7d').getContext('2d');
-new Chart(ctx,{
-  type:'line',
-  data:{
-    labels:['Ter','Qua','Qui','Sex','Sáb','Dom','Seg'],
-    datasets:[{
-      label:'Disparos',
-      data:[0,0,2,10,5,1,0],
-      borderColor:'#ffb300',
-      backgroundColor:'rgba(255,179,0,0.2)',
-      tension:0.4,
-      fill:true,
-      pointRadius:4,
-      pointBackgroundColor:'#ffb300'
-    }]
+const cards = [
+  {
+    nome:"Painel Financeiro",
+    descricao:"Controle suas finanças diárias, metas e relatórios automáticos.",
+    categoria:"sistemas",
+    imagem:"https://images.unsplash.com/photo-1629904853693-0b6f3e9a5e84?auto=format&fit=crop&w=800&q=60",
+    video:"",
+    link:"financeiro/index.html"
   },
-  options:{
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:'#9ca3af'}},
-      y:{ticks:{color:'#9ca3af'},beginAtZero:true}
-    }
+  {
+    nome:"Sistema de Pedidos",
+    descricao:"Gerencie pedidos, status e notificações em tempo real para delivery.",
+    categoria:"sistemas",
+    imagem:"https://images.unsplash.com/photo-1607083205681-2f9a0c935a70?auto=format&fit=crop&w=800&q=60",
+    video:"",
+    link:"pedidos/index.html"
+  },
+  {
+    nome:"Painel RH Jobs",
+    descricao:"Controle de vagas, candidatos e avaliações internas simplificado.",
+    categoria:"sistemas",
+    imagem:"https://images.unsplash.com/photo-1581091012184-7c1cc77b8a8b?auto=format&fit=crop&w=800&q=60",
+    video:"",
+    link:"rh/index.html"
+  },
+  {
+    nome:"Jogo Memória Neon",
+    descricao:"Um divertido jogo de memória com visual neon vibrante e trilha sonora eletrônica.",
+    categoria:"jogos",
+    imagem:"https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?auto=format&fit=crop&w=800&q=60",
+    video:"https://www.w3schools.com/html/mov_bbb.mp4",
+    link:"jogos/memoria/index.html"
+  },
+  {
+    nome:"Jogo Corrida 3D",
+    descricao:"Corra contra o tempo com gráficos 3D em neon e trilha sonora intensa.",
+    categoria:"jogos",
+    imagem:"https://images.unsplash.com/photo-1618172193763-2dce730b43b9?auto=format&fit=crop&w=800&q=60",
+    video:"",
+    link:"jogos/corrida/index.html"
+  },
+  {
+    nome:"Sistema de Requisições",
+    descricao:"Controle de solicitações internas e aprovação rápida com status em tempo real.",
+    categoria:"sistemas",
+    imagem:"https://images.unsplash.com/photo-1521790797524-b2497295b8a0?auto=format&fit=crop&w=800&q=60",
+    video:"",
+    link:"requisicoes/index.html"
   }
+];
+
+const container = document.getElementById("cardsContainer");
+function renderCards(filter="all", search=""){
+  container.innerHTML="";
+  const filtrados = cards.filter(c=>{
+    const matchCategoria = filter==="all" || c.categoria===filter;
+    const matchBusca = c.nome.toLowerCase().includes(search)||c.descricao.toLowerCase().includes(search);
+    return matchCategoria && matchBusca;
+  });
+  filtrados.forEach(c=>{
+    const el = document.createElement("div");
+    el.className="card";
+    el.innerHTML=`
+      <img src="${c.imagem}">
+      <div class="card-content">
+        <h3>${c.nome}</h3>
+        <p>${c.descricao}</p>
+      </div>
+    `;
+    el.addEventListener("click",()=>abrirPopup(c));
+    container.appendChild(el);
+  });
+}
+renderCards();
+
+// filtros
+document.querySelectorAll(".filter-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const cat = btn.getAttribute("data-category");
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    renderCards(cat, search);
+  });
+});
+
+// busca
+document.getElementById("searchInput").addEventListener("input",e=>{
+  const activeCat = document.querySelector(".filter-btn.active").getAttribute("data-category");
+  renderCards(activeCat, e.target.value.toLowerCase());
+});
+
+// popup
+const popup=document.getElementById("popup");
+const popupContent=document.getElementById("popupContent");
+function abrirPopup(card){
+  popup.classList.add("active");
+  popupContent.innerHTML=`
+    <button class="close-btn" id="closePopup">&times;</button>
+    ${card.video ? `<video controls src="${card.video}"></video>`:`<img src="${card.imagem}">`}
+    <h2>${card.nome}</h2>
+    <p>${card.descricao}</p>
+    <button onclick="window.open('${card.link}','_blank')">Acessar</button>
+  `;
+  document.getElementById("closePopup").addEventListener("click",()=>popup.classList.remove("active"));
+}
+popup.addEventListener("click",e=>{
+  if(e.target===popup) popup.classList.remove("active");
 });
 </script>
 
