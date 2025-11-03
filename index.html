@@ -61,7 +61,7 @@ nav a:hover{color:var(--primary);}
   justify-content:space-between;
   flex-wrap:wrap;
   max-width:1200px;
-  margin:100px auto 60px;
+  margin:100px auto 40px;
   padding:20px;
 }
 .hero-text{
@@ -100,7 +100,30 @@ nav a:hover{color:var(--primary);}
 }
 .hero-img img{
   width:100%;
-  max-width:420px;
+  max-width:500px;
+}
+
+/* SEARCH BAR */
+.search-section{
+  display:flex;
+  justify-content:center;
+  margin:10px auto 40px;
+  padding:0 20px;
+}
+.search-section input{
+  width:100%;
+  max-width:700px;
+  padding:14px 20px;
+  font-size:1rem;
+  border:1px solid #cbd5e1;
+  border-radius:var(--radius);
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+  outline:none;
+  transition:.3s;
+}
+.search-section input:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(0,123,255,0.1);
 }
 
 /* FILTERS */
@@ -109,7 +132,7 @@ nav a:hover{color:var(--primary);}
   justify-content:center;
   gap:12px;
   flex-wrap:wrap;
-  margin:30px 0 20px;
+  margin:20px 0 30px;
 }
 .filter-bar button{
   background:white;
@@ -200,8 +223,12 @@ nav a:hover{color:var(--primary);}
     <button class="cta" onclick="window.open('https://wa.me/5577999999999?text=Olá! Gostaria de um projeto personalizado.','_blank')">Solicite seu sistema exclusivo</button>
   </div>
   <div class="hero-img">
-    <img src="https://cdn.dribbble.com/users/1162077/screenshots/3848914/programmer.gif" alt="Desenvolvimento de sistemas">
+    <img src="https://cdni.iconscout.com/illustration/premium/thumb/developer-team-discussing-project-4315428-3606179.png" alt="Equipe de desenvolvimento de sistemas">
   </div>
+</section>
+
+<section class="search-section">
+  <input type="text" id="searchInput" placeholder="Pesquisar sistemas ou jogos...">
 </section>
 
 <div class="filter-bar">
@@ -223,9 +250,13 @@ const cards = [
 ];
 
 const container=document.getElementById("cardsContainer");
-function renderCards(filter="all"){
+function renderCards(filter="all", search=""){
   container.innerHTML="";
-  const filtrados=cards.filter(c=>filter==="all"||c.categoria===filter);
+  const filtrados=cards.filter(c=>{
+    const matchCat=filter==="all"||c.categoria===filter;
+    const matchBusca=c.nome.toLowerCase().includes(search)||c.descricao.toLowerCase().includes(search);
+    return matchCat&&matchBusca;
+  });
   filtrados.forEach(c=>{
     const el=document.createElement("div");
     el.className="card";
@@ -239,12 +270,19 @@ function renderCards(filter="all"){
 }
 renderCards();
 
+// FILTROS
 document.querySelectorAll(".filter-btn").forEach(btn=>{
   btn.addEventListener("click",()=>{
     document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-    renderCards(btn.dataset.category);
+    renderCards(btn.dataset.category, document.getElementById("searchInput").value.toLowerCase());
   });
+});
+
+// PESQUISA
+document.getElementById("searchInput").addEventListener("input",e=>{
+  const cat=document.querySelector(".filter-btn.active").dataset.category;
+  renderCards(cat,e.target.value.toLowerCase());
 });
 </script>
 </body>
