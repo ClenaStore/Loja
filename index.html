@@ -64,7 +64,6 @@ nav a:hover{color:var(--primary);}
 }
 .hero-text{
   flex:1 1 400px;
-  animation:fadeSlide 1s ease forwards;
 }
 .hero-text h1{
   font-family:'Playfair Display',serif;
@@ -97,27 +96,14 @@ nav a:hover{color:var(--primary);}
 .hero-img{
   flex:1 1 400px;
   text-align:center;
-  animation:float 6s ease-in-out infinite;
 }
 .hero-img img{
-  width:100%;
-  max-width:420px;
+  width:80%;
+  max-width:320px;
   border:none;
   border-radius:0;
   box-shadow:none;
   filter:drop-shadow(0 12px 25px rgba(0,123,255,0.15));
-  transition:transform 1s ease;
-}
-.hero-img img:hover{
-  transform:scale(1.05);
-}
-@keyframes fadeSlide{
-  from{opacity:0;transform:translateX(-40px);}
-  to{opacity:1;transform:translateX(0);}
-}
-@keyframes float{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-10px);}
 }
 
 /* SEARCH BAR */
@@ -219,7 +205,7 @@ nav a:hover{color:var(--primary);}
     text-align:center;
     margin-top:90px;
   }
-  .hero-img img{max-width:300px;}
+  .hero-img img{max-width:250px;}
 }
 </style>
 </head>
@@ -246,7 +232,6 @@ nav a:hover{color:var(--primary);}
     </button>
   </div>
   <div class="hero-img">
-    <!-- GIF animado CB Systems -->
     <img src="https://github.com/ClenaStore/Loja/blob/main/paste/ChatGPT%20Image%203%20de%20nov.%20de%202025,%2010_52_41.png?raw=true" alt="Programador animado CB Systems">
   </div>
 </section>
