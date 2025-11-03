@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de QR Code</title>
+<style>
+  :root{
+    --bg:#0f172a;
+    --card:#1e293b;
+    --accent:#06b6d4;
+    --text:#e2e8f0;
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    margin:0;
+    padding:20px;
+  }
+  .container{
+    background:var(--card);
+    border-radius:20px;
+    padding:30px;
+    max-width:400px;
+    width:100%;
+    box-shadow:0 10px 25px rgba(0,0,0,.4);
+    text-align:center;
+  }
+  h1{
+    margin-bottom:20px;
+    color:var(--accent);
+  }
+  input{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    outline:none;
+    font-size:16px;
+    margin-bottom:15px;
+  }
+  button{
+    background:var(--accent);
+    border:none;
+    color:white;
+    padding:12px 20px;
+    font-size:16px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.2s;
+    width:100%;
+  }
+  button:hover{opacity:.9;transform:scale(1.02)}
+  #qrcode{
+    margin-top:20px;
+    background:white;
+    display:inline-block;
+    padding:10px;
+    border-radius:10px;
+  }
+  footer{
+    margin-top:25px;
+    font-size:12px;
+    opacity:.6;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔗 Gerar QR Code</h1>
+    <input type="url" id="urlInput" placeholder="Digite ou cole a URL aqui..." />
+    <button onclick="gerarQRCode()">Gerar</button>
+    <div id="qrcode"></div>
+    <footer>© Grupo Delícia & Mercatto</footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script>
+    function gerarQRCode(){
+      const url = document.getElementById("urlInput").value.trim();
+      const qrcodeDiv = document.getElementById("qrcode");
+      qrcodeDiv.innerHTML = "";
+      if(url === ""){
+        alert("Por favor, insira uma URL válida!");
+        return;
+      }
+      new QRCode(qrcodeDiv, {
+        text: url,
+        width: 200,
+        height: 200,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+    }
+  </script>
+</body>
+</html>
