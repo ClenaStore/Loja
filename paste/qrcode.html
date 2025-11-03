@@ -54,6 +54,7 @@
     cursor:pointer;
     transition:.2s;
     width:100%;
+    margin-top:8px;
   }
   button:hover{opacity:.9;transform:scale(1.02)}
   #qrcode{
@@ -76,7 +77,8 @@
     <input type="url" id="urlInput" placeholder="Digite ou cole a URL aqui..." />
     <button onclick="gerarQRCode()">Gerar</button>
     <div id="qrcode"></div>
-    <footer>© Grupo Delícia & Mercatto</footer>
+    <button id="baixarBtn" style="display:none;">⬇️ Baixar QR Code</button>
+    <footer>© CB Systems</footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
@@ -97,7 +99,20 @@
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
       });
+
+      setTimeout(()=>{
+        document.getElementById("baixarBtn").style.display = "block";
+      },500);
     }
+
+    document.getElementById("baixarBtn").addEventListener("click", ()=>{
+      const canvas = document.querySelector("#qrcode canvas");
+      if(!canvas) return alert("Gere o QR Code primeiro!");
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "qrcode.png";
+      link.click();
+    });
   </script>
 </body>
 </html>
