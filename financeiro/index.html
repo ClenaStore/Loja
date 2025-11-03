@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CB Systems • Gerador de QR Code</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#007bff;
+  --bg:#f9fbff;
+  --text:#1e293b;
+  --muted:#64748b;
+  --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{
+  background:linear-gradient(180deg,#f9fbff 0%,#eef5ff 100%);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  padding:30px 20px;
+}
+
+/* CARD PRINCIPAL */
+.container{
+  background:white;
+  border-radius:var(--radius);
+  box-shadow:0 4px 20px rgba(0,0,0,0.08);
+  width:100%;
+  max-width:420px;
+  padding:30px;
+  text-align:center;
+}
+.container h1{
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;
+  color:var(--primary);
+  margin-bottom:10px;
+}
+.container p{
+  color:var(--muted);
+  font-size:.95rem;
+  margin-bottom:25px;
+}
+input{
+  width:100%;
+  padding:14px;
+  border:1px solid #cbd5e1;
+  border-radius:var(--radius);
+  font-size:1rem;
+  outline:none;
+  transition:.3s;
+}
+input:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(0,123,255,0.15);
+}
+button{
+  margin-top:15px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  padding:12px 18px;
+  border-radius:var(--radius);
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+  width:100%;
+  box-shadow:0 0 15px rgba(0,123,255,0.2);
+}
+button:hover{
+  background:#005ce6;
+  transform:translateY(-2px);
+  box-shadow:0 0 25px rgba(0,123,255,0.35);
+}
+#qrcode{
+  margin-top:25px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+#qrcode canvas{
+  border-radius:10px;
+}
+.logo-overlay{
+  position:absolute;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  border:2px solid white;
+}
+.logo-overlay img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+footer{
+  margin-top:25px;
+  font-size:12px;
+  color:var(--muted);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Gerar QR Code</h1>
+  <p>Crie um QR Code com o selo Vitlício automaticamente.</p>
+  <input type="url" id="urlInput" placeholder="Digite ou cole a URL aqui...">
+  <button onclick="gerarQRCode()">Gerar QR Code</button>
+  <div id="qrcode">
+    <div class="logo-overlay" id="logoVitlicio">
+      <img src="https://github.com/ClenaStore/Loja/blob/main/paste/vitlicio.png?raw=true" alt="Vitlício">
+    </div>
+  </div>
+  <footer>© CB Systems • Vitlício integrado</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<script>
+function gerarQRCode(){
+  const url = document.getElementById("urlInput").value.trim();
+  const qrDiv = document.getElementById("qrcode");
+  qrDiv.innerHTML = '<div class="logo-overlay" id="logoVitlicio"><img src="https://github.com/ClenaStore/Loja/blob/main/paste/vitlicio.png?raw=true"></div>';
+  if(url === ""){
+    alert("Por favor, insira uma URL válida!");
+    return;
+  }
+  // Gerar o QR Code
+  const qrcode = new QRCode(qrDiv, {
+    text: url,
+    width: 200,
+    height: 200,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+  // Reposiciona o logo por cima
+  setTimeout(()=>{
+    const logo = document.createElement("div");
+    logo.className = "logo-overlay";
+    logo.innerHTML = `<img src="https://github.com/ClenaStore/Loja/blob/main/paste/vitlicio.png?raw=true" alt="Vitlício">`;
+    qrDiv.appendChild(logo);
+  },200);
+}
+</script>
+
+</body>
+</html>
