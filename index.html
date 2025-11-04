@@ -9,12 +9,12 @@
 <style>
 :root{
   --bg:#000;
-  --neon1:#66ffff;
-  --neon2:#ff99ff;
-  --neon3:#66ccff;
-  --neon4:#ff66aa;
+  --neon1:#00ffff;
+  --neon2:#ff00ff;
+  --neon3:#0099ff;
+  --neon4:#ff0077;
   --text:#f5f5f5;
-  --muted:#a1a1aa;
+  --muted:#cccccc;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{
@@ -31,56 +31,65 @@ video#bgvideo{
 }
 .overlay{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:radial-gradient(circle at center,rgba(0,0,0,.2),rgba(0,0,0,.9));
+  background:radial-gradient(circle at center,rgba(0,0,0,.4),rgba(0,0,0,.9));
   z-index:-2;
 }
+
+/* ===== HEADER ===== */
 header{
   position:fixed;top:0;left:0;width:100%;
   display:flex;justify-content:center;align-items:center;
   padding:10px 0;z-index:10;
-  background:rgba(0,0,0,0.3);backdrop-filter:blur(10px);
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);
 }
 header h1{
   font-family:'Orbitron',sans-serif;
-  font-size:1.5rem;color:var(--neon1);
-  text-shadow:0 0 8px var(--neon2);
+  font-size:1.6rem;color:var(--neon1);
+  text-shadow:0 0 10px var(--neon2),0 0 25px var(--neon1);
   letter-spacing:2px;
 }
 
-/* ===== HERO + BANNER ===== */
+/* ===== HERO ===== */
 .hero{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:110px 15px 60px;
   position:relative;
+  text-shadow:0 0 8px rgba(0,0,0,0.8);
 }
 .hero h2{
   font-family:'Orbitron',sans-serif;
-  font-size:1.8rem;
+  font-size:1.9rem;
   color:var(--neon1);
-  text-shadow:0 0 20px var(--neon2);
-  margin-top:15px;
+  text-shadow:0 0 20px var(--neon2),0 0 40px var(--neon1);
+  margin-top:20px;
 }
 .hero p{
-  color:var(--muted);
-  font-size:.9rem;
-  line-height:1.4;
-  margin-top:8px;
-  max-width:300px;
+  color:var(--text);
+  font-size:.95rem;
+  line-height:1.5;
+  margin-top:10px;
+  max-width:320px;
+  background:rgba(0,0,0,0.45);
+  padding:6px 10px;
+  border-radius:8px;
 }
 .btn-small{
   display:inline-block;
-  margin-top:16px;
-  padding:10px 22px;
+  margin-top:18px;
+  padding:10px 24px;
   border-radius:30px;
   background:linear-gradient(90deg,var(--neon1),var(--neon2));
   color:#000;
   text-decoration:none;
-  font-weight:600;
-  font-size:.8rem;
-  box-shadow:0 0 6px var(--neon2);
+  font-weight:700;
+  font-size:.9rem;
+  letter-spacing:1px;
+  box-shadow:0 0 12px var(--neon2);
+  transition:.3s;
 }
+.btn-small:hover{filter:brightness(1.3);}
 
-/* ===== BANNER COM LUZES SUAVES ===== */
+/* ===== BANNER COM LUZES ===== */
 .banner-wrapper{
   position:relative;
   width:90%;
@@ -92,22 +101,22 @@ header h1{
 .banner-wrapper::after{
   content:"";
   position:absolute;
-  inset:-40%;
+  inset:-30%;
   border-radius:50%;
   background:conic-gradient(from 0deg,
-    rgba(102,255,255,0.3),
-    rgba(255,153,255,0.3),
-    rgba(102,204,255,0.3),
-    rgba(255,102,170,0.3),
-    rgba(102,255,255,0.3));
-  animation:spin 15s linear infinite;
-  filter:blur(90px) brightness(0.9);
+    var(--neon1),
+    var(--neon2),
+    var(--neon3),
+    var(--neon4),
+    var(--neon1));
+  animation:spin 10s linear infinite;
+  filter:blur(70px) brightness(1.4);
   z-index:0;
-  opacity:0.6;
+  opacity:0.7;
 }
 .banner-wrapper::after{
-  animation:spin 25s linear infinite reverse;
-  opacity:.4;
+  animation:spin 16s linear infinite reverse;
+  opacity:.5;
 }
 @keyframes spin{
   0%{transform:rotate(0deg);}
@@ -120,6 +129,7 @@ header h1{
   border-radius:20px;
   overflow:hidden;
   z-index:1;
+  box-shadow:0 0 25px rgba(255,255,255,0.1);
 }
 .banner-img img{
   width:100%;
@@ -128,53 +138,64 @@ header h1{
   display:block;
 }
 
+/* ===== SEÇÕES ===== */
+section{padding:60px 15px;}
+h2.title{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.4rem;color:var(--neon1);
+  text-shadow:0 0 15px var(--neon2);
+  margin-bottom:15px;
+}
+p.desc{
+  color:var(--text);
+  font-size:.9rem;
+  max-width:320px;
+  margin:auto;
+  line-height:1.5;
+  background:rgba(0,0,0,0.45);
+  padding:6px 10px;
+  border-radius:8px;
+}
+
 /* ===== FEED ===== */
 .feed{
   display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin-top:15px;
 }
 .feed img{
   width:85px;height:85px;border-radius:50%;
-  box-shadow:0 0 10px rgba(255,153,255,0.6);
+  box-shadow:0 0 15px var(--neon2);
   cursor:pointer;object-fit:cover;
   transition:.3s;
 }
-.feed img:hover{transform:scale(1.05);box-shadow:0 0 15px var(--neon1);}
+.feed img:hover{transform:scale(1.06);box-shadow:0 0 20px var(--neon1);}
 #popup{
   display:none;
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,0.85);
+  background:rgba(0,0,0,0.9);
   justify-content:center;align-items:center;
   z-index:99;
 }
 #popup img{
   max-width:90%;max-height:80vh;border-radius:12px;
-  box-shadow:0 0 25px var(--neon2);
+  box-shadow:0 0 40px var(--neon2);
 }
 #popup span{
   position:absolute;top:15px;right:20px;
-  font-size:1.8rem;color:var(--neon1);cursor:pointer;
-  text-shadow:0 0 10px var(--neon2);
+  font-size:2rem;color:var(--neon1);cursor:pointer;
+  text-shadow:0 0 15px var(--neon2);
 }
 
 /* ===== MAPA ===== */
-section{padding:60px 15px;}
-h2.title{
-  font-family:'Orbitron',sans-serif;
-  font-size:1.4rem;color:var(--neon1);
-  text-shadow:0 0 8px var(--neon2);
-  margin-bottom:12px;
-}
-p.desc{color:var(--muted);font-size:.9rem;max-width:320px;margin:auto;line-height:1.5;}
 .map{
   border-radius:12px;overflow:hidden;
-  box-shadow:0 0 8px var(--neon1);
-  max-width:330px;margin:15px auto;
+  box-shadow:0 0 10px var(--neon1);
+  max-width:330px;margin:20px auto;
 }
 footer{
-  background:rgba(0,0,0,0.5);
+  background:rgba(0,0,0,0.7);
   text-align:center;
-  padding:18px 10px;
-  font-size:.75rem;
+  padding:20px 10px;
+  font-size:.8rem;
   color:var(--muted);
 }
 .fade-section{opacity:0;transform:translateY(30px);transition:all .8s ease;}
@@ -232,7 +253,7 @@ footer{
   <h2 class="title">CONTATO</h2>
   <p class="desc">Reservas e informações:</p>
   <a class="btn-small" href="https://wa.me/5577999792195?text=Olá,+quero+reservar+para+sábado+no+CLENA!">💬 WhatsApp</a>
-  <p style="margin-top:14px;font-size:.8rem;color:var(--muted);">
+  <p style="margin-top:14px;font-size:.85rem;color:var(--text);text-shadow:0 0 6px rgba(0,0,0,0.9);">
     Instagram: <a href="https://instagram.com/clena.oficial" target="_blank" style="color:var(--neon1);text-decoration:none;">@clena.oficial</a>
   </p>
 </section>
