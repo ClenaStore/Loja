@@ -9,8 +9,10 @@
 <style>
 :root{
   --bg:#000;
-  --neon:#00ffff;
+  --neon1:#00ffff;
   --neon2:#ff00ff;
+  --neon3:#0099ff;
+  --neon4:#ff0077;
   --text:#f5f5f5;
   --muted:#9ca3af;
 }
@@ -25,12 +27,12 @@ body{
 }
 video#bgvideo{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  object-fit:cover;z-index:-2;filter:brightness(25%) blur(2px);
+  object-fit:cover;z-index:-3;filter:brightness(25%) blur(2px);
 }
 .overlay{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:radial-gradient(circle at center,rgba(0,0,0,.3),rgba(0,0,0,.9));
-  z-index:-1;
+  background:radial-gradient(circle at center,rgba(0,0,0,.2),rgba(0,0,0,.9));
+  z-index:-2;
 }
 header{
   position:fixed;top:0;left:0;width:100%;
@@ -40,107 +42,132 @@ header{
 }
 header h1{
   font-family:'Orbitron',sans-serif;
-  font-size:1.5rem;color:var(--neon);
+  font-size:1.5rem;color:var(--neon1);
   text-shadow:0 0 10px var(--neon2);
   letter-spacing:2px;
 }
-section{padding:60px 15px;}
-h2.title{
-  font-family:'Orbitron',sans-serif;
-  font-size:1.4rem;
-  color:var(--neon);
-  text-shadow:0 0 10px var(--neon2);
-  margin-bottom:15px;
-}
 
-/* ===== HERO + PRÓXIMA ATRAÇÃO ===== */
+/* ===== HERO + BANNER ===== */
 .hero{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:100px 15px 60px;
-}
-.next-banner{
+  padding:110px 15px 60px;
   position:relative;
-  max-width:340px;
-  border-radius:14px;
-  overflow:hidden;
-  margin-bottom:8px;
 }
-.next-banner img{
-  width:100%;height:auto;display:block;
-}
-.next-banner h3{
-  margin-top:8px;
+.hero h2{
   font-family:'Orbitron',sans-serif;
-  font-size:1rem;
-  color:var(--neon2);
-  text-shadow:0 0 10px var(--neon);
+  font-size:1.9rem;
+  color:var(--neon1);
+  text-shadow:0 0 25px var(--neon2);
+  margin-top:15px;
 }
-
-/* ===== FEED ===== */
-.feed{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:15px;
-  margin-top:10px;
-}
-.feed img{
-  width:85px;height:85px;
-  border-radius:50%;
-  border:2px solid transparent;
-  box-shadow:0 0 12px var(--neon2);
-  object-fit:cover;
-  cursor:pointer;
-  transition:.3s;
-}
-.feed img:hover{transform:scale(1.05);box-shadow:0 0 20px var(--neon);}
-
-/* ===== POPUP ===== */
-#popup{
-  display:none;
-  position:fixed;
-  top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,0.8);
-  justify-content:center;align-items:center;
-  z-index:99;
-}
-#popup img{
-  max-width:90%;max-height:80vh;
-  border-radius:12px;
-  box-shadow:0 0 30px var(--neon2);
-}
-#popup span{
-  position:absolute;top:15px;right:20px;
-  font-size:1.8rem;color:var(--neon);cursor:pointer;
-  text-shadow:0 0 10px var(--neon2);
-}
-
-/* ===== MAPA ===== */
-.map{
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 0 10px var(--neon);
-  max-width:330px;
-  margin:15px auto;
-}
-p.desc{
+.hero p{
   color:var(--muted);
   font-size:.9rem;
-  max-width:320px;
-  margin:auto;
-  line-height:1.5;
+  line-height:1.4;
+  margin-top:8px;
+  max-width:300px;
 }
 .btn-small{
   display:inline-block;
-  margin-top:12px;
-  padding:8px 18px;
+  margin-top:16px;
+  padding:10px 22px;
   border-radius:30px;
-  background:linear-gradient(90deg,var(--neon),var(--neon2));
+  background:linear-gradient(90deg,var(--neon1),var(--neon2));
   color:#000;
   text-decoration:none;
   font-weight:600;
   font-size:.8rem;
-  box-shadow:0 0 8px var(--neon);
+  box-shadow:0 0 8px var(--neon2);
+}
+
+/* ===== BANNER COM LUZES ===== */
+.banner-wrapper{
+  position:relative;
+  width:90%;
+  max-width:340px;
+  aspect-ratio:16/9;
+  margin:auto;
+}
+.banner-wrapper::before,
+.banner-wrapper::after{
+  content:"";
+  position:absolute;
+  inset:-30%;
+  border-radius:50%;
+  background:conic-gradient(from 0deg,
+    var(--neon1),
+    var(--neon2),
+    var(--neon3),
+    var(--neon4),
+    var(--neon1));
+  animation:spin 8s linear infinite;
+  filter:blur(60px) brightness(1.3);
+  z-index:0;
+}
+.banner-wrapper::after{
+  animation:spin 12s linear infinite reverse;
+  opacity:.6;
+}
+@keyframes spin{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+.banner-img{
+  position:relative;
+  width:100%;
+  height:100%;
+  border-radius:20px;
+  overflow:hidden;
+  z-index:1;
+}
+.banner-img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* ===== FEED ===== */
+.feed{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin-top:15px;
+}
+.feed img{
+  width:85px;height:85px;border-radius:50%;
+  box-shadow:0 0 12px var(--neon2);
+  cursor:pointer;object-fit:cover;
+  transition:.3s;
+}
+.feed img:hover{transform:scale(1.05);box-shadow:0 0 18px var(--neon1);}
+#popup{
+  display:none;
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.85);
+  justify-content:center;align-items:center;
+  z-index:99;
+}
+#popup img{
+  max-width:90%;max-height:80vh;border-radius:12px;
+  box-shadow:0 0 30px var(--neon2);
+}
+#popup span{
+  position:absolute;top:15px;right:20px;
+  font-size:1.8rem;color:var(--neon1);cursor:pointer;
+  text-shadow:0 0 10px var(--neon2);
+}
+
+/* ===== MAPA ===== */
+section{padding:60px 15px;}
+h2.title{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.4rem;color:var(--neon1);
+  text-shadow:0 0 10px var(--neon2);
+  margin-bottom:12px;
+}
+p.desc{color:var(--muted);font-size:.9rem;max-width:320px;margin:auto;line-height:1.5;}
+.map{
+  border-radius:12px;overflow:hidden;
+  box-shadow:0 0 10px var(--neon1);
+  max-width:330px;margin:15px auto;
 }
 footer{
   background:rgba(0,0,0,0.6);
@@ -149,11 +176,7 @@ footer{
   font-size:.75rem;
   color:var(--muted);
 }
-.fade-section{
-  opacity:0;
-  transform:translateY(30px);
-  transition:all .8s ease;
-}
+.fade-section{opacity:0;transform:translateY(30px);transition:all .8s ease;}
 .fade-section.show{opacity:1;transform:translateY(0);}
 </style>
 </head>
@@ -164,20 +187,19 @@ footer{
 </video>
 <div class="overlay"></div>
 
-<header><h1>CLENA CLUB</h1></header>
+<header><h1>CLENA</h1></header>
 
-<!-- ===== HERO + BANNER ===== -->
 <section class="hero fade-section" id="home">
-  <div class="next-banner">
-    <img src="https://images.unsplash.com/photo-1556767576-bd41ca986b05?auto=format&fit=crop&w=900&q=80" alt="Próxima atração">
-    <h3>PRÓXIMA ATRAÇÃO — SÁBADO 22:30H</h3>
+  <div class="banner-wrapper">
+    <div class="banner-img">
+      <img src="https://github.com/ClenaStore/Loja/blob/main/paste/Social%20Media%20Evento%20Cantores%20e%20Samba.png?raw=true" alt="Próxima atração">
+    </div>
   </div>
-  <h2 style="font-family:'Orbitron',sans-serif;color:var(--neon);text-shadow:0 0 15px var(--neon2);font-size:1.8rem;">NEON LOUNGE</h2>
-  <p style="color:var(--muted);margin-top:10px;font-size:.9rem;">Aberto apenas aos sábados.<br>Uma noite de luz, som e energia no universo CLENA.</p>
+  <h2>PRÓXIMA ATRAÇÃO — SÁBADO 23H</h2>
+  <p>Aberto apenas aos sábados.<br>Uma noite de luz, som e energia no universo CLENA.</p>
   <a class="btn-small" href="#ingressos">🎟️ Ingressos</a>
 </section>
 
-<!-- ===== GALERIA ===== -->
 <section id="galeria" class="fade-section">
   <h2 class="title">NOSSO ESPAÇO</h2>
   <p class="desc">Explore o ambiente CLENA — luzes, neon e energia única.</p>
@@ -191,7 +213,6 @@ footer{
   </div>
 </section>
 
-<!-- ===== ENDEREÇO ===== -->
 <section id="local" class="fade-section">
   <h2 class="title">ONDE ESTAMOS</h2>
   <p class="desc">📍 Rua das Luzes 77, Bairro Central — Barreiras / BA<br>Aberto somente aos sábados, das 23h às 04h.</p>
@@ -200,33 +221,29 @@ footer{
   </div>
 </section>
 
-<!-- ===== INGRESSOS ===== -->
 <section id="ingressos" class="fade-section">
   <h2 class="title">INGRESSOS</h2>
   <p class="desc">Entrada limitada. Garanta seu ingresso antecipado via WhatsApp.</p>
   <a class="btn-small" href="https://wa.me/5577999792195?text=Quero+comprar+meu+ingresso+para+sábado+no+CLENA!">Comprar Agora</a>
 </section>
 
-<!-- ===== CONTATO ===== -->
 <section id="contato" class="fade-section">
   <h2 class="title">CONTATO</h2>
   <p class="desc">Reservas e informações:</p>
   <a class="btn-small" href="https://wa.me/5577999792195?text=Olá,+quero+reservar+para+sábado+no+CLENA!">💬 WhatsApp</a>
   <p style="margin-top:14px;font-size:.8rem;color:var(--muted);">
-    Instagram: <a href="https://instagram.com/clena.oficial" target="_blank" style="color:var(--neon);text-decoration:none;">@clena.oficial</a>
+    Instagram: <a href="https://instagram.com/clena.oficial" target="_blank" style="color:var(--neon1);text-decoration:none;">@clena.oficial</a>
   </p>
 </section>
 
 <footer>© 2025 CLENA • Neon Lounge • clena.com.br</footer>
 
-<!-- ===== POPUP DE FOTO ===== -->
 <div id="popup">
   <span onclick="fecharPopup()">&times;</span>
   <img id="popup-img" src="" alt="Foto ampliada">
 </div>
 
 <script>
-// animações
 const observer=new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting){entry.target.classList.add('show');}
@@ -234,7 +251,6 @@ const observer=new IntersectionObserver(entries=>{
 },{threshold:0.15});
 document.querySelectorAll('.fade-section').forEach(el=>observer.observe(el));
 
-// popup de fotos
 const popup=document.getElementById('popup');
 const popupImg=document.getElementById('popup-img');
 function fecharPopup(){popup.style.display='none';}
