@@ -3,103 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CLENA • Saturday Experience</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<title>CLENA • Neon Lounge</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <link rel="icon" href="https://github.com/ClenaStore/grupodv/blob/main/paste/logo-clena.png?raw=true">
 
 <style>
 :root{
-  --gold:#d4af37;--accent:#b8860b;--bg:#05070f;
-  --text:#f8fafc;--muted:#9ca3af;
+  --bg:#000000;
+  --neon:#00ffff;
+  --neon2:#ff00ff;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   background:var(--bg);
-  font-family:'Inter',sans-serif;
   color:var(--text);
+  font-family:'Inter',sans-serif;
   overflow-x:hidden;
   scroll-behavior:smooth;
 }
-video#bgvideo{
+#bgvideo{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  object-fit:cover;z-index:-2;filter:brightness(35%) blur(1px);
+  object-fit:cover;z-index:-2;filter:brightness(25%) blur(2px);
 }
 .overlay{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:linear-gradient(180deg,rgba(0,0,0,.7),rgba(0,0,0,.9));
+  background:radial-gradient(circle at center,rgba(0,0,0,.3),rgba(0,0,0,.9));
   z-index:-1;
 }
 header{
   position:fixed;top:0;left:0;width:100%;
   display:flex;justify-content:space-between;align-items:center;
-  padding:20px 50px;z-index:10;
-  background:rgba(0,0,0,0.25);backdrop-filter:blur(10px);
+  padding:20px 40px;z-index:10;
+  background:rgba(0,0,0,0.2);backdrop-filter:blur(10px);
 }
 header h1{
-  font-family:'Playfair Display',serif;
-  color:var(--gold);font-size:1.8rem;
-  text-shadow:0 0 15px var(--accent);
+  font-family:'Orbitron',sans-serif;
+  font-size:1.8rem;color:var(--neon);
+  text-shadow:0 0 10px var(--neon),0 0 20px var(--neon2);
+  letter-spacing:2px;
 }
 nav a{
   color:var(--text);text-decoration:none;margin-left:25px;
-  font-weight:500;transition:.3s;
+  font-weight:600;transition:.3s;
 }
-nav a:hover{color:var(--gold);}
+nav a:hover{color:var(--neon);}
 .hero{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:100vh;text-align:center;padding:0 20px;
+  height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:0 20px;
 }
 .hero h2{
-  font-family:'Playfair Display',serif;
-  font-size:3.5rem;color:var(--gold);
-  animation:glow 3s ease-in-out infinite alternate;
+  font-family:'Orbitron',sans-serif;
+  font-size:3.5rem;letter-spacing:4px;
+  color:var(--neon);
+  text-shadow:0 0 20px var(--neon),0 0 40px var(--neon2);
+  animation:flicker 3s infinite alternate;
 }
-@keyframes glow{
-  from{text-shadow:0 0 10px var(--accent);}
-  to{text-shadow:0 0 40px var(--gold),0 0 80px var(--accent);}
+@keyframes flicker{
+  from{text-shadow:0 0 10px var(--neon),0 0 30px var(--neon2);}
+  to{text-shadow:0 0 20px var(--neon2),0 0 60px var(--neon);}
 }
-.hero p{max-width:600px;color:var(--muted);margin-top:10px;font-size:1.2rem;}
+.hero p{color:var(--muted);margin-top:15px;max-width:600px;font-size:1.1rem;}
 .btn{
-  display:inline-block;margin-top:30px;padding:14px 36px;
-  border-radius:40px;background:var(--accent);
-  color:#fff;text-decoration:none;font-weight:600;
+  display:inline-block;margin-top:35px;padding:14px 36px;
+  border-radius:40px;
+  background:linear-gradient(90deg,var(--neon),var(--neon2));
+  color:#000;text-decoration:none;font-weight:700;
   letter-spacing:1px;transition:.3s;
+  box-shadow:0 0 20px var(--neon2);
 }
-.btn:hover{background:var(--gold);color:#000;}
+.btn:hover{filter:brightness(1.3);box-shadow:0 0 30px var(--neon);}
 section{padding:100px 20px;text-align:center;}
 h2.title{
-  font-family:'Playfair Display',serif;
-  font-size:2.5rem;color:var(--gold);margin-bottom:15px;
+  font-family:'Orbitron',sans-serif;
+  font-size:2.3rem;color:var(--neon);
+  text-shadow:0 0 20px var(--neon2);
+  margin-bottom:20px;
 }
 .cards{
-  display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;
-  gap:20px;margin-top:40px;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:25px;
 }
 .card{
-  background:rgba(21,27,40,0.85);
-  border-radius:20px;padding:25px;max-width:300px;
-  box-shadow:0 0 25px rgba(0,0,0,.4);
-  transition:.4s;backdrop-filter:blur(8px);
-}
-.card:hover{transform:translateY(-5px);box-shadow:0 0 30px var(--accent);}
-.card h3{font-family:'Playfair Display',serif;color:var(--gold);}
-.card p{color:var(--muted);margin:10px 0 20px;font-size:.95rem;}
-footer{
   background:rgba(0,0,0,0.5);
+  border:2px solid var(--neon2);
+  border-radius:20px;padding:25px;
+  width:300px;backdrop-filter:blur(6px);
+  box-shadow:0 0 15px var(--neon2);
+  transition:.4s;
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 0 25px var(--neon);}
+.card h3{
+  font-family:'Orbitron',sans-serif;
+  color:var(--neon2);margin-bottom:10px;
+}
+.card p{color:var(--muted);font-size:.95rem;}
+footer{
+  background:rgba(0,0,0,0.6);
   text-align:center;padding:30px;color:var(--muted);
   font-size:.9rem;
 }
 .music-control{
   position:fixed;bottom:20px;right:20px;
-  background:rgba(0,0,0,0.6);
-  border:1px solid var(--gold);
-  color:var(--gold);padding:10px 15px;border-radius:30px;
+  background:rgba(0,0,0,0.5);
+  border:1px solid var(--neon);
+  color:var(--neon);padding:10px 15px;border-radius:30px;
   cursor:pointer;z-index:20;
-  font-size:.9rem;
-  backdrop-filter:blur(5px);
+  font-size:.9rem;backdrop-filter:blur(5px);
   transition:.3s;
 }
-.music-control:hover{background:var(--gold);color:#000;}
+.music-control:hover{
+  background:var(--neon2);
+  color:#000;
+  box-shadow:0 0 20px var(--neon2);
+}
 </style>
 </head>
 <body>
@@ -121,50 +138,52 @@ footer{
 </header>
 
 <section id="home" class="hero">
-  <h2>Saturday Experience</h2>
-  <p>Aberto apenas aos sábados — uma noite por semana, um novo universo de música, luz e energia.  
-     CLENA é exclusividade, vibração e estilo.</p>
-  <a class="btn" href="#ingressos">🎟️ Garantir Ingresso</a>
+  <h2>NEON LOUNGE</h2>
+  <p>Aberto apenas aos sábados. Uma noite de luz, som e vibração no universo CLENA.  
+     O futuro da noite começa aqui.</p>
+  <a class="btn" href="#ingressos">🎟️ INGRESSOS</a>
 </section>
 
 <section id="evento">
-  <h2 class="title">Próximo Sábado</h2>
+  <h2 class="title">PRÓXIMO SÁBADO</h2>
   <div class="cards">
     <div class="card">
-      <h3>CLENA NIGHT ✨</h3>
-      <p>Sábado, 23h — DJs convidados, iluminação dourada e coquetéis autorais.  
-      A entrada é limitada e as reservas esgotam rápido.</p>
-      <a class="btn" href="https://wa.me/5577999792195?text=Quero+garantir+meu+ingresso+para+o+CLENA+Night+de+sábado!">Garantir Ingresso</a>
+      <h3>NEON VIBES ⚡</h3>
+      <p>23h • DJs convidados, luzes ultravioletas, coquetéis neon e projeções visuais.  
+      A noite mais energética da cidade — só no CLENA.</p>
+      <a class="btn" href="https://wa.me/5577999792195?text=Quero+garantir+meu+ingresso+para+o+Neon+Vibes+no+CLENA!">Garantir Ingresso</a>
     </div>
   </div>
 </section>
 
 <section id="ingressos">
-  <h2 class="title">Ingressos</h2>
+  <h2 class="title">INGRESSOS</h2>
   <p style="color:var(--muted);max-width:650px;margin:auto;">
-    O CLENA abre apenas aos sábados, com lotação reduzida para garantir a experiência ideal.  
-    Garanta seu ingresso antecipado via WhatsApp. Pagamento via Pix ou cartão.
+    A entrada é limitada e exclusiva.  
+    Garanta seu ingresso antecipado via WhatsApp — Pix, cartão ou reserva VIP.
   </p>
-  <a class="btn" href="https://wa.me/5577999792195?text=Quero+comprar+meu+ingresso+para+sábado+no+CLENA!">Comprar Agora</a>
+  <a class="btn" href="https://wa.me/5577999792195?text=Quero+comprar+meu+ingresso+para+sábado+no+CLENA!">COMPRAR AGORA</a>
 </section>
 
 <section id="sobre">
-  <h2 class="title">Sobre o CLENA</h2>
+  <h2 class="title">SOBRE O CLENA</h2>
   <p style="max-width:700px;margin:auto;color:var(--muted);">
-    O CLENA nasceu como um espaço criativo e se tornou o símbolo de uma experiência íntima e imersiva.  
-    Um lounge iluminado, com som de alta qualidade e um público seleto que entende o valor de uma boa noite.  
-    Aberto somente aos sábados — porque o que é raro, é especial.
+    O CLENA é um projeto de imersão audiovisual em formato de mini boate.  
+    Um espaço criado dentro de casa para quem vive intensamente a música, o design e a luz.  
+    Totalmente neon, com som envolvente, atmosfera tecnológica e um toque de exclusividade.
   </p>
 </section>
 
 <section id="contato">
-  <h2 class="title">Contato</h2>
+  <h2 class="title">CONTATO</h2>
   <p style="color:var(--muted);margin-bottom:20px;">Reservas e informações apenas via WhatsApp.</p>
-  <a class="btn" href="https://wa.me/5577999792195?text=Olá,+quero+reservar+para+sábado+no+CLENA!">💬 WhatsApp</a>
-  <p style="margin-top:25px;font-size:.9rem;color:var(--muted);">Instagram: <a href="https://instagram.com/clena.oficial" target="_blank" style="color:var(--gold);text-decoration:none;">@clena.oficial</a></p>
+  <a class="btn" href="https://wa.me/5577999792195?text=Olá,+quero+reservar+para+sábado+no+CLENA!">💬 WHATSAPP</a>
+  <p style="margin-top:25px;font-size:.9rem;color:var(--muted);">
+    Instagram: <a href="https://instagram.com/clena.oficial" target="_blank" style="color:var(--neon);text-decoration:none;">@clena.oficial</a>
+  </p>
 </section>
 
-<footer>© 2025 CLENA • Saturday Experience • clena.com.br</footer>
+<footer>© 2025 CLENA • Neon Lounge • clena.com.br</footer>
 
 <audio id="bgmusic" loop>
   <source src="https://cdn.pixabay.com/download/audio/2023/03/30/audio_84b0c7b1aa.mp3?filename=deep-house-lounge-143468.mp3" type="audio/mpeg">
