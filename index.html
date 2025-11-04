@@ -35,22 +35,22 @@ video#bgvideo{
 header{
   position:fixed;top:0;left:0;width:100%;
   display:flex;justify-content:center;align-items:center;
-  padding:10px 0;z-index:10;
+  padding:8px 0;z-index:10;
   background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);
 }
 header h1{
   font-family:'Orbitron',sans-serif;
-  font-size:1.5rem;color:var(--neon);
+  font-size:1.4rem;color:var(--neon);
   text-shadow:0 0 8px var(--neon2);
   letter-spacing:2px;
 }
 .hero{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:90vh;padding:0 20px;
+  height:90vh;padding:0 15px;
 }
 .hero h2{
   font-family:'Orbitron',sans-serif;
-  font-size:2rem;letter-spacing:2px;
+  font-size:1.8rem;letter-spacing:2px;
   color:var(--neon);
   text-shadow:0 0 20px var(--neon),0 0 40px var(--neon2);
   animation:flicker 3s infinite alternate;
@@ -61,46 +61,46 @@ header h1{
 }
 .hero p{
   color:var(--muted);
-  margin-top:12px;
-  font-size:.95rem;
-  line-height:1.5;
-  max-width:320px;
+  margin-top:10px;
+  font-size:.9rem;
+  line-height:1.4;
+  max-width:300px;
 }
 .btn{
   display:inline-block;
-  margin-top:25px;
-  padding:12px 28px;
+  margin-top:20px;
+  padding:10px 24px;
   border-radius:40px;
   background:linear-gradient(90deg,var(--neon),var(--neon2));
   color:#000;
   text-decoration:none;
   font-weight:700;
-  font-size:.95rem;
+  font-size:.9rem;
   letter-spacing:1px;
-  box-shadow:0 0 12px var(--neon2);
+  box-shadow:0 0 10px var(--neon2);
   transition:.3s;
 }
 .btn:hover{filter:brightness(1.3);}
 section{
-  padding:60px 20px 70px;
+  padding:45px 15px 55px;
 }
 h2.title{
   font-family:'Orbitron',sans-serif;
-  font-size:1.4rem;
+  font-size:1.3rem;
   color:var(--neon);
   text-shadow:0 0 10px var(--neon2);
-  margin-bottom:15px;
+  margin-bottom:12px;
 }
 .card{
   background:rgba(0,0,0,0.6);
   border:1px solid var(--neon2);
-  border-radius:16px;
-  padding:18px;
-  max-width:300px;
-  margin:0 auto 20px;
-  box-shadow:0 0 10px var(--neon2);
+  border-radius:14px;
+  padding:15px;
+  max-width:290px;
+  margin:10px auto;
+  box-shadow:0 0 8px var(--neon2);
   opacity:0;
-  transform:translateY(40px);
+  transform:translateY(30px);
   transition:all .8s ease;
 }
 .card.show{
@@ -110,24 +110,24 @@ h2.title{
 .card h3{
   font-family:'Orbitron',sans-serif;
   color:var(--neon2);
-  margin-bottom:8px;
-  font-size:1rem;
+  margin-bottom:6px;
+  font-size:.95rem;
 }
 .card p{
   color:var(--muted);
-  font-size:.9rem;
-  line-height:1.4;
+  font-size:.85rem;
+  line-height:1.3;
 }
 footer{
   background:rgba(0,0,0,0.6);
   text-align:center;
-  padding:20px 10px;
-  font-size:.8rem;
+  padding:18px 10px;
+  font-size:.75rem;
   color:var(--muted);
 }
 .fade-section{
   opacity:0;
-  transform:translateY(40px);
+  transform:translateY(30px);
   transition:all .8s ease;
 }
 .fade-section.show{
@@ -136,15 +136,15 @@ footer{
 }
 a.btn-small{
   display:inline-block;
-  margin-top:18px;
-  padding:10px 24px;
+  margin-top:14px;
+  padding:8px 18px;
   border-radius:30px;
   background:linear-gradient(90deg,var(--neon),var(--neon2));
   color:#000;
   text-decoration:none;
   font-weight:600;
-  font-size:.85rem;
-  box-shadow:0 0 10px var(--neon);
+  font-size:.8rem;
+  box-shadow:0 0 8px var(--neon);
 }
 </style>
 </head>
@@ -174,7 +174,7 @@ a.btn-small{
 
 <section id="ingressos" class="fade-section">
   <h2 class="title">INGRESSOS</h2>
-  <p style="color:var(--muted);max-width:300px;margin:auto;">
+  <p style="color:var(--muted);max-width:280px;margin:auto;">
     Entrada limitada.<br>Garanta seu ingresso via WhatsApp.
   </p>
   <a class="btn-small" href="https://wa.me/5577999792195?text=Quero+comprar+meu+ingresso+para+sábado+no+CLENA!">Comprar Agora</a>
@@ -182,7 +182,7 @@ a.btn-small{
 
 <section id="sobre" class="fade-section">
   <h2 class="title">SOBRE</h2>
-  <p style="color:var(--muted);max-width:300px;margin:auto;">
+  <p style="color:var(--muted);max-width:280px;margin:auto;">
     O CLENA é um lounge neon privado — uma mini boate digital.  
     Luz, música e design em um espaço único dentro de casa.
   </p>
@@ -190,9 +190,9 @@ a.btn-small{
 
 <section id="contato" class="fade-section">
   <h2 class="title">CONTATO</h2>
-  <p style="color:var(--muted);margin-bottom:12px;">Reservas e informações:</p>
+  <p style="color:var(--muted);margin-bottom:10px;">Reservas e informações:</p>
   <a class="btn-small" href="https://wa.me/5577999792195?text=Olá,+quero+reservar+para+sábado+no+CLENA!">💬 WhatsApp</a>
-  <p style="margin-top:18px;font-size:.8rem;color:var(--muted);">
+  <p style="margin-top:14px;font-size:.75rem;color:var(--muted);">
     Instagram: <a href="https://instagram.com/clena.oficial" target="_blank" style="color:var(--neon);text-decoration:none;">@clena.oficial</a>
   </p>
 </section>
@@ -200,7 +200,7 @@ a.btn-small{
 <footer>© 2025 CLENA • Neon Lounge • clena.com.br</footer>
 
 <script>
-// animação suave de rolagem
+// efeitos de rolagem (fade-in)
 const observer=new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting){entry.target.classList.add('show');}
