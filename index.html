@@ -23,34 +23,40 @@ body{
   scroll-behavior:smooth;
   text-align:center;
 }
+
+/* ====== BACKGROUND ====== */
 video#bgvideo{
   position:fixed;top:0;left:0;width:100%;height:100%;
   object-fit:cover;z-index:-2;filter:brightness(25%) blur(2px);
 }
 .overlay{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:radial-gradient(circle at center,rgba(0,0,0,.2),rgba(0,0,0,.9));
+  background:radial-gradient(circle at center,rgba(0,0,0,.3),rgba(0,0,0,.9));
   z-index:-1;
 }
+
+/* ====== HEADER ====== */
 header{
   position:fixed;top:0;left:0;width:100%;
   display:flex;justify-content:center;align-items:center;
-  padding:8px 0;z-index:10;
-  background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);
+  padding:10px 0;z-index:10;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);
 }
 header h1{
   font-family:'Orbitron',sans-serif;
-  font-size:1.4rem;color:var(--neon);
-  text-shadow:0 0 8px var(--neon2);
+  font-size:1.5rem;color:var(--neon);
+  text-shadow:0 0 10px var(--neon2);
   letter-spacing:2px;
 }
+
+/* ====== HERO ====== */
 .hero{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   height:90vh;padding:0 15px;
 }
 .hero h2{
   font-family:'Orbitron',sans-serif;
-  font-size:1.8rem;letter-spacing:2px;
+  font-size:2rem;letter-spacing:2px;
   color:var(--neon);
   text-shadow:0 0 20px var(--neon),0 0 40px var(--neon2);
   animation:flicker 3s infinite alternate;
@@ -62,9 +68,9 @@ header h1{
 .hero p{
   color:var(--muted);
   margin-top:10px;
-  font-size:.9rem;
+  font-size:.95rem;
   line-height:1.4;
-  max-width:300px;
+  max-width:320px;
 }
 .btn{
   display:inline-block;
@@ -77,36 +83,66 @@ header h1{
   font-weight:700;
   font-size:.9rem;
   letter-spacing:1px;
-  box-shadow:0 0 10px var(--neon2);
+  box-shadow:0 0 12px var(--neon2);
   transition:.3s;
 }
 .btn:hover{filter:brightness(1.3);}
-section{
-  padding:45px 15px 55px;
-}
+
+/* ====== SEÇÕES ====== */
+section{padding:60px 15px;}
 h2.title{
   font-family:'Orbitron',sans-serif;
-  font-size:1.3rem;
+  font-size:1.4rem;
   color:var(--neon);
   text-shadow:0 0 10px var(--neon2);
-  margin-bottom:12px;
+  margin-bottom:15px;
 }
+p.desc{
+  color:var(--muted);
+  font-size:.9rem;
+  max-width:320px;
+  margin:auto;
+  line-height:1.5;
+}
+
+/* ====== BANNER ====== */
+.banner{
+  position:relative;
+  border-radius:16px;
+  overflow:hidden;
+  max-width:330px;
+  margin:0 auto;
+  box-shadow:0 0 15px var(--neon2);
+}
+.banner img{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.banner span{
+  position:absolute;
+  bottom:0;left:0;width:100%;
+  background:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.2));
+  padding:12px 10px;font-size:.9rem;
+  color:var(--neon);
+  font-weight:600;
+  text-transform:uppercase;
+}
+
+/* ====== CARD ====== */
 .card{
   background:rgba(0,0,0,0.6);
   border:1px solid var(--neon2);
   border-radius:14px;
   padding:15px;
   max-width:290px;
-  margin:10px auto;
+  margin:12px auto;
   box-shadow:0 0 8px var(--neon2);
   opacity:0;
   transform:translateY(30px);
   transition:all .8s ease;
 }
-.card.show{
-  opacity:1;
-  transform:translateY(0);
-}
+.card.show{opacity:1;transform:translateY(0);}
 .card h3{
   font-family:'Orbitron',sans-serif;
   color:var(--neon2);
@@ -118,6 +154,47 @@ h2.title{
   font-size:.85rem;
   line-height:1.3;
 }
+.btn-small{
+  display:inline-block;
+  margin-top:12px;
+  padding:8px 18px;
+  border-radius:30px;
+  background:linear-gradient(90deg,var(--neon),var(--neon2));
+  color:#000;
+  text-decoration:none;
+  font-weight:600;
+  font-size:.8rem;
+  box-shadow:0 0 8px var(--neon);
+}
+
+/* ====== FEED ====== */
+.feed{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  margin-top:10px;
+}
+.feed img{
+  width:85px;height:85px;
+  border-radius:50%;
+  border:2px solid var(--neon2);
+  box-shadow:0 0 12px var(--neon2);
+  object-fit:cover;
+  transition:.3s;
+}
+.feed img:hover{transform:scale(1.08);}
+
+/* ====== ENDEREÇO ====== */
+.map{
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 0 10px var(--neon);
+  max-width:330px;
+  margin:15px auto;
+}
+
+/* ====== FOOTER ====== */
 footer{
   background:rgba(0,0,0,0.6);
   text-align:center;
@@ -130,22 +207,7 @@ footer{
   transform:translateY(30px);
   transition:all .8s ease;
 }
-.fade-section.show{
-  opacity:1;
-  transform:translateY(0);
-}
-a.btn-small{
-  display:inline-block;
-  margin-top:14px;
-  padding:8px 18px;
-  border-radius:30px;
-  background:linear-gradient(90deg,var(--neon),var(--neon2));
-  color:#000;
-  text-decoration:none;
-  font-weight:600;
-  font-size:.8rem;
-  box-shadow:0 0 8px var(--neon);
-}
+.fade-section.show{opacity:1;transform:translateY(0);}
 </style>
 </head>
 <body>
@@ -157,12 +219,24 @@ a.btn-small{
 
 <header><h1>CLENA</h1></header>
 
+<!-- ===== HERO ===== -->
 <section class="hero fade-section" id="home">
   <h2>NEON LOUNGE</h2>
   <p>Aberto apenas aos sábados.<br>Uma noite de luz, som e energia no universo CLENA.</p>
   <a class="btn" href="#ingressos">🎟️ Ingressos</a>
 </section>
 
+<!-- ===== BANNER ===== -->
+<section id="banner" class="fade-section">
+  <h2 class="title">APRESENTAÇÕES</h2>
+  <div class="banner">
+    <img src="https://images.unsplash.com/photo-1556767576-bd41ca986b05?auto=format&fit=crop&w=800&q=60" alt="Show">
+    <span>DJ LINE-UP • NEON NIGHT</span>
+  </div>
+  <p class="desc">Acompanhe os artistas e performances exclusivas da próxima noite CLENA. Atualizado toda semana.</p>
+</section>
+
+<!-- ===== EVENTO ===== -->
 <section id="evento" class="fade-section">
   <h2 class="title">PRÓXIMO SÁBADO</h2>
   <div class="card">
@@ -172,27 +246,42 @@ a.btn-small{
   </div>
 </section>
 
+<!-- ===== FEED ===== -->
+<section id="galeria" class="fade-section">
+  <h2 class="title">NOSSO ESPAÇO</h2>
+  <p class="desc">Confira o visual do CLENA Lounge — design imersivo, luz neon e energia única.</p>
+  <div class="feed">
+    <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=300&q=60">
+    <img src="https://images.unsplash.com/photo-1556767576-bd41ca986b05?auto=format&fit=crop&w=300&q=60">
+    <img src="https://images.unsplash.com/photo-1603190287605-0593e5c04f6e?auto=format&fit=crop&w=300&q=60">
+    <img src="https://images.unsplash.com/photo-1614622086927-36e2362994cb?auto=format&fit=crop&w=300&q=60">
+    <img src="https://images.unsplash.com/photo-1519677100203-a0e668c92439?auto=format&fit=crop&w=300&q=60">
+    <img src="https://images.unsplash.com/photo-1574966749495-cb49e93f21ea?auto=format&fit=crop&w=300&q=60">
+  </div>
+</section>
+
+<!-- ===== ENDEREÇO ===== -->
+<section id="local" class="fade-section">
+  <h2 class="title">ONDE ESTAMOS</h2>
+  <p class="desc">📍 Rua das Luzes 77, Bairro Central — Barreiras / BA<br>Aberto somente aos sábados, das 23h às 04h.</p>
+  <div class="map">
+    <iframe src="https://www.google.com/maps?q=Barreiras,+BA&output=embed" width="100%" height="220" style="border:0;"></iframe>
+  </div>
+</section>
+
+<!-- ===== INGRESSOS ===== -->
 <section id="ingressos" class="fade-section">
   <h2 class="title">INGRESSOS</h2>
-  <p style="color:var(--muted);max-width:280px;margin:auto;">
-    Entrada limitada.<br>Garanta seu ingresso via WhatsApp.
-  </p>
+  <p class="desc">Entrada limitada. Garanta seu ingresso antecipado via WhatsApp.</p>
   <a class="btn-small" href="https://wa.me/5577999792195?text=Quero+comprar+meu+ingresso+para+sábado+no+CLENA!">Comprar Agora</a>
 </section>
 
-<section id="sobre" class="fade-section">
-  <h2 class="title">SOBRE</h2>
-  <p style="color:var(--muted);max-width:280px;margin:auto;">
-    O CLENA é um lounge neon privado — uma mini boate digital.  
-    Luz, música e design em um espaço único dentro de casa.
-  </p>
-</section>
-
+<!-- ===== CONTATO ===== -->
 <section id="contato" class="fade-section">
   <h2 class="title">CONTATO</h2>
-  <p style="color:var(--muted);margin-bottom:10px;">Reservas e informações:</p>
+  <p class="desc">Reservas e informações:</p>
   <a class="btn-small" href="https://wa.me/5577999792195?text=Olá,+quero+reservar+para+sábado+no+CLENA!">💬 WhatsApp</a>
-  <p style="margin-top:14px;font-size:.75rem;color:var(--muted);">
+  <p style="margin-top:14px;font-size:.8rem;color:var(--muted);">
     Instagram: <a href="https://instagram.com/clena.oficial" target="_blank" style="color:var(--neon);text-decoration:none;">@clena.oficial</a>
   </p>
 </section>
@@ -200,12 +289,12 @@ a.btn-small{
 <footer>© 2025 CLENA • Neon Lounge • clena.com.br</footer>
 
 <script>
-// efeitos de rolagem (fade-in)
+// fade e rolagem suave
 const observer=new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting){entry.target.classList.add('show');}
   });
-},{threshold:0.2});
+},{threshold:0.15});
 document.querySelectorAll('.fade-section, .card').forEach(el=>observer.observe(el));
 </script>
 
