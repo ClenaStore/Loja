@@ -23,8 +23,6 @@ body{
   scroll-behavior:smooth;
   text-align:center;
 }
-
-/* ====== BACKGROUND ====== */
 video#bgvideo{
   position:fixed;top:0;left:0;width:100%;height:100%;
   object-fit:cover;z-index:-2;filter:brightness(25%) blur(2px);
@@ -34,13 +32,11 @@ video#bgvideo{
   background:radial-gradient(circle at center,rgba(0,0,0,.3),rgba(0,0,0,.9));
   z-index:-1;
 }
-
-/* ====== HEADER ====== */
 header{
   position:fixed;top:0;left:0;width:100%;
   display:flex;justify-content:center;align-items:center;
   padding:10px 0;z-index:10;
-  background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);
+  background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);
 }
 header h1{
   font-family:'Orbitron',sans-serif;
@@ -48,47 +44,6 @@ header h1{
   text-shadow:0 0 10px var(--neon2);
   letter-spacing:2px;
 }
-
-/* ====== HERO ====== */
-.hero{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:90vh;padding:0 15px;
-}
-.hero h2{
-  font-family:'Orbitron',sans-serif;
-  font-size:2rem;letter-spacing:2px;
-  color:var(--neon);
-  text-shadow:0 0 20px var(--neon),0 0 40px var(--neon2);
-  animation:flicker 3s infinite alternate;
-}
-@keyframes flicker{
-  from{text-shadow:0 0 10px var(--neon);}
-  to{text-shadow:0 0 25px var(--neon2);}
-}
-.hero p{
-  color:var(--muted);
-  margin-top:10px;
-  font-size:.95rem;
-  line-height:1.4;
-  max-width:320px;
-}
-.btn{
-  display:inline-block;
-  margin-top:20px;
-  padding:10px 24px;
-  border-radius:40px;
-  background:linear-gradient(90deg,var(--neon),var(--neon2));
-  color:#000;
-  text-decoration:none;
-  font-weight:700;
-  font-size:.9rem;
-  letter-spacing:1px;
-  box-shadow:0 0 12px var(--neon2);
-  transition:.3s;
-}
-.btn:hover{filter:brightness(1.3);}
-
-/* ====== SEÇÕES ====== */
 section{padding:60px 15px;}
 h2.title{
   font-family:'Orbitron',sans-serif;
@@ -97,62 +52,83 @@ h2.title{
   text-shadow:0 0 10px var(--neon2);
   margin-bottom:15px;
 }
+
+/* ===== HERO + PRÓXIMA ATRAÇÃO ===== */
+.hero{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:100px 15px 60px;
+}
+.next-banner{
+  position:relative;
+  max-width:340px;
+  border-radius:14px;
+  overflow:hidden;
+  margin-bottom:8px;
+}
+.next-banner img{
+  width:100%;height:auto;display:block;
+}
+.next-banner h3{
+  margin-top:8px;
+  font-family:'Orbitron',sans-serif;
+  font-size:1rem;
+  color:var(--neon2);
+  text-shadow:0 0 10px var(--neon);
+}
+
+/* ===== FEED ===== */
+.feed{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  margin-top:10px;
+}
+.feed img{
+  width:85px;height:85px;
+  border-radius:50%;
+  border:2px solid transparent;
+  box-shadow:0 0 12px var(--neon2);
+  object-fit:cover;
+  cursor:pointer;
+  transition:.3s;
+}
+.feed img:hover{transform:scale(1.05);box-shadow:0 0 20px var(--neon);}
+
+/* ===== POPUP ===== */
+#popup{
+  display:none;
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.8);
+  justify-content:center;align-items:center;
+  z-index:99;
+}
+#popup img{
+  max-width:90%;max-height:80vh;
+  border-radius:12px;
+  box-shadow:0 0 30px var(--neon2);
+}
+#popup span{
+  position:absolute;top:15px;right:20px;
+  font-size:1.8rem;color:var(--neon);cursor:pointer;
+  text-shadow:0 0 10px var(--neon2);
+}
+
+/* ===== MAPA ===== */
+.map{
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 0 10px var(--neon);
+  max-width:330px;
+  margin:15px auto;
+}
 p.desc{
   color:var(--muted);
   font-size:.9rem;
   max-width:320px;
   margin:auto;
   line-height:1.5;
-}
-
-/* ====== BANNER ====== */
-.banner{
-  position:relative;
-  border-radius:16px;
-  overflow:hidden;
-  max-width:330px;
-  margin:0 auto;
-  box-shadow:0 0 15px var(--neon2);
-}
-.banner img{
-  width:100%;
-  height:auto;
-  display:block;
-}
-.banner span{
-  position:absolute;
-  bottom:0;left:0;width:100%;
-  background:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.2));
-  padding:12px 10px;font-size:.9rem;
-  color:var(--neon);
-  font-weight:600;
-  text-transform:uppercase;
-}
-
-/* ====== CARD ====== */
-.card{
-  background:rgba(0,0,0,0.6);
-  border:1px solid var(--neon2);
-  border-radius:14px;
-  padding:15px;
-  max-width:290px;
-  margin:12px auto;
-  box-shadow:0 0 8px var(--neon2);
-  opacity:0;
-  transform:translateY(30px);
-  transition:all .8s ease;
-}
-.card.show{opacity:1;transform:translateY(0);}
-.card h3{
-  font-family:'Orbitron',sans-serif;
-  color:var(--neon2);
-  margin-bottom:6px;
-  font-size:.95rem;
-}
-.card p{
-  color:var(--muted);
-  font-size:.85rem;
-  line-height:1.3;
 }
 .btn-small{
   display:inline-block;
@@ -166,35 +142,6 @@ p.desc{
   font-size:.8rem;
   box-shadow:0 0 8px var(--neon);
 }
-
-/* ====== FEED ====== */
-.feed{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:15px;
-  margin-top:10px;
-}
-.feed img{
-  width:85px;height:85px;
-  border-radius:50%;
-  border:2px solid var(--neon2);
-  box-shadow:0 0 12px var(--neon2);
-  object-fit:cover;
-  transition:.3s;
-}
-.feed img:hover{transform:scale(1.08);}
-
-/* ====== ENDEREÇO ====== */
-.map{
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 0 10px var(--neon);
-  max-width:330px;
-  margin:15px auto;
-}
-
-/* ====== FOOTER ====== */
 footer{
   background:rgba(0,0,0,0.6);
   text-align:center;
@@ -219,37 +166,21 @@ footer{
 
 <header><h1>CLENA</h1></header>
 
-<!-- ===== HERO ===== -->
+<!-- ===== HERO + BANNER ===== -->
 <section class="hero fade-section" id="home">
-  <h2>NEON LOUNGE</h2>
-  <p>Aberto apenas aos sábados.<br>Uma noite de luz, som e energia no universo CLENA.</p>
-  <a class="btn" href="#ingressos">🎟️ Ingressos</a>
-</section>
-
-<!-- ===== BANNER ===== -->
-<section id="banner" class="fade-section">
-  <h2 class="title">APRESENTAÇÕES</h2>
-  <div class="banner">
-    <img src="https://images.unsplash.com/photo-1556767576-bd41ca986b05?auto=format&fit=crop&w=800&q=60" alt="Show">
-    <span>DJ LINE-UP • NEON NIGHT</span>
+  <div class="next-banner">
+    <img src="https://images.unsplash.com/photo-1556767576-bd41ca986b05?auto=format&fit=crop&w=900&q=80" alt="Próxima atração">
+    <h3>PRÓXIMA ATRAÇÃO — SÁBADO 23H</h3>
   </div>
-  <p class="desc">Acompanhe os artistas e performances exclusivas da próxima noite CLENA. Atualizado toda semana.</p>
+  <h2 style="font-family:'Orbitron',sans-serif;color:var(--neon);text-shadow:0 0 15px var(--neon2);font-size:1.8rem;">NEON LOUNGE</h2>
+  <p style="color:var(--muted);margin-top:10px;font-size:.9rem;">Aberto apenas aos sábados.<br>Uma noite de luz, som e energia no universo CLENA.</p>
+  <a class="btn-small" href="#ingressos">🎟️ Ingressos</a>
 </section>
 
-<!-- ===== EVENTO ===== -->
-<section id="evento" class="fade-section">
-  <h2 class="title">PRÓXIMO SÁBADO</h2>
-  <div class="card">
-    <h3>NEON VIBES ⚡</h3>
-    <p>23h • DJs convidados, luzes ultravioletas e drinks luminosos.<br>Experiência sensorial única.</p>
-    <a class="btn-small" href="https://wa.me/5577999792195?text=Quero+meu+ingresso+para+o+Neon+Vibes+CLENA!">Reservar</a>
-  </div>
-</section>
-
-<!-- ===== FEED ===== -->
+<!-- ===== GALERIA ===== -->
 <section id="galeria" class="fade-section">
   <h2 class="title">NOSSO ESPAÇO</h2>
-  <p class="desc">Confira o visual do CLENA Lounge — design imersivo, luz neon e energia única.</p>
+  <p class="desc">Explore o ambiente CLENA — luzes, neon e energia única.</p>
   <div class="feed">
     <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=300&q=60">
     <img src="https://images.unsplash.com/photo-1556767576-bd41ca986b05?auto=format&fit=crop&w=300&q=60">
@@ -288,14 +219,34 @@ footer{
 
 <footer>© 2025 CLENA • Neon Lounge • clena.com.br</footer>
 
+<!-- ===== POPUP DE FOTO ===== -->
+<div id="popup">
+  <span onclick="fecharPopup()">&times;</span>
+  <img id="popup-img" src="" alt="Foto ampliada">
+</div>
+
 <script>
-// fade e rolagem suave
+// animações
 const observer=new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting){entry.target.classList.add('show');}
   });
 },{threshold:0.15});
-document.querySelectorAll('.fade-section, .card').forEach(el=>observer.observe(el));
+document.querySelectorAll('.fade-section').forEach(el=>observer.observe(el));
+
+// popup de fotos
+const popup=document.getElementById('popup');
+const popupImg=document.getElementById('popup-img');
+function fecharPopup(){popup.style.display='none';}
+document.querySelectorAll('.feed img').forEach(img=>{
+  img.addEventListener('click',()=>{
+    popup.style.display='flex';
+    popupImg.src=img.src;
+  });
+});
+popup.addEventListener('click',e=>{
+  if(e.target===popup) fecharPopup();
+});
 </script>
 
 </body>
