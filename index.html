@@ -9,12 +9,12 @@
 <style>
 :root{
   --bg:#000;
-  --neon1:#00ffff;
-  --neon2:#ff00ff;
-  --neon3:#0099ff;
-  --neon4:#ff0077;
+  --neon1:#66ffff;
+  --neon2:#ff99ff;
+  --neon3:#66ccff;
+  --neon4:#ff66aa;
   --text:#f5f5f5;
-  --muted:#9ca3af;
+  --muted:#a1a1aa;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{
@@ -38,12 +38,12 @@ header{
   position:fixed;top:0;left:0;width:100%;
   display:flex;justify-content:center;align-items:center;
   padding:10px 0;z-index:10;
-  background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);
+  background:rgba(0,0,0,0.3);backdrop-filter:blur(10px);
 }
 header h1{
   font-family:'Orbitron',sans-serif;
   font-size:1.5rem;color:var(--neon1);
-  text-shadow:0 0 10px var(--neon2);
+  text-shadow:0 0 8px var(--neon2);
   letter-spacing:2px;
 }
 
@@ -55,9 +55,9 @@ header h1{
 }
 .hero h2{
   font-family:'Orbitron',sans-serif;
-  font-size:1.9rem;
+  font-size:1.8rem;
   color:var(--neon1);
-  text-shadow:0 0 25px var(--neon2);
+  text-shadow:0 0 20px var(--neon2);
   margin-top:15px;
 }
 .hero p{
@@ -77,10 +77,10 @@ header h1{
   text-decoration:none;
   font-weight:600;
   font-size:.8rem;
-  box-shadow:0 0 8px var(--neon2);
+  box-shadow:0 0 6px var(--neon2);
 }
 
-/* ===== BANNER COM LUZES ===== */
+/* ===== BANNER COM LUZES SUAVES ===== */
 .banner-wrapper{
   position:relative;
   width:90%;
@@ -92,21 +92,22 @@ header h1{
 .banner-wrapper::after{
   content:"";
   position:absolute;
-  inset:-30%;
+  inset:-40%;
   border-radius:50%;
   background:conic-gradient(from 0deg,
-    var(--neon1),
-    var(--neon2),
-    var(--neon3),
-    var(--neon4),
-    var(--neon1));
-  animation:spin 8s linear infinite;
-  filter:blur(60px) brightness(1.3);
+    rgba(102,255,255,0.3),
+    rgba(255,153,255,0.3),
+    rgba(102,204,255,0.3),
+    rgba(255,102,170,0.3),
+    rgba(102,255,255,0.3));
+  animation:spin 15s linear infinite;
+  filter:blur(90px) brightness(0.9);
   z-index:0;
+  opacity:0.6;
 }
 .banner-wrapper::after{
-  animation:spin 12s linear infinite reverse;
-  opacity:.6;
+  animation:spin 25s linear infinite reverse;
+  opacity:.4;
 }
 @keyframes spin{
   0%{transform:rotate(0deg);}
@@ -133,11 +134,11 @@ header h1{
 }
 .feed img{
   width:85px;height:85px;border-radius:50%;
-  box-shadow:0 0 12px var(--neon2);
+  box-shadow:0 0 10px rgba(255,153,255,0.6);
   cursor:pointer;object-fit:cover;
   transition:.3s;
 }
-.feed img:hover{transform:scale(1.05);box-shadow:0 0 18px var(--neon1);}
+.feed img:hover{transform:scale(1.05);box-shadow:0 0 15px var(--neon1);}
 #popup{
   display:none;
   position:fixed;top:0;left:0;width:100%;height:100%;
@@ -147,7 +148,7 @@ header h1{
 }
 #popup img{
   max-width:90%;max-height:80vh;border-radius:12px;
-  box-shadow:0 0 30px var(--neon2);
+  box-shadow:0 0 25px var(--neon2);
 }
 #popup span{
   position:absolute;top:15px;right:20px;
@@ -160,17 +161,17 @@ section{padding:60px 15px;}
 h2.title{
   font-family:'Orbitron',sans-serif;
   font-size:1.4rem;color:var(--neon1);
-  text-shadow:0 0 10px var(--neon2);
+  text-shadow:0 0 8px var(--neon2);
   margin-bottom:12px;
 }
 p.desc{color:var(--muted);font-size:.9rem;max-width:320px;margin:auto;line-height:1.5;}
 .map{
   border-radius:12px;overflow:hidden;
-  box-shadow:0 0 10px var(--neon1);
+  box-shadow:0 0 8px var(--neon1);
   max-width:330px;margin:15px auto;
 }
 footer{
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.5);
   text-align:center;
   padding:18px 10px;
   font-size:.75rem;
