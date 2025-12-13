@@ -217,39 +217,50 @@ async function register(e){
     const type = document.getElementById("type").value;
 
     /* 1️⃣ CRIA USUÁRIO (SEM CONFIRMAÇÃO DE EMAIL) */
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password
-    });
+/* 1️⃣ CRIA USUÁRIO */
+const { data, error } = await supabase.auth.signUp({
+  email,
+  password
+});
 
-    if(error) throw error;
+if(error) throw error;
 
-    const userId = data.user.id;
+/* 🔑 2️⃣ FAZ LOGIN IMEDIATAMENTE */
+const login = await supabase.auth.signInWithPassword({
+  email,
+  password
+});
 
-    /* 2️⃣ ATUALIZA PROFILE */
-    const profile = await supabase
-      .from("profiles")
-      .update({ name, role: "business" })
-      .eq("id", userId);
+if(login.error) throw login.error;
 
-    if(profile.error) throw profile.error;
+/* 🔐 AGORA EXISTE auth.uid() */
+const userId = login.data.user.id;
 
-    /* 3️⃣ CRIA NEGÓCIO */
-    const businessInsert = await supabase
-      .from("businesses")
-      .insert({
-        owner_id: userId,
-        name: business,
-        phone: whatsapp,
-        city,
-        uf,
-        type
-      });
+/* 3️⃣ ATUALIZA PROFILE */
+const profile = await supabase
+  .from("profiles")
+  .update({ name, role: "business" })
+  .eq("id", userId);
 
-    if(businessInsert.error) throw businessInsert.error;
+if(profile.error) throw profile.error;
 
-    /* 4️⃣ REDIRECIONA */
-    window.location.href = "loja.html";
+/* 4️⃣ CRIA NEGÓCIO */
+const businessInsert = await supabase
+  .from("businesses")
+  .insert({
+    owner_id: userId,
+    name: business,
+    phone: whatsapp,
+    city,
+    uf,
+    type
+  });
+
+if(businessInsert.error) throw businessInsert.error;
+
+/* 5️⃣ REDIRECIONA */
+window.location.href = "loja.html";
+
 
   }catch(err){
     showError(err.message || "Erro ao criar conta");
