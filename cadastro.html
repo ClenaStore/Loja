@@ -211,58 +211,67 @@ async function register(e){
   btn.disabled = true;
   btn.innerText = "Criando conta...";
 
-  const name = document.getElementById("name").value.trim();
-  const business = document.getElementById("business").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const whatsapp = document.getElementById("whatsapp").value.replace(/\D/g,'');
-  const city = document.getElementById("city").value;
-  const uf = document.getElementById("uf").value;
-  const type = document.getElementById("type").value;
+  try{
+    const name = document.getElementById("name").value.trim();
+    const business = document.getElementById("business").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const whatsapp = document.getElementById("whatsapp").value.replace(/\D/g,'');
+    const city = document.getElementById("city").value;
+    const uf = document.getElementById("uf").value;
+    const type = document.getElementById("type").value;
 
-  /* 1. CRIAR USUÁRIO */
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  if(error){
-    showError(error.message);
-    btn.disabled = false;
-    btn.innerText = "Criar conta";
-    return;
-  }
-
-  const uid = data.user.id;
-
-  /* 2. ATUALIZAR PROFILE */
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .update({ name })
-    .eq("id", uid);
-
-  if(profileError){
-    showError(profileError.message);
-    return;
-  }
-
-  /* 3. CRIAR NEGÓCIO */
-  const { error: businessError } = await supabase
-    .from("businesses")
-    .insert({
-      owner_id: uid,
-      name: business,
-      phone: whatsapp,
-      city,
-      uf,
-      type
+    /* 1️⃣ CRIA USUÁRIO */
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options:{
+        emailRedirectTo: window.location.origin
+      }
     });
 
-  if(businessError){
-    showError(businessError.message);
-    return;
+    if(error) throw error;
+
+    /* 2️⃣ GARANTE SESSÃO */
+    let { data: sessionData } = await supabase.auth.getSession();
+
+    if(!sessionData.session){
+      const login = await supabase.auth.signInWithPassword({ email, password });
+      if(login.error) throw login.error;
+    }
+
+    const userId = data.user.id;
+
+    /* 3️⃣ ATUALIZA PROFILE */
+    const profile = await supabase
+      .from("profiles")
+      .update({ name, role: "business" })
+      .eq("id", userId);
+
+    if(profile.error) throw profile.error;
+
+    /* 4️⃣ CRIA NEGÓCIO */
+    const businessInsert = await supabase
+      .from("businesses")
+      .insert({
+        owner_id: userId,
+        name: business,
+        phone: whatsapp,
+        city,
+        uf,
+        type
+      });
+
+    if(businessInsert.error) throw businessInsert.error;
+
+    /* 5️⃣ REDIRECIONA */
+    window.location.href = "loja.html";
+
+  }catch(err){
+    showError(err.message || "Erro ao criar conta");
+    btn.disabled = false;
+    btn.innerText = "Criar conta";
   }
-
-  /* 4. LOGIN AUTOMÁTICO */
-  await supabase.auth.signInWithPassword({ email, password });
-
-  window.location.href = "loja.html";
 }
 </script>
 
