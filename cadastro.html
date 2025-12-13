@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* ==== MESMO CSS DO LOGIN ==== */
+/* ===== MESMO CSS ===== */
 :root{
   --primary:#ff6a00;
   --primary-dark:#e55d00;
@@ -54,9 +54,9 @@ body{
   justify-content:center;
 }
 
-.left h1{font-size:42px;line-height:1.1;margin-bottom:18px;}
+.left h1{font-size:42px;margin-bottom:18px;}
 .left h1 span{color:var(--primary);}
-.left p{font-size:18px;max-width:420px;opacity:.95;}
+.left p{font-size:18px;max-width:420px;}
 
 .right{display:flex;align-items:center;justify-content:center;}
 
@@ -85,121 +85,107 @@ input:focus{outline:none;border-color:var(--primary);}
   font-size:16px;
   font-weight:600;
   cursor:pointer;
+  background:var(--primary);
+  color:#fff;
 }
 
-.btn-primary{background:var(--primary);color:#fff;}
-
-.divider{text-align:center;margin:30px 0;font-size:14px;color:var(--muted);}
-.links{text-align:center;font-size:14px;}
-.links a{display:block;margin-top:10px;color:var(--primary);text-decoration:none;font-weight:600;}
-
-@media(max-width:900px){
-  body{grid-template-columns:1fr;}
-  .left{display:none;}
-}
+.links{text-align:center;margin-top:20px;}
+.links a{color:var(--primary);text-decoration:none;font-weight:600;}
 </style>
 </head>
 <body>
 
-<!-- LADO ESQUERDO -->
 <div class="left">
   <div class="left-content">
-    <h1>
-      Cadastre seu <br>
-      <span>negócio</span>
-    </h1>
-    <p>
-      Crie sua conta e comece agora a organizar seus agendamentos,
-      clientes e profissionais.
-    </p>
+    <h1>Cadastre seu <span>negócio</span></h1>
+    <p>Comece agora sua agenda profissional.</p>
   </div>
 </div>
 
-<!-- LADO DIREITO -->
 <div class="right">
   <div class="form-box">
-    <h2>Cadastrar negócio</h2>
-    <p>Leva menos de 1 minuto.</p>
+    <h2>Criar conta</h2>
+    <p>Preencha os dados abaixo</p>
 
     <form onsubmit="register(event)">
       <label>Nome do responsável</label>
-      <input id="name" required>
+      <input id="name" required oninput="toUpper(this)">
+
+      <label>WhatsApp</label>
+      <input id="whatsapp" required maxlength="15" placeholder="(99) 99999-9999">
 
       <label>Nome do negócio</label>
-      <input id="business" required>
+      <input id="business" required oninput="toUpper(this)">
 
       <label>E-mail</label>
       <input id="email" type="email" required>
 
       <label>Senha</label>
-      <input id="password" type="password" required>
+      <input id="password" type="password" required minlength="6">
 
-      <button class="btn btn-primary">Criar conta</button>
+      <button class="btn">Criar conta</button>
     </form>
 
-    <div class="divider">Já tem conta?</div>
-
     <div class="links">
-      <a href="login.html">Entrar na plataforma</a>
+      <a href="login.html">Já tem conta? Entrar</a>
     </div>
   </div>
 </div>
 
 <script>
-/* 🔑 CONFIGURAÇÃO SUPABASE (MESMA DO LOGIN) */
-const SUPABASE_URL = "https://pagqbjtpodoobnnoypdf.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_cU1MtNtU1CfhmlNrmtsiug_6JA3ZBTY";
-
+/* SUPABASE */
 const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
+  "https://pagqbjtpodoobnnoypdf.supabase.co",
+  "sb_publishable_cU1MtNtU1CfhmlNrmtsiug_6JA3ZBTY"
 );
+
+/* UTIL */
+function toUpper(el){
+  el.value = el.value.toUpperCase();
+}
+
+document.getElementById("whatsapp").addEventListener("input", e=>{
+  let v = e.target.value.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/^(\d{2})(\d)/,"($1) $2")
+       .replace(/(\d{5})(\d)/,"$1-$2");
+  e.target.value = v;
+});
+
+function validEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 /* CADASTRO */
 async function register(e){
   e.preventDefault();
 
-  const name = document.getElementById("name").value;
-  const business = document.getElementById("business").value;
-  const email = document.getElementById("email").value;
+  const name = document.getElementById("name").value.trim();
+  const business = document.getElementById("business").value.trim();
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
+  const whatsapp = document.getElementById("whatsapp").value.replace(/\D/g,'');
 
-  /* 1️⃣ CRIA USUÁRIO NO AUTH */
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password
-  });
-
-  if(error){
-    alert(error.message);
+  if(!validEmail(email)){
+    alert("E-mail inválido");
     return;
   }
 
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if(error) return alert(error.message);
+
   const userId = data.user.id;
 
-  /* 2️⃣ ATUALIZA PROFILE */
-  await supabase
-    .from("profiles")
-    .update({
-      name: name,
-      role: "business"
-    })
+  await supabase.from("profiles")
+    .update({ name, role:"business" })
     .eq("id", userId);
 
-  /* 3️⃣ CRIA NEGÓCIO */
-  await supabase
-    .from("businesses")
-    .insert({
-      owner_id: userId,
-      name: business
-    });
-
-  /* 4️⃣ LOGIN AUTOMÁTICO */
-  await supabase.auth.signInWithPassword({
-    email,
-    password
+  await supabase.from("businesses").insert({
+    owner_id: userId,
+    name: business,
+    phone: whatsapp
   });
 
+  await supabase.auth.signInWithPassword({ email, password });
   window.location.href = "loja.html";
 }
 </script>
