@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Controle de Usuários</title>
+<title>Cadastrar Negócios</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -37,7 +37,7 @@ body{
   font-weight:700;
 }
 
-.group{ margin-bottom:22px; }
+.group{ margin-bottom:18px; }
 
 label{
   display:block;
@@ -46,7 +46,7 @@ label{
   margin-bottom:6px;
 }
 
-input{
+input, select{
   width:100%;
   padding:14px 16px;
   font-size:15px;
@@ -55,14 +55,20 @@ input{
   background:#f7faff;
 }
 
-input:focus{
+input:focus, select:focus{
   outline:none;
   border-color:#4c6ef5;
   box-shadow:0 0 0 3px rgba(76,110,245,.15);
 }
 
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
 .btn{
-  margin-top:10px;
+  margin-top:14px;
   padding:15px;
   font-size:16px;
   border:none;
@@ -71,6 +77,7 @@ input:focus{
   color:white;
   font-weight:600;
   cursor:pointer;
+  position:relative;
 }
 
 /* Loading */
@@ -103,27 +110,27 @@ input:focus{
   margin-bottom:20px;
 }
 
-.userList{
+.list{
   background:white;
   border-radius:16px;
   box-shadow:0 20px 40px rgba(0,0,0,.15);
   overflow:hidden;
 }
 
-.userRow{
+.rowItem{
   padding:18px 24px;
   border-bottom:1px solid #eef2f8;
 }
 
-.userRow:last-child{ border-bottom:none; }
+.rowItem:last-child{ border-bottom:none; }
 
-.userRow b{
+.rowItem b{
   display:block;
   font-size:15px;
   color:#102a43;
 }
 
-.userRow span{
+.rowItem span{
   font-size:13px;
   color:#6b7c93;
 }
@@ -134,15 +141,47 @@ input:focus{
 
 <!-- LEFT -->
 <div class="left">
-  <h2>Novo Usuário</h2>
+  <h2>Novo Negócio</h2>
 
   <div class="group">
-    <label>Nome completo</label>
-    <input id="nome">
+    <label>Nome do responsável</label>
+    <input id="responsavel">
   </div>
 
   <div class="group">
-    <label>Email</label>
+    <label>WhatsApp</label>
+    <input id="whatsapp" placeholder="(99) 99999-9999">
+  </div>
+
+  <div class="group">
+    <label>Nome do negócio</label>
+    <input id="negocio">
+  </div>
+
+  <div class="group">
+    <label>Tipo do negócio</label>
+    <select id="tipo">
+      <option value="">Selecione</option>
+      <option>Salão de Beleza</option>
+      <option>Barbearia</option>
+      <option>Clínica de Estética</option>
+      <option>Studio</option>
+    </select>
+  </div>
+
+  <div class="row">
+    <div class="group">
+      <label>Cidade</label>
+      <input id="cidade">
+    </div>
+    <div class="group">
+      <label>UF</label>
+      <input id="uf" maxlength="2">
+    </div>
+  </div>
+
+  <div class="group">
+    <label>E-mail</label>
     <input id="email" type="email">
   </div>
 
@@ -151,15 +190,15 @@ input:focus{
     <input id="senha" type="password">
   </div>
 
-  <button id="btnSalvar" class="btn" onclick="salvarUsuario()">
-    Cadastrar Usuário
+  <button id="btnSalvar" class="btn" onclick="salvarNegocio()">
+    Criar conta
   </button>
 </div>
 
 <!-- RIGHT -->
 <div class="right">
-  <h2>Usuários Cadastrados</h2>
-  <div id="listaUsuarios" class="userList"></div>
+  <h2>Negócios Cadastrados</h2>
+  <div id="lista" class="list"></div>
 </div>
 
 <script>
@@ -167,62 +206,64 @@ const sb = supabase.createClient(
   "https://ssmsjryjwhnrbjyzklno.supabase.co",
   "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
+
 /* LISTAR */
-async function carregarUsuarios(){
+async function carregar(){
   const { data, error } = await sb
-    .from("usuarios")
+    .from("negocios")
     .select("*")
-    .order("nome");
+    .order("created_at", { ascending:false });
 
   if(error){
-    alert("Erro ao carregar usuários");
+    alert("Erro ao carregar");
     return;
   }
 
-  listaUsuarios.innerHTML = data.map(u => `
-    <div class="userRow">
-      <b>${u.nome}</b>
-      <span>${u.email}</span>
+  lista.innerHTML = data.map(n => `
+    <div class="rowItem">
+      <b>${n.negocio}</b>
+      <span>${n.responsavel} • ${n.whatsapp}</span>
     </div>
   `).join("");
 }
 
 /* CADASTRAR */
-async function salvarUsuario(){
+async function salvarNegocio(){
   const btn = document.getElementById("btnSalvar");
   btn.classList.add("loading");
 
-  const nome = document.getElementById("nome").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const senha = document.getElementById("senha").value.trim();
+  const payload = {
+    responsavel: responsavel.value.trim(),
+    whatsapp: whatsapp.value.trim(),
+    negocio: negocio.value.trim(),
+    tipo: tipo.value,
+    cidade: cidade.value.trim(),
+    uf: uf.value.trim(),
+    email: email.value.trim(),
+    senha: senha.value.trim()
+  };
 
-  if(!nome || !email || !senha){
+  if(Object.values(payload).some(v => !v)){
     alert("Preencha todos os campos");
     btn.classList.remove("loading");
     return;
   }
 
-  const { error } = await sb
-    .from("usuarios")
-    .insert([{ nome, email, senha }]);
+  const { error } = await sb.from("negocios").insert([payload]);
 
   if(error){
-    alert("Erro ao salvar usuário");
+    alert("Erro ao salvar");
     btn.classList.remove("loading");
     return;
   }
 
-  nome.value = "";
-  email.value = "";
-  senha.value = "";
-
+  document.querySelectorAll("input,select").forEach(i => i.value = "");
   btn.classList.remove("loading");
-  carregarUsuarios();
+  carregar();
 }
 
-carregarUsuarios();
+carregar();
 </script>
 
 </body>
 </html>
-
