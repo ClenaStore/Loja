@@ -9,27 +9,27 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* ===== MESMO CSS ===== */
 :root{
   --primary:#ff6a00;
   --primary-dark:#e55d00;
   --accent:#b8ff65;
+  --bg:#f6f7fb;
   --text:#1f2937;
   --muted:#6b7280;
-  --bg:#f6f7fb;
   --border:#e5e7eb;
-  --radius:16px;
+  --radius:18px;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
 
 body{
-  height:100vh;
+  min-height:100vh;
   display:grid;
   grid-template-columns:1.2fr .8fr;
   background:#fff;
 }
 
+/* LADO ESQUERDO */
 .left{
   background:url("https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1600&q=80")
     center/cover no-repeat;
@@ -41,148 +41,241 @@ body{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,.2));
+  background:linear-gradient(120deg, rgba(0,0,0,.75), rgba(0,0,0,.25));
 }
 
 .left-content{
   position:relative;
   z-index:2;
   height:100%;
-  padding:60px;
+  padding:70px;
   display:flex;
   flex-direction:column;
   justify-content:center;
 }
 
-.left h1{font-size:42px;margin-bottom:18px;}
-.left h1 span{color:var(--primary);}
-.left p{font-size:18px;max-width:420px;}
-
-.right{display:flex;align-items:center;justify-content:center;}
-
-.form-box{width:100%;max-width:420px;padding:40px;}
-.form-box h2{font-size:28px;margin-bottom:8px;}
-.form-box p{color:var(--muted);margin-bottom:30px;}
-
-label{display:block;font-size:14px;margin-bottom:6px;}
-
-input{
-  width:100%;
-  padding:14px 16px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  margin-bottom:18px;
-  font-size:15px;
+.left h1{
+  font-size:44px;
+  line-height:1.1;
+  margin-bottom:20px;
 }
 
-input:focus{outline:none;border-color:var(--primary);}
+.left h1 span{color:var(--primary);}
+
+.left p{
+  font-size:18px;
+  max-width:440px;
+  opacity:.95;
+}
+
+/* LADO DIREITO */
+.right{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(180deg,#fff,#fafafa);
+}
+
+.card{
+  width:100%;
+  max-width:460px;
+  padding:44px;
+  border-radius:var(--radius);
+  background:rgba(255,255,255,.92);
+  box-shadow:0 25px 60px rgba(0,0,0,.08);
+  backdrop-filter:blur(8px);
+}
+
+.card h2{
+  font-size:28px;
+  margin-bottom:6px;
+}
+
+.card p{
+  color:var(--muted);
+  margin-bottom:26px;
+}
+
+.step{
+  font-size:13px;
+  font-weight:600;
+  color:var(--primary);
+  margin-bottom:18px;
+}
+
+label{
+  font-size:13px;
+  font-weight:600;
+  display:block;
+  margin-bottom:6px;
+}
+
+input, select{
+  width:100%;
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  margin-bottom:18px;
+  font-size:14px;
+}
+
+input:focus, select:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
 
 .btn{
   width:100%;
-  padding:14px;
+  padding:15px;
   border:none;
   border-radius:30px;
   font-size:16px;
-  font-weight:600;
+  font-weight:700;
   cursor:pointer;
   background:var(--primary);
   color:#fff;
+  margin-top:10px;
 }
 
-.links{text-align:center;margin-top:20px;}
-.links a{color:var(--primary);text-decoration:none;font-weight:600;}
+.btn:disabled{
+  opacity:.7;
+  cursor:not-allowed;
+}
+
+.footer-links{
+  text-align:center;
+  margin-top:22px;
+}
+
+.footer-links a{
+  color:var(--primary);
+  text-decoration:none;
+  font-weight:600;
+  font-size:14px;
+}
+
+/* MOBILE */
+@media(max-width:900px){
+  body{grid-template-columns:1fr;}
+  .left{display:none;}
+}
 </style>
 </head>
 <body>
 
+<!-- ESQUERDA -->
 <div class="left">
   <div class="left-content">
-    <h1>Cadastre seu <span>negócio</span></h1>
-    <p>Comece agora sua agenda profissional.</p>
+    <h1>
+      Crie seu<br>
+      <span>salão digital</span>
+    </h1>
+    <p>
+      Profissionalize seus agendamentos, clientes e pagamentos
+      em uma única plataforma.
+    </p>
   </div>
 </div>
 
+<!-- DIREITA -->
 <div class="right">
-  <div class="form-box">
-    <h2>Criar conta</h2>
-    <p>Preencha os dados abaixo</p>
+  <div class="card">
+    <div class="step">Passo 1 de 2</div>
+
+    <h2>Cadastrar negócio</h2>
+    <p>Leva menos de 1 minuto 🚀</p>
 
     <form onsubmit="register(event)">
       <label>Nome do responsável</label>
-      <input id="name" required oninput="toUpper(this)">
+      <input id="name" required oninput="upper(this)">
 
       <label>WhatsApp</label>
-      <input id="whatsapp" required maxlength="15" placeholder="(99) 99999-9999">
+      <input id="whatsapp" required placeholder="(99) 99999-9999">
 
       <label>Nome do negócio</label>
-      <input id="business" required oninput="toUpper(this)">
+      <input id="business" required oninput="upper(this)">
+
+      <label>Tipo do negócio</label>
+      <select id="type" required>
+        <option value="">Selecione</option>
+        <option>Salão de Beleza</option>
+        <option>Barbearia</option>
+        <option>Clínica de Estética</option>
+        <option>Studio</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label>Cidade</label>
+          <input id="city" required oninput="upper(this)">
+        </div>
+        <div>
+          <label>UF</label>
+          <input id="uf" maxlength="2" required oninput="upper(this)">
+        </div>
+      </div>
 
       <label>E-mail</label>
       <input id="email" type="email" required>
 
       <label>Senha</label>
-      <input id="password" type="password" required minlength="6">
+      <input id="password" type="password" minlength="6" required>
 
-      <button class="btn">Criar conta</button>
+      <button id="btn" class="btn">Criar conta</button>
     </form>
 
-    <div class="links">
-      <a href="login.html">Já tem conta? Entrar</a>
+    <div class="footer-links">
+      <a href="login.html">Já tenho conta</a>
     </div>
   </div>
 </div>
 
 <script>
-/* SUPABASE */
 const supabase = window.supabase.createClient(
   "https://pagqbjtpodoobnnoypdf.supabase.co",
   "sb_publishable_cU1MtNtU1CfhmlNrmtsiug_6JA3ZBTY"
 );
 
-/* UTIL */
-function toUpper(el){
-  el.value = el.value.toUpperCase();
-}
+function upper(el){ el.value = el.value.toUpperCase(); }
 
 document.getElementById("whatsapp").addEventListener("input", e=>{
   let v = e.target.value.replace(/\D/g,'').slice(0,11);
-  v = v.replace(/^(\d{2})(\d)/,"($1) $2")
-       .replace(/(\d{5})(\d)/,"$1-$2");
+  v = v.replace(/^(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");
   e.target.value = v;
 });
 
-function validEmail(email){
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-/* CADASTRO */
 async function register(e){
   e.preventDefault();
+  const btn = document.getElementById("btn");
+  btn.disabled = true;
+  btn.innerText = "Criando conta...";
 
-  const name = document.getElementById("name").value.trim();
-  const business = document.getElementById("business").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const whatsapp = document.getElementById("whatsapp").value.replace(/\D/g,'');
-
-  if(!validEmail(email)){
-    alert("E-mail inválido");
-    return;
-  }
+  const email = emailEl.value.trim();
+  const password = passwordEl.value;
 
   const { data, error } = await supabase.auth.signUp({ email, password });
-  if(error) return alert(error.message);
+  if(error){ alert(error.message); btn.disabled=false; btn.innerText="Criar conta"; return; }
 
-  const userId = data.user.id;
+  const uid = data.user.id;
 
-  await supabase.from("profiles")
-    .update({ name, role:"business" })
-    .eq("id", userId);
+  await supabase.from("profiles").update({
+    name: name.value,
+    role:"business"
+  }).eq("id", uid);
 
   await supabase.from("businesses").insert({
-    owner_id: userId,
-    name: business,
-    phone: whatsapp
+    owner_id: uid,
+    name: business.value,
+    phone: whatsapp.value.replace(/\D/g,''),
+    city: city.value,
+    uf: uf.value,
+    type: type.value
   });
 
   await supabase.auth.signInWithPassword({ email, password });
