@@ -9,7 +9,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* ===== ESTILO PREMIUM ===== */
 :root{
   --primary:#ff6a00;
   --primary-dark:#e55d00;
@@ -29,6 +28,7 @@ body{
   background:#fff;
 }
 
+/* LADO ESQUERDO */
 .left{
   background:url("https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1600&q=80")
   center/cover no-repeat;
@@ -57,6 +57,7 @@ body{
 .left h1 span{color:var(--primary);}
 .left p{font-size:18px;max-width:440px;}
 
+/* DIREITA */
 .right{
   display:flex;
   align-items:center;
@@ -72,7 +73,12 @@ body{
   box-shadow:0 25px 60px rgba(0,0,0,.08);
 }
 
-label{font-size:13px;font-weight:600;margin-bottom:6px;display:block;}
+label{
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:6px;
+  display:block;
+}
 
 input,select{
   width:100%;
@@ -82,7 +88,11 @@ input,select{
   margin-bottom:16px;
 }
 
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
 
 .btn{
   width:100%;
@@ -96,7 +106,10 @@ input,select{
   color:#fff;
 }
 
-.btn:disabled{opacity:.6;cursor:not-allowed;}
+.btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
 
 .error{
   background:#ffe5e5;
@@ -105,6 +118,7 @@ input,select{
   border-radius:10px;
   margin-bottom:14px;
   font-size:14px;
+  display:none;
 }
 </style>
 </head>
@@ -113,7 +127,7 @@ input,select{
 <div class="left">
   <div class="left-content">
     <h1>Crie seu <span>salão digital</span></h1>
-    <p>Gerencie agenda, clientes e pagamentos.</p>
+    <p>Gerencie agenda, clientes e pagamentos em um só lugar.</p>
   </div>
 </div>
 
@@ -122,7 +136,7 @@ input,select{
     <h2>Cadastrar negócio</h2>
     <p style="color:#6b7280;margin-bottom:24px;">Leva menos de 1 minuto</p>
 
-    <div id="errorBox" class="error" style="display:none"></div>
+    <div id="errorBox" class="error"></div>
 
     <form onsubmit="register(event)">
       <label>Nome do responsável</label>
@@ -166,6 +180,7 @@ input,select{
 </div>
 
 <script>
+/* SUPABASE */
 const supabase = window.supabase.createClient(
   "https://pagqbjtpodoobnnoypdf.supabase.co",
   "sb_publishable_cU1MtNtU1CfhmlNrmtsiug_6JA3ZBTY"
@@ -179,11 +194,14 @@ function showError(msg){
   errorBox.style.display = "block";
 }
 
-function upper(el){ el.value = el.value.toUpperCase(); }
+function upper(el){
+  el.value = el.value.toUpperCase();
+}
 
 document.getElementById("whatsapp").addEventListener("input", e=>{
   let v = e.target.value.replace(/\D/g,'').slice(0,11);
-  v = v.replace(/^(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");
+  v = v.replace(/^(\d{2})(\d)/,"($1) $2")
+       .replace(/(\d{5})(\d)/,"$1-$2");
   e.target.value = v;
 });
 
@@ -202,40 +220,48 @@ async function register(e){
   const uf = document.getElementById("uf").value;
   const type = document.getElementById("type").value;
 
+  /* 1. CRIAR USUÁRIO */
   const { data, error } = await supabase.auth.signUp({ email, password });
   if(error){
     showError(error.message);
-    btn.disabled=false; btn.innerText="Criar conta";
+    btn.disabled = false;
+    btn.innerText = "Criar conta";
     return;
   }
 
   const uid = data.user.id;
 
-  const profile = await supabase.from("profiles").update({
-    name,
-    role:"business"
-  }).eq("id", uid);
+  /* 2. ATUALIZAR PROFILE */
+  const { error: profileError } = await supabase
+    .from("profiles")
+    .update({ name })
+    .eq("id", uid);
 
-  if(profile.error){
-    showError(profile.error.message);
+  if(profileError){
+    showError(profileError.message);
     return;
   }
 
-  const businessInsert = await supabase.from("businesses").insert({
-    owner_id: uid,
-    name: business,
-    phone: whatsapp,
-    city,
-    uf,
-    type
-  });
+  /* 3. CRIAR NEGÓCIO */
+  const { error: businessError } = await supabase
+    .from("businesses")
+    .insert({
+      owner_id: uid,
+      name: business,
+      phone: whatsapp,
+      city,
+      uf,
+      type
+    });
 
-  if(businessInsert.error){
-    showError(businessInsert.error.message);
+  if(businessError){
+    showError(businessError.message);
     return;
   }
 
+  /* 4. LOGIN AUTOMÁTICO */
   await supabase.auth.signInWithPassword({ email, password });
+
   window.location.href = "loja.html";
 }
 </script>
