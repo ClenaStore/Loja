@@ -2,262 +2,407 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>CLENA • CLUB</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<title>Agenda Beauty • Sistema de Agendamentos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#000;
-  --neon1:#00ffff;
-  --neon2:#ff00ff;
-  --text:#f5f5f5;
-  --muted:#b3b3b3;
+  --primary:#ff6a00;
+  --primary-dark:#e85a00;
+  --accent:#b8ff65;
+  --text:#1e1e1e;
+  --muted:#6b7280;
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --radius:16px;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  background:var(--bg);
-  color:var(--text);
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
   font-family:'Inter',sans-serif;
-  overflow-x:hidden;
-  scroll-behavior:smooth;
-  text-align:center;
-}
-video#bgvideo{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  object-fit:cover;z-index:-3;filter:brightness(25%) blur(2px);
-}
-.overlay{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:radial-gradient(circle at center,rgba(0,0,0,.5),rgba(0,0,0,.9));
-  z-index:-2;
 }
 
-/* HEADER */
+body{
+  background:#fff;
+  color:var(--text);
+}
+
+/* ================= HEADER ================= */
 header{
-  position:fixed;top:0;left:0;width:100%;
-  display:flex;justify-content:center;align-items:center;
-  padding:10px 0;z-index:10;
-  background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);
-}
-header h1{
-  font-family:'Orbitron',sans-serif;
-  font-size:1.6rem;color:var(--neon1);
-  text-shadow:0 0 15px var(--neon2);
-  letter-spacing:2px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:#fff;
+  border-bottom:1px solid var(--border);
 }
 
-/* HERO */
-.hero{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:110px 15px 60px;
-  position:relative;
-  text-shadow:0 0 8px rgba(0,0,0,0.8);
+.header-container{
+  max-width:1200px;
+  margin:auto;
+  padding:18px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
-.hero h2{
-  font-family:'Orbitron',sans-serif;
-  font-size:1.9rem;
-  color:var(--neon1);
-  text-shadow:0 0 20px var(--neon2);
-  margin-top:20px;
+
+.logo{
+  font-size:22px;
+  font-weight:800;
+  color:var(--primary);
 }
-.hero p{
-  color:var(--text);
-  font-size:.95rem;
-  line-height:1.5;
-  margin-top:10px;
-  max-width:320px;
-  background:rgba(0,0,0,0.45);
-  padding:6px 10px;
-  border-radius:8px;
+
+nav{
+  display:flex;
+  gap:28px;
 }
-.btn-small{
-  display:inline-block;
-  margin-top:18px;
-  padding:10px 24px;
-  border-radius:30px;
-  background:linear-gradient(90deg,var(--neon1),var(--neon2));
-  color:#000;
+
+nav a{
   text-decoration:none;
-  font-weight:700;
-  font-size:.9rem;
-  box-shadow:0 0 12px var(--neon2);
-  transition:.3s;
+  color:#111;
+  font-weight:500;
 }
-.btn-small:hover{filter:brightness(1.3);}
 
-/* BANNER SEM LUZES */
-.banner-wrapper{
-  position:relative;
-  width:90%;
-  max-width:340px;
-  aspect-ratio:16/9;
+.header-actions{
+  display:flex;
+  gap:12px;
+}
+
+.btn{
+  padding:12px 22px;
+  border-radius:30px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:var(--accent);
+  color:#111;
+}
+
+.btn-outline{
+  background:#fff;
+  border:1px solid var(--border);
+}
+
+/* ================= HERO ================= */
+.hero{
+  max-width:1200px;
   margin:auto;
-}
-.banner-img{
-  position:relative;
-  width:100%;
-  height:100%;
-  border-radius:20px;
-  overflow:hidden;
-  z-index:1;
-  box-shadow:0 0 25px rgba(255,255,255,0.08);
-}
-.banner-img img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
+  padding:90px 24px;
+  display:grid;
+  grid-template-columns:1.1fr 0.9fr;
+  gap:60px;
+  align-items:center;
 }
 
-/* SEÇÕES */
-section{padding:60px 15px;}
-h2.title{
-  font-family:'Orbitron',sans-serif;
-  font-size:1.4rem;color:var(--neon1);
-  text-shadow:0 0 12px var(--neon2);
-  margin-bottom:15px;
-}
-p.desc{
-  color:var(--text);
-  font-size:.9rem;
-  max-width:320px;
-  margin:auto;
-  line-height:1.5;
-  background:rgba(0,0,0,0.45);
-  padding:6px 10px;
-  border-radius:8px;
+.hero h1{
+  font-size:48px;
+  line-height:1.1;
+  margin-bottom:20px;
 }
 
-/* FEED */
-.feed{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin-top:15px;
-}
-.feed img{
-  width:85px;height:85px;border-radius:50%;
-  box-shadow:0 0 15px var(--neon2);
-  cursor:pointer;object-fit:cover;
-  transition:.3s;
-}
-.feed img:hover{transform:scale(1.06);box-shadow:0 0 20px var(--neon1);}
-#popup{
-  display:none;
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,0.9);
-  justify-content:center;align-items:center;
-  z-index:99;
-}
-#popup img{
-  max-width:90%;max-height:80vh;border-radius:12px;
-  box-shadow:0 0 40px var(--neon2);
-}
-#popup span{
-  position:absolute;top:15px;right:20px;
-  font-size:2rem;color:var(--neon1);cursor:pointer;
-  text-shadow:0 0 15px var(--neon2);
+.hero h1 span{
+  color:var(--primary);
 }
 
-/* MAPA */
-.map{
-  border-radius:12px;overflow:hidden;
-  box-shadow:0 0 10px var(--neon1);
-  max-width:330px;margin:20px auto;
-}
-footer{
-  background:rgba(0,0,0,0.7);
-  text-align:center;
-  padding:20px 10px;
-  font-size:.8rem;
+.hero p{
+  font-size:18px;
   color:var(--muted);
+  max-width:520px;
+  margin-bottom:36px;
 }
-.fade-section{opacity:0;transform:translateY(30px);transition:all .8s ease;}
-.fade-section.show{opacity:1;transform:translateY(0);}
+
+.hero-actions{
+  display:flex;
+  gap:14px;
+}
+
+/* imagem ilustrativa */
+.hero-visual{
+  background:#f2f2f2;
+  border-radius:40px;
+  height:420px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  color:#aaa;
+}
+
+/* ================= BENEFÍCIOS ================= */
+.section{
+  padding:90px 24px;
+  background:var(--bg);
+}
+
+.section.white{ background:#fff; }
+
+.container{
+  max-width:1200px;
+  margin:auto;
+}
+
+.section h2{
+  font-size:36px;
+  margin-bottom:16px;
+}
+
+.section p{
+  color:var(--muted);
+  max-width:600px;
+}
+
+.benefits{
+  margin-top:50px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:26px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:26px;
+  border:1px solid var(--border);
+}
+
+.card h3{
+  margin-bottom:10px;
+}
+
+.card p{
+  font-size:15px;
+}
+
+/* ================= MÓDULOS ================= */
+.modules{
+  margin-top:50px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:22px;
+}
+
+.module{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px;
+  text-decoration:none;
+  color:#111;
+  transition:.2s;
+}
+
+.module:hover{
+  transform:translateY(-4px);
+  border-color:var(--primary);
+}
+
+.module strong{
+  display:block;
+  margin-bottom:8px;
+}
+
+/* ================= CTA ================= */
+.cta{
+  max-width:1200px;
+  margin:90px auto;
+  background:var(--primary);
+  color:#fff;
+  border-radius:30px;
+  padding:60px;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:40px;
+}
+
+.cta h2{
+  font-size:38px;
+  margin-bottom:14px;
+}
+
+.cta p{
+  opacity:.95;
+}
+
+.cta .btn{
+  background:var(--accent);
+  color:#111;
+  margin-top:28px;
+}
+
+/* ================= FOOTER ================= */
+footer{
+  border-top:1px solid var(--border);
+  padding:50px 24px;
+}
+
+.footer-container{
+  max-width:1200px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:30px;
+}
+
+footer h4{
+  margin-bottom:12px;
+}
+
+footer a{
+  display:block;
+  color:#555;
+  text-decoration:none;
+  margin-bottom:8px;
+  font-size:14px;
+}
+
+/* ================= RESPONSIVO ================= */
+@media(max-width:900px){
+  .hero{
+    grid-template-columns:1fr;
+  }
+  .cta{
+    grid-template-columns:1fr;
+  }
+  .hero h1{
+    font-size:38px;
+  }
+}
 </style>
 </head>
 <body>
 
-<video autoplay muted loop id="bgvideo">
-  <source src="https://cdn.coverr.co/videos/coverr-nightclub-lights-1893/1080p.mp4" type="video/mp4">
-</video>
-<div class="overlay"></div>
+<!-- HEADER -->
+<header>
+  <div class="header-container">
+    <div class="logo">AgendaBeauty</div>
 
-<header><h1>CLENA CLUB</h1></header>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="loja.html">Para Salões</a>
+      <a href="cliente.html">Para Clientes</a>
+      <a href="planos.html">Planos</a>
+    </nav>
 
-<section class="hero fade-section" id="home">
-  <div class="banner-wrapper">
-    <div class="banner-img">
-      <img src="https://github.com/ClenaStore/Loja/blob/main/paste/Social%20Media%20Evento%20Cantores%20e%20Samba.png?raw=true" alt="Próxima atração">
+    <div class="header-actions">
+      <a href="login.html"><button class="btn btn-outline">Entrar</button></a>
+      <a href="cadastro.html"><button class="btn btn-primary">Teste grátis</button></a>
     </div>
   </div>
-  <h2>SÁBADO 23H</h2>
-  <p>Aberto apenas aos sábados.<br>Uma noite de luz, som e energia no universo CLENA.</p>
-  <a class="btn-small" href="#ingressos">🎟️ Ingressos</a>
-</section>
+</header>
 
-<section id="galeria" class="fade-section">
-  <h2 class="title">NOSSO ESPAÇO</h2>
-  <p class="desc">Explore o ambiente CLENA — luzes, neon e energia única.</p>
-  <div class="feed">
-    <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=300&q=60">
-    <img src="https://images.unsplash.com/photo-1556767576-bd41ca986b05?auto=format&fit=crop&w=300&q=60">
-    <img src="https://images.unsplash.com/photo-1603190287605-0593e5c04f6e?auto=format&fit=crop&w=300&q=60">
-    <img src="https://images.unsplash.com/photo-1614622086927-36e2362994cb?auto=format&fit=crop&w=300&q=60">
-    <img src="https://images.unsplash.com/photo-1519677100203-a0e668c92439?auto=format&fit=crop&w=300&q=60">
-    <img src="https://images.unsplash.com/photo-1574966749495-cb49e93f21ea?auto=format&fit=crop&w=300&q=60">
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <h1>Os recursos que o seu <span>salão de beleza</span> precisa</h1>
+    <p>
+      Agendamentos online, controle de profissionais, clientes e serviços em um único sistema simples, moderno e eficiente.
+    </p>
+    <div class="hero-actions">
+      <a href="cadastro.html"><button class="btn btn-primary">Testar grátis</button></a>
+      <a href="loja.html"><button class="btn btn-outline">Sou um salão</button></a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    IMAGEM / MOCKUP DO SISTEMA
   </div>
 </section>
 
-<section id="local" class="fade-section">
-  <h2 class="title">ONDE ESTAMOS</h2>
-  <p class="desc">📍 Rua das Luzes 77, Bairro Central — Barreiras / BA<br>Aberto somente aos sábados, das 23h às 04h.</p>
-  <div class="map">
-    <iframe src="https://www.google.com/maps?q=Barreiras,+BA&output=embed" width="100%" height="220" style="border:0;"></iframe>
+<!-- BENEFÍCIOS -->
+<section class="section">
+  <div class="container">
+    <h2>Você relaxa, seu negócio não para</h2>
+    <p>Automatize sua agenda e foque no que realmente importa: seus clientes.</p>
+
+    <div class="benefits">
+      <div class="card">
+        <h3>Agenda online</h3>
+        <p>Clientes agendam sozinhos, 24h por dia.</p>
+      </div>
+      <div class="card">
+        <h3>Gestão financeira</h3>
+        <p>Controle simples de faturamento e serviços.</p>
+      </div>
+      <div class="card">
+        <h3>Profissionais</h3>
+        <p>Autonomia para cada profissional gerenciar horários.</p>
+      </div>
+      <div class="card">
+        <h3>Clientes</h3>
+        <p>Histórico completo e fidelização.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<section id="ingressos" class="fade-section">
-  <h2 class="title">INGRESSOS</h2>
-  <p class="desc">Entrada limitada. Garanta seu ingresso antecipado via WhatsApp.</p>
-  <a class="btn-small" href="https://wa.me/5577999792195?text=Quero+comprar+meu+ingresso+para+sábado+no+CLENA!">Comprar Agora</a>
+<!-- MÓDULOS -->
+<section class="section white">
+  <div class="container">
+    <h2>Módulos do sistema</h2>
+
+    <div class="modules">
+      <a href="agendamentos.html" class="module">
+        <strong>Agendamentos</strong>
+        Controle total da agenda
+      </a>
+      <a href="profissionais.html" class="module">
+        <strong>Profissionais</strong>
+        Horários e comissões
+      </a>
+      <a href="servicos.html" class="module">
+        <strong>Serviços</strong>
+        Preços e duração
+      </a>
+      <a href="cliente.html" class="module">
+        <strong>Área do Cliente</strong>
+        Reservas online
+      </a>
+      <a href="loja.html" class="module">
+        <strong>Painel do Salão</strong>
+        Gestão completa
+      </a>
+    </div>
+  </div>
 </section>
 
-<section id="contato" class="fade-section">
-  <h2 class="title">CONTATO</h2>
-  <p class="desc">Reservas e informações:</p>
-  <a class="btn-small" href="https://wa.me/5577999792195?text=Olá,+quero+reservar+para+sábado+no+CLENA!">💬 WhatsApp</a>
-  <p style="margin-top:14px;font-size:.85rem;color:var(--text);text-shadow:0 0 6px rgba(0,0,0,0.9);">
-    Instagram: <a href="https://instagram.com/clena.oficial" target="_blank" style="color:var(--neon1);text-decoration:none;">@clena.oficial</a>
-  </p>
+<!-- CTA -->
+<section class="cta">
+  <div>
+    <h2>Comece hoje mesmo</h2>
+    <p>Mais agilidade, menos trabalho manual e mais clientes satisfeitos.</p>
+    <a href="cadastro.html"><button class="btn">Criar conta grátis</button></a>
+  </div>
 </section>
 
-<footer>© 2025 CLENA • Neon Lounge • clena.com.br</footer>
-
-<div id="popup">
-  <span onclick="fecharPopup()">&times;</span>
-  <img id="popup-img" src="" alt="Foto ampliada">
-</div>
-
-<script>
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){entry.target.classList.add('show');}
-  });
-},{threshold:0.15});
-document.querySelectorAll('.fade-section').forEach(el=>observer.observe(el));
-
-const popup=document.getElementById('popup');
-const popupImg=document.getElementById('popup-img');
-function fecharPopup(){popup.style.display='none';}
-document.querySelectorAll('.feed img').forEach(img=>{
-  img.addEventListener('click',()=>{
-    popup.style.display='flex';
-    popupImg.src=img.src;
-  });
-});
-popup.addEventListener('click',e=>{
-  if(e.target===popup) fecharPopup();
-});
-</script>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-container">
+    <div>
+      <h4>Institucional</h4>
+      <a href="#">Quem somos</a>
+      <a href="#">Contato</a>
+      <a href="#">Termos de uso</a>
+    </div>
+    <div>
+      <h4>Sistema</h4>
+      <a href="loja.html">Para salões</a>
+      <a href="cliente.html">Para clientes</a>
+      <a href="planos.html">Planos</a>
+    </div>
+    <div>
+      <h4>Acesso</h4>
+      <a href="login.html">Entrar</a>
+      <a href="cadastro.html">Criar conta</a>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>
