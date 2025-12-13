@@ -11,10 +11,7 @@
 <style>
 :root{
   --primary:#ff6a00;
-  --primary-dark:#e55d00;
   --bg:#f6f7fb;
-  --text:#1f2937;
-  --muted:#6b7280;
   --border:#e5e7eb;
   --radius:18px;
 }
@@ -25,10 +22,8 @@ body{
   min-height:100vh;
   display:grid;
   grid-template-columns:1.2fr .8fr;
-  background:#fff;
 }
 
-/* ESQUERDA */
 .left{
   background:url("https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1600&q=80")
     center/cover no-repeat;
@@ -50,16 +45,15 @@ body{
   flex-direction:column;
   justify-content:center;
 }
-.left h1{font-size:44px;margin-bottom:20px;}
+.left h1{font-size:44px;}
 .left h1 span{color:var(--primary);}
-.left p{font-size:18px;max-width:440px;}
 
-/* DIREITA */
 .right{
   display:flex;
   align-items:center;
   justify-content:center;
 }
+
 .card{
   width:100%;
   max-width:460px;
@@ -69,25 +63,13 @@ body{
   box-shadow:0 25px 60px rgba(0,0,0,.08);
 }
 
-label{
-  font-size:13px;
-  font-weight:600;
-  margin-bottom:6px;
-  display:block;
-}
-
+label{font-size:13px;font-weight:600;margin-bottom:6px;display:block;}
 input,select{
   width:100%;
   padding:14px 16px;
   border-radius:12px;
   border:1px solid var(--border);
   margin-bottom:16px;
-}
-
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
 }
 
 .btn{
@@ -97,20 +79,15 @@ input,select{
   border-radius:30px;
   font-size:16px;
   font-weight:700;
-  cursor:pointer;
   background:var(--primary);
   color:#fff;
-}
-
-.btn:disabled{
-  opacity:.6;
-  cursor:not-allowed;
+  cursor:pointer;
 }
 
 .error{
-  background:#ffe5e5;
-  color:#b00020;
-  padding:10px 14px;
+  background:#eaf1ff;
+  color:#0b3d91;
+  padding:12px;
   border-radius:10px;
   margin-bottom:14px;
   font-size:14px;
@@ -123,7 +100,7 @@ input,select{
 <div class="left">
   <div class="left-content">
     <h1>Crie seu <span>salão digital</span></h1>
-    <p>Gerencie agenda, clientes e pagamentos em um só lugar.</p>
+    <p>Gerencie agenda, clientes e pagamentos.</p>
   </div>
 </div>
 
@@ -132,37 +109,17 @@ input,select{
     <h2>Cadastrar negócio</h2>
     <p style="color:#6b7280;margin-bottom:24px;">Leva menos de 1 minuto</p>
 
-    <div id="errorBox" class="error"></div>
+    <div id="msgBox" class="error"></div>
 
     <form onsubmit="register(event)">
       <label>Nome do responsável</label>
-      <input id="name" required oninput="upper(this)">
+      <input id="name" required oninput="this.value=this.value.toUpperCase()">
 
       <label>WhatsApp</label>
       <input id="whatsapp" required placeholder="(99) 99999-9999">
 
       <label>Nome do negócio</label>
-      <input id="business" required oninput="upper(this)">
-
-      <label>Tipo do negócio</label>
-      <select id="type" required>
-        <option value="">Selecione</option>
-        <option>Salão de Beleza</option>
-        <option>Barbearia</option>
-        <option>Clínica de Estética</option>
-        <option>Studio</option>
-      </select>
-
-      <div class="row">
-        <div>
-          <label>Cidade</label>
-          <input id="city" required oninput="upper(this)">
-        </div>
-        <div>
-          <label>UF</label>
-          <input id="uf" maxlength="2" required oninput="upper(this)">
-        </div>
-      </div>
+      <input id="business" required oninput="this.value=this.value.toUpperCase()">
 
       <label>E-mail</label>
       <input id="email" type="email" required>
@@ -170,7 +127,7 @@ input,select{
       <label>Senha</label>
       <input id="password" type="password" minlength="6" required>
 
-      <button id="btn" class="btn">Criar conta</button>
+      <button class="btn">Criar conta</button>
     </form>
   </div>
 </div>
@@ -181,92 +138,42 @@ const supabase = window.supabase.createClient(
   "sb_publishable_cU1MtNtU1CfhmlNrmtsiug_6JA3ZBTY"
 );
 
-const errorBox = document.getElementById("errorBox");
-const btn = document.getElementById("btn");
-
-function showError(msg){
-  errorBox.innerText = msg;
-  errorBox.style.display = "block";
-}
-
-function upper(el){
-  el.value = el.value.toUpperCase();
-}
+const msgBox = document.getElementById("msgBox");
 
 document.getElementById("whatsapp").addEventListener("input", e=>{
   let v = e.target.value.replace(/\D/g,'').slice(0,11);
-  v = v.replace(/^(\d{2})(\d)/,"($1) $2")
-       .replace(/(\d{5})(\d)/,"$1-$2");
+  v = v.replace(/^(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");
   e.target.value = v;
 });
 
 async function register(e){
   e.preventDefault();
-  errorBox.style.display = "none";
-  btn.disabled = true;
-  btn.innerText = "Criando conta...";
+  msgBox.style.display="none";
 
-  try{
-    const name = document.getElementById("name").value.trim();
-    const business = document.getElementById("business").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-    const whatsapp = document.getElementById("whatsapp").value.replace(/\D/g,'');
-    const city = document.getElementById("city").value;
-    const uf = document.getElementById("uf").value;
-    const type = document.getElementById("type").value;
+  const email = email.value.trim();
+  const password = password.value;
 
-    /* 1️⃣ CRIA USUÁRIO (SEM CONFIRMAÇÃO DE EMAIL) */
-/* 1️⃣ CRIA USUÁRIO */
-const { data, error } = await supabase.auth.signUp({
-  email,
-  password
-});
-
-if(error) throw error;
-
-/* 🔑 2️⃣ FAZ LOGIN IMEDIATAMENTE */
-const login = await supabase.auth.signInWithPassword({
-  email,
-  password
-});
-
-if(login.error) throw login.error;
-
-/* 🔐 AGORA EXISTE auth.uid() */
-const userId = login.data.user.id;
-
-/* 3️⃣ ATUALIZA PROFILE */
-const profile = await supabase
-  .from("profiles")
-  .update({ name, role: "business" })
-  .eq("id", userId);
-
-if(profile.error) throw profile.error;
-
-/* 4️⃣ CRIA NEGÓCIO */
-const businessInsert = await supabase
-  .from("businesses")
-  .insert({
-    owner_id: userId,
-    name: business,
-    phone: whatsapp,
-    city,
-    uf,
-    type
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options:{
+      data:{
+        name: name.value,
+        business: business.value,
+        whatsapp: whatsapp.value
+      }
+    }
   });
 
-if(businessInsert.error) throw businessInsert.error;
-
-/* 5️⃣ REDIRECIONA */
-window.location.href = "loja.html";
-
-
-  }catch(err){
-    showError(err.message || "Erro ao criar conta");
-    btn.disabled = false;
-    btn.innerText = "Criar conta";
+  if(error){
+    msgBox.innerText = error.message;
+    msgBox.style.display="block";
+    return;
   }
+
+  msgBox.innerText =
+    "Conta criada com sucesso! 📩 Verifique seu e-mail para confirmar e depois faça login.";
+  msgBox.style.display="block";
 }
 </script>
 
