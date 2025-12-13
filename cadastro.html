@@ -106,6 +106,14 @@ button{
   display:none;
 }
 
+/* EMAIL INLINE ERROR */
+#emailError{
+  display:none;
+  color:var(--danger);
+  font-size:13px;
+  margin:-8px 0 14px 4px;
+}
+
 /* OVERLAY */
 #overlay{
   position:fixed;
@@ -159,7 +167,7 @@ button{
   <div class="modal-box">
     <h3>Cadastro realizado!</h3>
     <p>Seu negócio foi cadastrado com sucesso.</p>
-    <button onclick="irLogin()">Seguir</button>
+    <button onclick="irLogin()">Ir para login</button>
   </div>
 </div>
 
@@ -200,6 +208,8 @@ button{
       <input id="uf" placeholder="UF" maxlength="2" required>
 
       <input id="email" type="email" placeholder="E-mail" required>
+      <div id="emailError">Este e-mail já possui cadastro. Faça login.</div>
+
       <input id="senha" type="password" placeholder="Senha" minlength="6" required>
 
       <button>Criar conta</button>
@@ -217,6 +227,7 @@ const supabase = window.supabase.createClient(
 const overlay = document.getElementById("overlay");
 const modal = document.getElementById("modal");
 const errorBox = document.getElementById("errorBox");
+const emailError = document.getElementById("emailError");
 
 /* WHATSAPP MASK */
 whatsapp.addEventListener("input", e=>{
@@ -226,7 +237,7 @@ whatsapp.addEventListener("input", e=>{
   e.target.value = v;
 });
 
-/* UPPERCASE (SEM SELECT) */
+/* UPPERCASE */
 document.querySelectorAll("input").forEach(el=>{
   el.addEventListener("input", ()=>{
     if(el.type !== "email" && el.type !== "password"){
@@ -240,9 +251,15 @@ function showError(msg){
   errorBox.style.display = "block";
 }
 
+function showEmailError(show){
+  emailError.style.display = show ? "block" : "none";
+}
+
 async function cadastrar(e){
   e.preventDefault();
+
   errorBox.style.display = "none";
+  showEmailError(false);
   overlay.style.display = "flex";
 
   const payload = {
@@ -252,7 +269,7 @@ async function cadastrar(e){
     tipo: tipo.value,
     cidade: cidade.value.trim(),
     uf: uf.value.trim(),
-    email: email.value.trim(),
+    email: email.value.trim().toLowerCase(),
     senha: senha.value.trim()
   };
 
@@ -262,7 +279,30 @@ async function cadastrar(e){
     return;
   }
 
-  const { error } = await supabase.from("negocios").insert([payload]);
+  /* VERIFICA EMAIL */
+  const { data: existente, error: erroConsulta } = await supabase
+    .from("negocios")
+    .select("id")
+    .eq("email", payload.email)
+    .maybeSingle();
+
+  if(erroConsulta){
+    showError("Erro ao validar e-mail");
+    overlay.style.display = "none";
+    return;
+  }
+
+  if(existente){
+    overlay.style.display = "none";
+    showEmailError(true);
+    email.focus();
+    return;
+  }
+
+  /* INSERE */
+  const { error } = await supabase
+    .from("negocios")
+    .insert([payload]);
 
   if(error){
     showError("Erro ao cadastrar. Tente novamente.");
