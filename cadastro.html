@@ -21,7 +21,6 @@
   padding:0;
   box-sizing:border-box;
   font-family:Inter;
-  text-transform:uppercase;
 }
 
 body{
@@ -48,6 +47,7 @@ body{
   z-index:2;
   padding:80px;
 }
+.left span{ color:var(--primary); }
 
 /* RIGHT */
 .right{
@@ -65,12 +65,23 @@ body{
   background:#fff;
 }
 
+.card small{
+  color:var(--primary);
+  font-weight:600;
+}
+
 input,select{
   width:100%;
   padding:14px;
   margin-bottom:14px;
   border-radius:12px;
   border:1px solid var(--border);
+  text-transform:uppercase;
+}
+
+input[type="email"],
+input[type="password"]{
+  text-transform:none;
 }
 
 button{
@@ -95,7 +106,7 @@ button{
   display:none;
 }
 
-/* OVERLAY LOADING */
+/* OVERLAY */
 #overlay{
   position:fixed;
   inset:0;
@@ -112,7 +123,7 @@ button{
   font-weight:700;
 }
 
-/* MODAL CONFIRMAÇÃO */
+/* MODAL */
 #modal{
   position:fixed;
   inset:0;
@@ -129,13 +140,6 @@ button{
   max-width:380px;
   width:90%;
   text-align:center;
-}
-.modal-box h3{
-  margin-bottom:12px;
-}
-.modal-box p{
-  margin-bottom:20px;
-  color:#555;
 }
 .modal-box button{
   border-radius:25px;
@@ -161,16 +165,21 @@ button{
 
 <div class="left">
   <div>
-    <h1>Crie seu salão digital</h1>
-    <p>Agenda, clientes e controle em um só lugar.</p>
+    <h1>Crie seu salão<br><span>digital</span></h1>
+    <p style="margin-top:12px">
+      Agenda, clientes e controle em um só lugar.
+    </p>
   </div>
 </div>
 
 <div class="right">
   <div class="card">
 
-    <h2>Cadastrar negócio</h2>
-    <p style="color:#6b7280;margin-bottom:18px">Leva menos de 1 minuto</p>
+    <small>Acesso à plataforma</small>
+    <h2 style="margin:10px 0 6px">Cadastrar negócio</h2>
+    <p style="color:#6b7280;margin-bottom:18px">
+      Leva menos de 1 minuto
+    </p>
 
     <div id="errorBox" class="error"></div>
 
@@ -181,17 +190,17 @@ button{
 
       <select id="tipo" required>
         <option value="">Tipo do negócio</option>
-        <option>Salão de Beleza</option>
-        <option>Barbearia</option>
-        <option>Clínica de Estética</option>
-        <option>Studio</option>
+        <option value="SALAO DE BELEZA">Salão de Beleza</option>
+        <option value="BARBEARIA">Barbearia</option>
+        <option value="CLINICA DE ESTETICA">Clínica de Estética</option>
+        <option value="STUDIO">Studio</option>
       </select>
 
       <input id="cidade" placeholder="Cidade" required>
       <input id="uf" placeholder="UF" maxlength="2" required>
 
-      <input id="email" type="email" placeholder="E-mail" required style="text-transform:none">
-      <input id="senha" type="password" placeholder="Senha" minlength="6" style="text-transform:none" required>
+      <input id="email" type="email" placeholder="E-mail" required>
+      <input id="senha" type="password" placeholder="Senha" minlength="6" required>
 
       <button>Criar conta</button>
     </form>
@@ -205,11 +214,11 @@ const supabase = window.supabase.createClient(
   "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
 
-const errorBox = document.getElementById("errorBox");
 const overlay = document.getElementById("overlay");
 const modal = document.getElementById("modal");
+const errorBox = document.getElementById("errorBox");
 
-/* MÁSCARA WHATSAPP */
+/* WHATSAPP MASK */
 whatsapp.addEventListener("input", e=>{
   let v = e.target.value.replace(/\D/g,'').slice(0,11);
   v = v.replace(/^(\d{2})(\d)/,"($1) $2")
@@ -217,8 +226,8 @@ whatsapp.addEventListener("input", e=>{
   e.target.value = v;
 });
 
-/* UPPERCASE */
-document.querySelectorAll("input,select").forEach(el=>{
+/* UPPERCASE (SEM SELECT) */
+document.querySelectorAll("input").forEach(el=>{
   el.addEventListener("input", ()=>{
     if(el.type !== "email" && el.type !== "password"){
       el.value = el.value.toUpperCase();
