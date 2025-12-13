@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Entrar • AgendaBeauty</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#ff6a00;
+  --primary-dark:#e55d00;
+  --accent:#b8ff65;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --bg:#f6f7fb;
+  --border:#e5e7eb;
+  --radius:16px;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
+body{
+  height:100vh;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  background:#fff;
+}
+
+/* LADO ESQUERDO */
+.left{
+  background:url("https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1600&q=80")
+    center/cover no-repeat;
+  position:relative;
+  color:#fff;
+}
+
+.left::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,.2));
+}
+
+.left-content{
+  position:relative;
+  z-index:2;
+  height:100%;
+  padding:60px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.left h1{
+  font-size:42px;
+  line-height:1.1;
+  margin-bottom:18px;
+}
+
+.left h1 span{
+  color:var(--primary);
+}
+
+.left p{
+  font-size:18px;
+  max-width:420px;
+  opacity:.95;
+}
+
+/* LADO DIREITO */
+.right{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.form-box{
+  width:100%;
+  max-width:420px;
+  padding:40px;
+}
+
+.form-box h2{
+  font-size:28px;
+  margin-bottom:8px;
+}
+
+.form-box p{
+  color:var(--muted);
+  margin-bottom:30px;
+}
+
+label{
+  display:block;
+  font-size:14px;
+  margin-bottom:6px;
+}
+
+input{
+  width:100%;
+  padding:14px 16px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  margin-bottom:18px;
+  font-size:15px;
+}
+
+input:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+
+.forgot{
+  display:block;
+  text-align:right;
+  font-size:14px;
+  margin-top:-8px;
+  margin-bottom:20px;
+  color:var(--primary);
+  text-decoration:none;
+}
+
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+}
+
+.divider{
+  text-align:center;
+  margin:30px 0;
+  font-size:14px;
+  color:var(--muted);
+}
+
+.links{
+  text-align:center;
+  font-size:14px;
+}
+
+.links a{
+  display:block;
+  margin-top:10px;
+  color:var(--primary);
+  text-decoration:none;
+  font-weight:600;
+}
+
+/* RESPONSIVO */
+@media(max-width:900px){
+  body{
+    grid-template-columns:1fr;
+  }
+  .left{
+    display:none;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- LADO ESQUERDO -->
+<div class="left">
+  <div class="left-content">
+    <h1>
+      A gestão do seu salão<br>
+      começa com um <span>login</span>
+    </h1>
+    <p>
+      Entre na sua conta e tenha controle total dos agendamentos,
+      clientes e profissionais do seu negócio.
+    </p>
+  </div>
+</div>
+
+<!-- LADO DIREITO -->
+<div class="right">
+  <div class="form-box">
+    <h2>Entrar na plataforma</h2>
+    <p>Use seu e-mail e senha para acessar.</p>
+
+    <form>
+      <label>E-mail</label>
+      <input type="email" placeholder="seu@email.com">
+
+      <label>Senha</label>
+      <input type="password" placeholder="••••••••">
+
+      <a href="#" class="forgot">Esqueci minha senha</a>
+
+      <button class="btn btn-primary">Entrar</button>
+    </form>
+
+    <div class="divider">Ainda não tem conta?</div>
+
+    <div class="links">
+      <a href="cadastro.html">Cadastrar meu negócio</a>
+      <a href="cliente.html">Entrar como cliente (agendar serviço)</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
