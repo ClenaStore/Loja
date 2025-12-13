@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>AgendaBeauty • Sistema de Agendamentos para Salões</title>
+<title>AgendaBeauty • Sistema de Agendamentos Profissional</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
   --bg:#f6f7fb;
   --card:#ffffff;
   --border:#e5e7eb;
-  --radius:16px;
+  --radius:18px;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
@@ -27,9 +27,9 @@ body{color:var(--text);background:#fff;}
 header{
   position:sticky;
   top:0;
+  z-index:100;
   background:#fff;
   border-bottom:1px solid var(--border);
-  z-index:100;
 }
 .header{
   max-width:1200px;
@@ -57,14 +57,23 @@ nav a{text-decoration:none;color:#111;font-weight:500;}
 .hero{
   max-width:1200px;
   margin:auto;
-  padding:90px 24px;
+  padding:100px 24px 70px;
   display:grid;
   grid-template-columns:1.2fr .8fr;
   gap:60px;
 }
-.hero h1{font-size:50px;line-height:1.1;margin-bottom:20px;}
+.hero h1{
+  font-size:52px;
+  line-height:1.1;
+  margin-bottom:22px;
+}
 .hero h1 span{color:var(--primary);}
-.hero p{font-size:18px;color:var(--muted);max-width:560px;margin-bottom:36px;}
+.hero p{
+  font-size:19px;
+  color:var(--muted);
+  max-width:560px;
+  margin-bottom:38px;
+}
 .hero-actions{display:flex;gap:14px;}
 .hero-box{
   background:#f2f2f2;
@@ -72,8 +81,33 @@ nav a{text-decoration:none;color:#111;font-weight:500;}
   display:flex;
   align-items:center;
   justify-content:center;
+  color:#aaa;
   font-weight:700;
-  color:#999;
+}
+
+/* NUMBERS */
+.numbers{
+  background:var(--bg);
+  padding:50px 24px;
+}
+.numbers-grid{
+  max-width:1200px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:30px;
+}
+.number{
+  text-align:center;
+}
+.number strong{
+  font-size:36px;
+  color:var(--primary);
+}
+.number span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
 }
 
 /* SECTIONS */
@@ -81,7 +115,21 @@ nav a{text-decoration:none;color:#111;font-weight:500;}
 .section.bg{background:var(--bg);}
 .container{max-width:1200px;margin:auto;}
 .section h2{font-size:38px;margin-bottom:16px;}
-.section p.lead{color:var(--muted);max-width:640px;}
+.section p.lead{color:var(--muted);max-width:700px;}
+
+/* VIDEO */
+.video-box{
+  margin-top:50px;
+  background:#000;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+.video-box iframe{
+  width:100%;
+  height:520px;
+  border:none;
+}
 
 /* GRID */
 .grid{
@@ -99,24 +147,24 @@ nav a{text-decoration:none;color:#111;font-weight:500;}
 .card h3{margin-bottom:10px;}
 .card p{font-size:15px;color:#555;}
 
-/* STEPS */
-.steps{
+/* TIMELINE */
+.timeline{
+  margin-top:50px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:30px;
-  margin-top:50px;
 }
 .step strong{
-  font-size:14px;
   color:var(--primary);
+  font-size:14px;
 }
 .step h3{margin:10px 0;}
-.step p{font-size:15px;color:#555;}
+.step p{color:#555;font-size:15px;}
 
 /* CTA */
 .cta{
   max-width:1200px;
-  margin:90px auto;
+  margin:100px auto;
   background:var(--primary);
   color:#fff;
   border-radius:32px;
@@ -130,20 +178,34 @@ nav a{text-decoration:none;color:#111;font-weight:500;}
 
 /* TESTIMONIAL */
 .testimonial{
+  margin-top:50px;
   background:#fff;
   border-radius:24px;
   padding:40px;
   border:1px solid var(--border);
-  max-width:800px;
+  max-width:900px;
 }
 .testimonial p{font-size:18px;font-style:italic;}
 .testimonial strong{display:block;margin-top:20px;}
 
+/* FAQ */
+.faq{
+  margin-top:50px;
+  display:grid;
+  gap:20px;
+}
+.faq-item{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:22px;
+}
+.faq-item h4{margin-bottom:8px;}
+
 /* FOOTER */
 footer{
-  background:#fff;
   border-top:1px solid var(--border);
-  padding:60px 24px;
+  padding:70px 24px;
 }
 .footer{
   max-width:1200px;
@@ -164,7 +226,8 @@ footer a{
 /* RESPONSIVE */
 @media(max-width:900px){
   .hero,.cta{grid-template-columns:1fr;}
-  .hero h1{font-size:38px;}
+  .hero h1{font-size:40px;}
+  .video-box iframe{height:320px;}
 }
 </style>
 </head>
@@ -188,27 +251,51 @@ footer a{
 
 <section class="hero">
   <div>
-    <h1>Gestão inteligente para <span>salões de beleza</span></h1>
+    <h1>Gestão completa para <span>salões de beleza</span></h1>
     <p>
-      Um sistema completo de agendamentos, clientes e profissionais para você ter controle total do seu salão — simples, moderno e eficiente.
+      Um sistema profissional para agendamentos online, organização de profissionais,
+      controle de clientes e crescimento do seu negócio.
     </p>
     <div class="hero-actions">
-      <a href="cadastro.html"><button class="btn btn-primary">Começar agora</button></a>
+      <a href="cadastro.html"><button class="btn btn-primary">Criar conta grátis</button></a>
       <a href="cliente.html"><button class="btn btn-outline">Sou cliente</button></a>
     </div>
   </div>
   <div class="hero-box">Mockup do sistema</div>
 </section>
 
+<section class="numbers">
+  <div class="numbers-grid">
+    <div class="number"><strong>+40 mil</strong><span>negócios atendidos</span></div>
+    <div class="number"><strong>+1M</strong><span>agendamentos mensais</span></div>
+    <div class="number"><strong>99%</strong><span>satisfação dos clientes</span></div>
+    <div class="number"><strong>24h</strong><span>agendamento online</span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>Conheça o AgendaBeauty em poucos minutos</h2>
+    <p class="lead">Veja como o sistema funciona na prática e como ele pode transformar a gestão do seu salão.</p>
+
+    <div class="video-box">
+      <iframe 
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+        title="Apresentação AgendaBeauty"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
 <section class="section bg">
   <div class="container">
-    <h2>Para quem é o AgendaBeauty?</h2>
-    <p class="lead">Criado para negócios que querem profissionalizar a gestão e crescer.</p>
+    <h2>Para quem é o sistema</h2>
     <div class="grid">
-      <div class="card"><h3>Salões de beleza</h3><p>Controle completo da agenda, serviços e equipe.</p></div>
-      <div class="card"><h3>Barbearias</h3><p>Agendamentos rápidos e organização de horários.</p></div>
-      <div class="card"><h3>Clínicas de estética</h3><p>Gestão precisa de procedimentos e profissionais.</p></div>
-      <div class="card"><h3>Studios & freelancers</h3><p>Profissionalismo mesmo trabalhando sozinho.</p></div>
+      <div class="card"><h3>Salões de beleza</h3><p>Gestão completa da agenda e equipe.</p></div>
+      <div class="card"><h3>Barbearias</h3><p>Agendamentos rápidos e organização.</p></div>
+      <div class="card"><h3>Clínicas de estética</h3><p>Controle de procedimentos e horários.</p></div>
+      <div class="card"><h3>Studios e freelancers</h3><p>Profissionalismo desde o primeiro cliente.</p></div>
     </div>
   </div>
 </section>
@@ -216,47 +303,40 @@ footer a{
 <section class="section">
   <div class="container">
     <h2>Como funciona</h2>
-    <div class="steps">
-      <div class="step">
-        <strong>PASSO 1</strong>
-        <h3>Cadastre seu salão</h3>
-        <p>Crie sua conta e personalize seus serviços.</p>
-      </div>
-      <div class="step">
-        <strong>PASSO 2</strong>
-        <h3>Organize a agenda</h3>
-        <p>Defina horários, profissionais e duração.</p>
-      </div>
-      <div class="step">
-        <strong>PASSO 3</strong>
-        <h3>Receba agendamentos</h3>
-        <p>Clientes reservam online 24h por dia.</p>
-      </div>
-      <div class="step">
-        <strong>PASSO 4</strong>
-        <h3>Gerencie tudo</h3>
-        <p>Acompanhe clientes, serviços e resultados.</p>
-      </div>
+    <div class="timeline">
+      <div class="step"><strong>PASSO 1</strong><h3>Crie sua conta</h3><p>Cadastro rápido e simples.</p></div>
+      <div class="step"><strong>PASSO 2</strong><h3>Configure serviços</h3><p>Defina preços e duração.</p></div>
+      <div class="step"><strong>PASSO 3</strong><h3>Compartilhe sua agenda</h3><p>Clientes agendam online.</p></div>
+      <div class="step"><strong>PASSO 4</strong><h3>Gerencie tudo</h3><p>Controle total do negócio.</p></div>
     </div>
   </div>
 </section>
 
 <section class="cta">
   <div>
-    <h2>Mais controle, menos trabalho</h2>
-    <p>Transforme a gestão do seu salão com tecnologia simples e eficiente.</p>
-    <a href="cadastro.html"><button class="btn">Criar conta grátis</button></a>
+    <h2>Seu salão mais organizado e profissional</h2>
+    <p>Automatize processos e foque no crescimento.</p>
+    <a href="cadastro.html"><button class="btn">Começar agora</button></a>
   </div>
 </section>
 
 <section class="section bg">
   <div class="container">
-    <h2>O que dizem nossos clientes</h2>
+    <h2>O que nossos clientes dizem</h2>
     <div class="testimonial">
-      <p>
-        “Depois que começamos a usar o AgendaBeauty, nossa agenda ficou organizada e os clientes elogiam a facilidade de agendar.”
-      </p>
+      <p>“Depois que implantamos o sistema, nossa agenda ficou organizada e o faturamento aumentou.”</p>
       <strong>— Proprietária de salão</strong>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>Perguntas frequentes</h2>
+    <div class="faq">
+      <div class="faq-item"><h4>Preciso pagar para testar?</h4><p>Não, o teste é totalmente gratuito.</p></div>
+      <div class="faq-item"><h4>Meus clientes conseguem agendar sozinhos?</h4><p>Sim, 24h por dia.</p></div>
+      <div class="faq-item"><h4>Funciona no celular?</h4><p>Sim, totalmente responsivo.</p></div>
     </div>
   </div>
 </section>
@@ -267,7 +347,7 @@ footer a{
       <h4>Institucional</h4>
       <a href="#">Quem somos</a>
       <a href="#">Contato</a>
-      <a href="#">Termos de uso</a>
+      <a href="#">Termos</a>
     </div>
     <div>
       <h4>Sistema</h4>
