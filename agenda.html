@@ -14,51 +14,55 @@
   --bg:#f4f6f9;
   --card:#ffffff;
   --border:#e5e7eb;
-  --radius:16px;
+  --radius:18px;
   --success:#16a34a;
   --danger:#dc2626;
   --holiday:#2563eb;
+  --soft:#fff7ed;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 
 body{
   background:var(--bg);
-  padding:30px;
+  padding:32px;
 }
 
 /* HEADER */
 .header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
+  max-width:1200px;
+  margin:0 auto 20px;
 }
-.header h1{font-size:24px}
+.header h1{
+  font-size:26px;
+}
+.header span{color:var(--primary)}
 
 /* CALENDAR */
 .calendar{
   background:var(--card);
   border-radius:var(--radius);
-  padding:26px;
-  max-width:1100px;
+  padding:30px;
+  max-width:1200px;
   margin:auto;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
 }
 
 .calendar-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:18px;
+  margin-bottom:24px;
 }
 
 .calendar-header button{
   border:none;
   background:#fff;
   border:1px solid var(--border);
-  border-radius:10px;
-  padding:8px 14px;
+  border-radius:12px;
+  padding:10px 18px;
   cursor:pointer;
+  font-weight:600;
 }
 
 .weekdays, .days{
@@ -67,40 +71,56 @@ body{
 }
 
 .weekdays div{
-  font-weight:600;
   text-align:center;
-  padding:12px 0;
+  font-weight:600;
   color:#6b7280;
+  padding-bottom:12px;
 }
 
-.days div{
-  min-height:90px;
+.day{
   border:1px solid var(--border);
-  padding:6px;
+  min-height:140px;
+  padding:10px;
+  border-radius:14px;
+  background:#fff;
   cursor:pointer;
-  position:relative;
+  display:flex;
+  flex-direction:column;
 }
 
-.days div:hover{background:#fff7ed}
+.day:hover{background:var(--soft)}
 
 .day-number{
-  font-weight:600;
+  font-weight:700;
+  margin-bottom:6px;
 }
 
-.marker{
-  position:absolute;
-  bottom:6px;
-  left:6px;
-  right:6px;
+.badge{
   font-size:11px;
-  padding:4px;
-  border-radius:6px;
+  padding:4px 8px;
+  border-radius:999px;
+  display:inline-block;
+  margin-bottom:6px;
+}
+
+.badge.holiday{background:#e0e7ff;color:var(--holiday)}
+.badge.closed{background:#fee2e2;color:var(--danger)}
+
+.times{
+  margin-top:auto;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.time-pill{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:6px 8px;
+  font-size:12px;
   text-align:center;
 }
-
-.marker.open{background:#dcfce7;color:var(--success)}
-.marker.closed{background:#fee2e2;color:var(--danger)}
-.marker.holiday{background:#e0e7ff;color:var(--holiday)}
 
 /* MODAL */
 #modal{
@@ -115,25 +135,25 @@ body{
 
 .modal-box{
   background:#fff;
-  padding:28px;
-  border-radius:18px;
+  padding:30px;
+  border-radius:20px;
   width:100%;
-  max-width:460px;
+  max-width:480px;
 }
 
-.modal-box h3{margin-bottom:10px}
+.modal-box h3{margin-bottom:14px}
 
 .toggle{
   display:flex;
   align-items:center;
   gap:10px;
-  margin-bottom:14px;
+  margin-bottom:16px;
 }
 
 .horario{
   display:flex;
   gap:10px;
-  margin-bottom:8px;
+  margin-bottom:10px;
 }
 
 .horario input{
@@ -154,17 +174,15 @@ body{
 .add-btn{
   background:#eaf1ff;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   padding:10px;
   width:100%;
   cursor:pointer;
-  margin-top:8px;
 }
 
 .replica{
   margin-top:14px;
   display:flex;
-  align-items:center;
   gap:8px;
   font-size:14px;
 }
@@ -185,7 +203,7 @@ body{
 <body>
 
 <div class="header">
-  <h1>Agenda <span style="color:var(--primary)">do Negócio</span></h1>
+  <h1>Agenda <span>do Negócio</span></h1>
 </div>
 
 <div class="calendar">
@@ -210,7 +228,7 @@ body{
 
     <div class="toggle">
       <input type="checkbox" id="fechado">
-      <label for="fechado">Dia fechado</label>
+      <label>Dia fechado</label>
     </div>
 
     <div id="horarios"></div>
@@ -219,7 +237,7 @@ body{
 
     <div class="replica">
       <input type="checkbox" id="replicar">
-      <label>Replicar para todas as <b>semanas do mês</b></label>
+      <label>Replicar para todas as semanas do mês</label>
     </div>
 
     <button class="save-btn" onclick="salvarAgenda()">Salvar</button>
@@ -227,27 +245,19 @@ body{
 </div>
 
 <script>
-/* SUPABASE (conectado, ainda não usando) */
-const supabase = window.supabase.createClient(
-  "https://ssmsjryjwhnrbjyzklno.supabase.co",
-  "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
-);
-
-/* FERIADOS NACIONAIS (FIXOS) */
+/* FERIADOS FIXOS */
 const feriados = {
-  "01-01":"Confraternização Universal",
+  "01-01":"Confraternização",
   "04-21":"Tiradentes",
   "05-01":"Dia do Trabalho",
   "09-07":"Independência",
-  "10-12":"Nossa Senhora Aparecida",
+  "10-12":"Aparecida",
   "11-02":"Finados",
-  "11-15":"Proclamação da República",
+  "11-15":"República",
   "12-25":"Natal"
 };
 
-/* AGENDA EM MEMÓRIA (pronta p/ Supabase) */
 let agenda = {};
-
 let currentDate = new Date();
 let selectedDate = "";
 let selectedWeekDay = 0;
@@ -261,32 +271,41 @@ const fechadoEl = document.getElementById("fechado");
 const replicarEl = document.getElementById("replicar");
 
 function renderCalendar(){
-  daysEl.innerHTML = "";
-  const y = currentDate.getFullYear();
-  const m = currentDate.getMonth();
-  monthYearEl.innerText =
-    currentDate.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+  daysEl.innerHTML="";
+  const y=currentDate.getFullYear();
+  const m=currentDate.getMonth();
 
-  const firstDay = new Date(y,m,1).getDay();
-  const lastDate = new Date(y,m+1,0).getDate();
+  monthYearEl.innerText=currentDate.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
 
-  for(let i=0;i<firstDay;i++) daysEl.innerHTML += "<div></div>";
+  const firstDay=new Date(y,m,1).getDay();
+  const lastDate=new Date(y,m+1,0).getDate();
 
-  for(let d=1; d<=lastDate; d++){
-    const dateKey = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    const el = document.createElement("div");
+  for(let i=0;i<firstDay;i++) daysEl.innerHTML+="<div></div>";
 
-    el.innerHTML = `<div class="day-number">${d}</div>`;
-    el.onclick = ()=>openDay(y,m,d);
+  for(let d=1;d<=lastDate;d++){
+    const key=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const el=document.createElement("div");
+    el.className="day";
+    el.onclick=()=>openDay(y,m,d);
 
-    const mmdd = `${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    el.innerHTML=`<div class="day-number">${d}</div>`;
 
+    const mmdd=`${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
     if(feriados[mmdd]){
-      el.innerHTML += `<div class="marker holiday">${feriados[mmdd]}</div>`;
-    }else if(agenda[dateKey]){
-      el.innerHTML += agenda[dateKey].fechado
-        ? `<div class="marker closed">Fechado</div>`
-        : `<div class="marker open">Horários definidos</div>`;
+      el.innerHTML+=`<div class="badge holiday">${feriados[mmdd]}</div>`;
+    }
+
+    if(agenda[key]){
+      if(agenda[key].fechado){
+        el.innerHTML+=`<div class="badge closed">Fechado</div>`;
+      }else{
+        const times=document.createElement("div");
+        times.className="times";
+        agenda[key].horarios.forEach(h=>{
+          times.innerHTML+=`<div class="time-pill">${h.inicio} - ${h.fim}</div>`;
+        });
+        el.appendChild(times);
+      }
     }
 
     daysEl.appendChild(el);
@@ -299,25 +318,23 @@ function changeMonth(v){
 }
 
 function openDay(y,m,d){
-  selectedDate = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-  selectedWeekDay = new Date(y,m,d).getDay();
-  modalDate.innerText = new Date(y,m,d).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"});
-  horariosEl.innerHTML = "";
-  fechadoEl.checked = false;
-  replicarEl.checked = false;
+  selectedDate=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  selectedWeekDay=new Date(y,m,d).getDay();
+  modalDate.innerText=new Date(y,m,d).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"});
+  horariosEl.innerHTML="";
+  fechadoEl.checked=false;
+  replicarEl.checked=false;
 
   if(agenda[selectedDate]){
-    fechadoEl.checked = agenda[selectedDate].fechado;
+    fechadoEl.checked=agenda[selectedDate].fechado;
     agenda[selectedDate].horarios.forEach(h=>addHorario(h.inicio,h.fim));
-  }else{
-    addHorario();
-  }
+  }else addHorario();
 
-  modal.style.display = "flex";
+  modal.style.display="flex";
 }
 
 function addHorario(i="",f=""){
-  const div = document.createElement("div");
+  const div=document.createElement("div");
   div.className="horario";
   div.innerHTML=`
     <input type="time" value="${i}">
@@ -327,33 +344,38 @@ function addHorario(i="",f=""){
 }
 
 function salvarAgenda(){
-  const horarios = [];
+  const slots=[];
   document.querySelectorAll(".horario").forEach(h=>{
     const i=h.children[0].value;
     const f=h.children[1].value;
-    if(i&&f) horarios.push({inicio:i,fim:f});
+    if(i&&f) slots.push({inicio:i,fim:f});
   });
 
-  const baseData = {
-    fechado: fechadoEl.checked,
-    horarios
-  };
+  slots.sort((a,b)=>a.inicio.localeCompare(b.inicio));
+
+  for(let x=1;x<slots.length;x++){
+    if(slots[x].inicio <= slots[x-1].fim){
+      alert("Horários não podem encostar ou sobrepor.\nUse pelo menos 1 minuto de diferença.");
+      return;
+    }
+  }
+
+  const data={fechado:fechadoEl.checked,horarios:slots};
 
   if(replicarEl.checked){
-    const y=currentDate.getFullYear(), m=currentDate.getMonth();
-    for(let d=1; d<=31; d++){
+    const y=currentDate.getFullYear(),m=currentDate.getMonth();
+    for(let d=1;d<=31;d++){
       const dt=new Date(y,m,d);
       if(dt.getMonth()!==m) continue;
       if(dt.getDay()===selectedWeekDay){
-        const key=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-        agenda[key]=JSON.parse(JSON.stringify(baseData));
+        const k=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        agenda[k]=JSON.parse(JSON.stringify(data));
       }
     }
   }else{
-    agenda[selectedDate]=baseData;
+    agenda[selectedDate]=data;
   }
 
-  console.log("AGENDA:",agenda);
   modal.style.display="none";
   renderCalendar();
 }
