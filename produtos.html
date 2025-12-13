@@ -17,19 +17,19 @@
   --radius:18px;
   --danger:#dc2626;
 }
+
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 body{background:var(--bg);padding:28px}
 
+/* HEADER */
 .header{
   max-width:1300px;
   margin:0 auto 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
 }
 .header h1{font-size:26px}
 .header span{color:var(--primary)}
 
+/* LAYOUT */
 .container{
   max-width:1300px;
   margin:auto;
@@ -38,6 +38,7 @@ body{background:var(--bg);padding:28px}
   gap:24px;
 }
 
+/* CARD */
 .card{
   background:var(--card);
   border-radius:var(--radius);
@@ -47,6 +48,7 @@ body{background:var(--bg);padding:28px}
 
 .card h3{margin-bottom:16px}
 
+/* FORM */
 input,textarea,select{
   width:100%;
   padding:12px;
@@ -71,7 +73,10 @@ input[type="file"]{display:none}
   object-fit:cover;
   border-radius:12px;
 }
-.upload span{color:#6b7280;font-size:14px}
+.upload span{
+  color:#6b7280;
+  font-size:14px;
+}
 
 button{
   padding:14px;
@@ -84,6 +89,7 @@ button{
   width:100%;
 }
 
+/* LIST HEADER */
 .list-header{
   display:flex;
   justify-content:space-between;
@@ -92,15 +98,19 @@ button{
   gap:12px;
 }
 
-.list-header input{max-width:300px}
+.list-header input{
+  max-width:300px;
+}
 
-.mass-actions button{
+#btnExcluir{
+  display:none;
   background:#fee2e2;
   color:var(--danger);
   padding:10px 16px;
   border-radius:12px;
 }
 
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
@@ -121,13 +131,18 @@ button{
   object-fit:cover;
 }
 
+/* CHECKBOX */
 .check{
   position:absolute;
-  top:10px;
-  left:10px;
+  top:12px;
+  right:12px;
+  transform:scale(1.2);
+  z-index:10;
 }
 
-.item-body{padding:14px}
+.item-body{
+  padding:14px;
+}
 
 .badge{
   font-size:11px;
@@ -138,17 +153,42 @@ button{
   margin-bottom:6px;
 }
 
-.price{font-weight:700;margin-top:6px}
+.price{
+  font-weight:700;
+  margin-top:6px;
+}
 
 .actions span{
   font-size:13px;
   cursor:pointer;
   color:var(--primary);
 }
+
+/* OVERLAY */
+#overlaySalvar{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+#overlaySalvar div{
+  background:#fff;
+  padding:22px 30px;
+  border-radius:16px;
+  font-weight:600;
+}
 </style>
 </head>
 
 <body>
+
+<!-- OVERLAY -->
+<div id="overlaySalvar">
+  <div>Salvando…</div>
+</div>
 
 <div class="header">
   <h1>Produtos & <span>Serviços</span></h1>
@@ -167,9 +207,7 @@ button{
 
     <input id="nome" placeholder="Nome">
     <textarea id="descricao" placeholder="Descrição"></textarea>
-
     <input id="preco" placeholder="Preço">
-
     <input id="duracao" type="number" placeholder="Duração (min)">
 
     <label class="upload" for="imagem">
@@ -185,9 +223,7 @@ button{
   <div class="card">
     <div class="list-header">
       <input id="search" placeholder="Buscar produto ou serviço">
-      <div class="mass-actions">
-        <button onclick="excluirSelecionados()">Excluir selecionados</button>
-      </div>
+      <button id="btnExcluir" onclick="excluirSelecionados()">Excluir selecionados</button>
     </div>
 
     <div class="grid" id="lista"></div>
@@ -199,7 +235,6 @@ button{
 /* 🔐 PROTEÇÃO */
 const negocio = JSON.parse(localStorage.getItem("negocioLogado"));
 if(!negocio) location.href="login.html";
-
 const LOJA_ID = negocio.id;
 
 /* SUPABASE */
@@ -208,7 +243,7 @@ const supabase = window.supabase.createClient(
   "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
 
-let itens=[],editId=null;
+let itens=[], editId=null;
 
 /* TIPO */
 tipo.onchange=()=>{
@@ -233,8 +268,16 @@ preco.oninput=e=>{
   e.target.value=v;
 };
 
+/* BOTÃO EXCLUIR */
+function atualizarBotaoExcluir(){
+  const qtd=document.querySelectorAll(".check:checked").length;
+  btnExcluir.style.display = qtd>0 ? "inline-block" : "none";
+}
+
 /* SALVAR */
 async function salvar(){
+  overlaySalvar.style.display="flex";
+
   const valor=parseFloat(preco.value.replace(/\./g,'').replace(',','.'));
 
   let payload={
@@ -265,7 +308,8 @@ async function salvar(){
   }
 
   resetForm();
-  carregar();
+  await carregar();
+  overlaySalvar.style.display="none";
 }
 
 /* LISTAR */
@@ -278,6 +322,7 @@ async function carregar(){
   render();
 }
 
+/* RENDER */
 function render(){
   lista.innerHTML="";
   const q=search.value.toLowerCase();
@@ -285,7 +330,7 @@ function render(){
   itens.filter(i=>i.nome.toLowerCase().includes(q)).forEach(i=>{
     lista.innerHTML+=`
     <div class="item">
-      <input class="check" type="checkbox" value="${i.id}">
+      <input class="check" type="checkbox" value="${i.id}" onchange="atualizarBotaoExcluir()">
       ${i.imagem_url?`<img src="${i.imagem_url}">`:""}
       <div class="item-body">
         <span class="badge">${i.tipo}</span>
@@ -298,6 +343,8 @@ function render(){
       </div>
     </div>`;
   });
+
+  atualizarBotaoExcluir();
 }
 
 search.oninput=render;
@@ -320,10 +367,14 @@ function editar(id){
 async function excluirSelecionados(){
   const ids=[...document.querySelectorAll(".check:checked")].map(c=>c.value);
   if(!ids.length) return;
+
+  if(!confirm(`Deseja realmente excluir ${ids.length} item(ns)?`)) return;
+
   await supabase.from("produtos_servicos").delete().in("id",ids);
   carregar();
 }
 
+/* RESET */
 function resetForm(){
   editId=null;
   formTitle.innerText="Cadastrar item";
