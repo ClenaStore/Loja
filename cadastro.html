@@ -11,14 +11,18 @@
 <style>
 :root{
   --primary:#ff6a00;
-  --bg:#f6f7fb;
   --border:#e5e7eb;
   --radius:18px;
   --danger:#c62828;
-  --success:#2e7d32;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter;
+  text-transform:uppercase;
+}
 
 body{
   min-height:100vh;
@@ -26,6 +30,7 @@ body{
   grid-template-columns:1.2fr .8fr;
 }
 
+/* LEFT */
 .left{
   background:url("https://images.unsplash.com/photo-1600948836101-f9ffda59d250")
   center/cover no-repeat;
@@ -44,6 +49,7 @@ body{
   padding:80px;
 }
 
+/* RIGHT */
 .right{
   display:flex;
   align-items:center;
@@ -56,6 +62,7 @@ body{
   padding:44px;
   box-shadow:0 20px 60px rgba(0,0,0,.08);
   border-radius:var(--radius);
+  background:#fff;
 }
 
 input,select{
@@ -75,26 +82,9 @@ button{
   color:#fff;
   font-weight:700;
   cursor:pointer;
-  position:relative;
 }
 
-button.loading{
-  pointer-events:none;
-  opacity:.8;
-}
-
-button.loading::after{
-  content:"Salvando...";
-  position:absolute;
-  inset:0;
-  background:rgba(255,255,255,.6);
-  border-radius:30px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-}
-
+/* ERROR */
 .error{
   background:#ffe5e5;
   color:var(--danger);
@@ -104,10 +94,70 @@ button.loading::after{
   margin-bottom:14px;
   display:none;
 }
+
+/* OVERLAY LOADING */
+#overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+#overlay div{
+  background:#fff;
+  padding:30px 40px;
+  border-radius:16px;
+  font-weight:700;
+}
+
+/* MODAL CONFIRMAÇÃO */
+#modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+}
+.modal-box{
+  background:#fff;
+  padding:36px;
+  border-radius:18px;
+  max-width:380px;
+  width:90%;
+  text-align:center;
+}
+.modal-box h3{
+  margin-bottom:12px;
+}
+.modal-box p{
+  margin-bottom:20px;
+  color:#555;
+}
+.modal-box button{
+  border-radius:25px;
+}
 </style>
 </head>
 
 <body>
+
+<!-- OVERLAY -->
+<div id="overlay">
+  <div>Salvando cadastro…</div>
+</div>
+
+<!-- MODAL -->
+<div id="modal">
+  <div class="modal-box">
+    <h3>Cadastro realizado!</h3>
+    <p>Seu negócio foi cadastrado com sucesso.</p>
+    <button onclick="irLogin()">Seguir</button>
+  </div>
+</div>
 
 <div class="left">
   <div>
@@ -140,10 +190,10 @@ button.loading::after{
       <input id="cidade" placeholder="Cidade" required>
       <input id="uf" placeholder="UF" maxlength="2" required>
 
-      <input id="email" type="email" placeholder="E-mail" required>
-      <input id="senha" type="password" placeholder="Senha" minlength="6" required>
+      <input id="email" type="email" placeholder="E-mail" required style="text-transform:none">
+      <input id="senha" type="password" placeholder="Senha" minlength="6" style="text-transform:none" required>
 
-      <button id="btn">Criar conta</button>
+      <button>Criar conta</button>
     </form>
 
   </div>
@@ -155,8 +205,26 @@ const supabase = window.supabase.createClient(
   "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
 
-const btn = document.getElementById("btn");
 const errorBox = document.getElementById("errorBox");
+const overlay = document.getElementById("overlay");
+const modal = document.getElementById("modal");
+
+/* MÁSCARA WHATSAPP */
+whatsapp.addEventListener("input", e=>{
+  let v = e.target.value.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/^(\d{2})(\d)/,"($1) $2")
+       .replace(/(\d{5})(\d)/,"$1-$2");
+  e.target.value = v;
+});
+
+/* UPPERCASE */
+document.querySelectorAll("input,select").forEach(el=>{
+  el.addEventListener("input", ()=>{
+    if(el.type !== "email" && el.type !== "password"){
+      el.value = el.value.toUpperCase();
+    }
+  });
+});
 
 function showError(msg){
   errorBox.innerText = msg;
@@ -166,36 +234,38 @@ function showError(msg){
 async function cadastrar(e){
   e.preventDefault();
   errorBox.style.display = "none";
-  btn.classList.add("loading");
+  overlay.style.display = "flex";
 
   const payload = {
     responsavel: responsavel.value.trim(),
-    whatsapp: whatsapp.value.trim(),
+    whatsapp: whatsapp.value.replace(/\D/g,''),
     negocio: negocio.value.trim(),
     tipo: tipo.value,
     cidade: cidade.value.trim(),
-    uf: uf.value.trim().toUpperCase(),
+    uf: uf.value.trim(),
     email: email.value.trim(),
     senha: senha.value.trim()
   };
 
   if(Object.values(payload).some(v => !v)){
     showError("Preencha todos os campos");
-    btn.classList.remove("loading");
+    overlay.style.display = "none";
     return;
   }
 
-  const { error } = await supabase
-    .from("negocios")
-    .insert([payload]);
+  const { error } = await supabase.from("negocios").insert([payload]);
 
   if(error){
     showError("Erro ao cadastrar. Tente novamente.");
-    btn.classList.remove("loading");
+    overlay.style.display = "none";
     return;
   }
 
-  // ✅ REDIRECIONA PARA LOGIN
+  overlay.style.display = "none";
+  modal.style.display = "flex";
+}
+
+function irLogin(){
   window.location.href = "login.html";
 }
 </script>
