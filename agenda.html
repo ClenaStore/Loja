@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
@@ -23,19 +22,11 @@
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 
-body{
-  background:var(--bg);
-  padding:32px;
-}
+body{background:var(--bg);padding:32px}
 
 /* HEADER */
-.header{
-  max-width:1200px;
-  margin:0 auto 20px;
-}
-.header h1{
-  font-size:26px;
-}
+.header{max-width:1200px;margin:0 auto 20px}
+.header h1{font-size:26px}
 .header span{color:var(--primary)}
 
 /* CALENDAR */
@@ -56,30 +47,20 @@ body{
 }
 
 .calendar-header button{
-  border:none;
-  background:#fff;
   border:1px solid var(--border);
+  background:#fff;
   border-radius:12px;
   padding:10px 18px;
+  font-weight:600;
   cursor:pointer;
-  font-weight:600;
 }
 
-.weekdays, .days{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-}
-
-.weekdays div{
-  text-align:center;
-  font-weight:600;
-  color:#6b7280;
-  padding-bottom:12px;
-}
+.weekdays,.days{display:grid;grid-template-columns:repeat(7,1fr)}
+.weekdays div{text-align:center;font-weight:600;color:#6b7280;padding-bottom:12px}
 
 .day{
   border:1px solid var(--border);
-  min-height:140px;
+  min-height:150px;
   padding:10px;
   border-radius:14px;
   background:#fff;
@@ -87,13 +68,9 @@ body{
   display:flex;
   flex-direction:column;
 }
-
 .day:hover{background:var(--soft)}
 
-.day-number{
-  font-weight:700;
-  margin-bottom:6px;
-}
+.day-number{font-weight:700;margin-bottom:6px}
 
 .badge{
   font-size:11px;
@@ -102,7 +79,6 @@ body{
   display:inline-block;
   margin-bottom:6px;
 }
-
 .badge.holiday{background:#e0e7ff;color:var(--holiday)}
 .badge.closed{background:#fee2e2;color:var(--danger)}
 
@@ -112,7 +88,6 @@ body{
   flex-direction:column;
   gap:6px;
 }
-
 .time-pill{
   background:#fff;
   border:1px solid var(--border);
@@ -227,13 +202,14 @@ body{
     <h3 id="modalDate"></h3>
 
     <div class="toggle">
-      <input type="checkbox" id="fechado">
+      <input type="checkbox" id="fechado" onchange="toggleFechado()">
       <label>Dia fechado</label>
     </div>
 
-    <div id="horarios"></div>
-
-    <button class="add-btn" onclick="addHorario()">+ Adicionar horário</button>
+    <div id="horariosBox">
+      <div id="horarios"></div>
+      <button class="add-btn" onclick="addHorario()">+ Adicionar horário</button>
+    </div>
 
     <div class="replica">
       <input type="checkbox" id="replicar">
@@ -245,38 +221,27 @@ body{
 </div>
 
 <script>
-/* FERIADOS FIXOS */
-const feriados = {
-  "01-01":"Confraternização",
-  "04-21":"Tiradentes",
-  "05-01":"Dia do Trabalho",
-  "09-07":"Independência",
-  "10-12":"Aparecida",
-  "11-02":"Finados",
-  "11-15":"República",
-  "12-25":"Natal"
+const feriados={
+  "01-01":"Confraternização","04-21":"Tiradentes","05-01":"Trabalho",
+  "09-07":"Independência","10-12":"Aparecida","11-02":"Finados",
+  "11-15":"República","12-25":"Natal"
 };
 
-let agenda = {};
-let currentDate = new Date();
-let selectedDate = "";
-let selectedWeekDay = 0;
+let agenda={},currentDate=new Date(),selectedDate="",selectedWeekDay=0;
 
-const daysEl = document.getElementById("days");
-const monthYearEl = document.getElementById("monthYear");
-const modal = document.getElementById("modal");
-const modalDate = document.getElementById("modalDate");
-const horariosEl = document.getElementById("horarios");
-const fechadoEl = document.getElementById("fechado");
-const replicarEl = document.getElementById("replicar");
+const daysEl=document.getElementById("days");
+const monthYearEl=document.getElementById("monthYear");
+const modal=document.getElementById("modal");
+const modalDate=document.getElementById("modalDate");
+const horariosEl=document.getElementById("horarios");
+const horariosBox=document.getElementById("horariosBox");
+const fechadoEl=document.getElementById("fechado");
+const replicarEl=document.getElementById("replicar");
 
 function renderCalendar(){
   daysEl.innerHTML="";
-  const y=currentDate.getFullYear();
-  const m=currentDate.getMonth();
-
+  const y=currentDate.getFullYear(),m=currentDate.getMonth();
   monthYearEl.innerText=currentDate.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
-
   const firstDay=new Date(y,m,1).getDay();
   const lastDate=new Date(y,m+1,0).getDate();
 
@@ -287,35 +252,26 @@ function renderCalendar(){
     const el=document.createElement("div");
     el.className="day";
     el.onclick=()=>openDay(y,m,d);
-
     el.innerHTML=`<div class="day-number">${d}</div>`;
 
     const mmdd=`${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    if(feriados[mmdd]){
-      el.innerHTML+=`<div class="badge holiday">${feriados[mmdd]}</div>`;
-    }
+    if(feriados[mmdd]) el.innerHTML+=`<div class="badge holiday">${feriados[mmdd]}</div>`;
 
     if(agenda[key]){
       if(agenda[key].fechado){
         el.innerHTML+=`<div class="badge closed">Fechado</div>`;
       }else{
-        const times=document.createElement("div");
-        times.className="times";
-        agenda[key].horarios.forEach(h=>{
-          times.innerHTML+=`<div class="time-pill">${h.inicio} - ${h.fim}</div>`;
-        });
-        el.appendChild(times);
+        const t=document.createElement("div");
+        t.className="times";
+        agenda[key].horarios.forEach(h=>t.innerHTML+=`<div class="time-pill">${h.inicio} - ${h.fim}</div>`);
+        el.appendChild(t);
       }
     }
-
     daysEl.appendChild(el);
   }
 }
 
-function changeMonth(v){
-  currentDate.setMonth(currentDate.getMonth()+v);
-  renderCalendar();
-}
+function changeMonth(v){currentDate.setMonth(currentDate.getMonth()+v);renderCalendar();}
 
 function openDay(y,m,d){
   selectedDate=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
@@ -330,33 +286,34 @@ function openDay(y,m,d){
     agenda[selectedDate].horarios.forEach(h=>addHorario(h.inicio,h.fim));
   }else addHorario();
 
+  toggleFechado();
   modal.style.display="flex";
+}
+
+function toggleFechado(){
+  horariosBox.style.display=fechadoEl.checked?"none":"block";
 }
 
 function addHorario(i="",f=""){
   const div=document.createElement("div");
   div.className="horario";
-  div.innerHTML=`
-    <input type="time" value="${i}">
-    <input type="time" value="${f}">
-    <button onclick="this.parentElement.remove()">✕</button>`;
+  div.innerHTML=`<input type="time" value="${i}"><input type="time" value="${f}"><button onclick="this.parentElement.remove()">✕</button>`;
   horariosEl.appendChild(div);
 }
 
 function salvarAgenda(){
-  const slots=[];
-  document.querySelectorAll(".horario").forEach(h=>{
-    const i=h.children[0].value;
-    const f=h.children[1].value;
-    if(i&&f) slots.push({inicio:i,fim:f});
-  });
-
-  slots.sort((a,b)=>a.inicio.localeCompare(b.inicio));
-
-  for(let x=1;x<slots.length;x++){
-    if(slots[x].inicio <= slots[x-1].fim){
-      alert("Horários não podem encostar ou sobrepor.\nUse pelo menos 1 minuto de diferença.");
-      return;
+  let slots=[];
+  if(!fechadoEl.checked){
+    document.querySelectorAll(".horario").forEach(h=>{
+      const i=h.children[0].value,f=h.children[1].value;
+      if(i&&f) slots.push({inicio:i,fim:f});
+    });
+    slots.sort((a,b)=>a.inicio.localeCompare(b.inicio));
+    for(let x=1;x<slots.length;x++){
+      if(slots[x].inicio<=slots[x-1].fim){
+        alert("Horários não podem encostar.");
+        return;
+      }
     }
   }
 
@@ -372,9 +329,7 @@ function salvarAgenda(){
         agenda[k]=JSON.parse(JSON.stringify(data));
       }
     }
-  }else{
-    agenda[selectedDate]=data;
-  }
+  }else agenda[selectedDate]=data;
 
   modal.style.display="none";
   renderCalendar();
