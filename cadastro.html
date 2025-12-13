@@ -177,15 +177,28 @@ async function register(e){
   btn.innerText = "Criando conta...";
 
   try{
-    const nameVal = name.value.trim();
-    const whatsappVal = whatsapp.value.replace(/\D/g,'');
-    const passwordVal = password.value;
+    // 🔎 PEGA OS ELEMENTOS CORRETAMENTE
+    const nameEl = document.getElementById("name");
+    const whatsappEl = document.getElementById("whatsapp");
+    const businessEl = document.getElementById("business");
+    const typeEl = document.getElementById("type");
+    const cityEl = document.getElementById("city");
+    const ufEl = document.getElementById("uf");
+    const passwordEl = document.getElementById("password");
+
+    const nameVal = nameEl.value.trim();
+    const whatsappVal = whatsappEl.value.replace(/\D/g,'');
+    const passwordVal = passwordEl.value;
+
+    if(!nameVal || !whatsappVal || !passwordVal){
+      throw new Error("Preencha todos os campos obrigatórios");
+    }
 
     if(whatsappVal.length < 10){
       throw new Error("WhatsApp inválido");
     }
 
-    // 🔐 EMAIL TÉCNICO (INVISÍVEL)
+    // 🔐 EMAIL TÉCNICO
     const fakeEmail = `${whatsappVal}@agendabeauty.app`;
 
     /* 1️⃣ AUTH */
@@ -220,11 +233,11 @@ async function register(e){
       .from("businesses")
       .insert({
         owner_id: user.id,
-        name: business.value,
+        name: businessEl.value,
         phone: whatsappVal,
-        city: city.value,
-        uf: uf.value,
-        type: type.value
+        city: cityEl.value,
+        uf: ufEl.value,
+        type: typeEl.value
       });
 
     if(businessInsert.error) throw businessInsert.error;
@@ -238,12 +251,13 @@ async function register(e){
     }, 2000);
 
   }catch(err){
-    showError(err.message || "Erro ao cadastrar. Verifique os dados.");
+    showError(err.message || "Erro ao cadastrar");
     btn.classList.remove("loading");
     btn.innerText = "Criar conta";
   }
 }
 </script>
+
 
 </body>
 </html>
