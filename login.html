@@ -9,27 +9,27 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* ==== TODO SEU CSS ORIGINAL (SEM ALTERAÇÃO) ==== */
 :root{
   --primary:#ff6a00;
   --primary-dark:#e55d00;
   --accent:#b8ff65;
+  --bg:#f6f7fb;
   --text:#1f2937;
   --muted:#6b7280;
-  --bg:#f6f7fb;
   --border:#e5e7eb;
-  --radius:16px;
+  --radius:18px;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
 
 body{
-  height:100vh;
+  min-height:100vh;
   display:grid;
   grid-template-columns:1.2fr .8fr;
   background:#fff;
 }
 
+/* ===== LADO ESQUERDO ===== */
 .left{
   background:url("https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1600&q=80")
     center/cover no-repeat;
@@ -41,68 +41,127 @@ body{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,.2));
+  background:linear-gradient(120deg, rgba(0,0,0,.75), rgba(0,0,0,.25));
 }
 
 .left-content{
   position:relative;
   z-index:2;
   height:100%;
-  padding:60px;
+  padding:70px;
   display:flex;
   flex-direction:column;
   justify-content:center;
 }
 
-.left h1{font-size:42px;line-height:1.1;margin-bottom:18px;}
+.left h1{
+  font-size:44px;
+  line-height:1.1;
+  margin-bottom:20px;
+}
+
 .left h1 span{color:var(--primary);}
-.left p{font-size:18px;max-width:420px;opacity:.95;}
 
-.right{display:flex;align-items:center;justify-content:center;}
+.left p{
+  font-size:18px;
+  max-width:440px;
+  opacity:.95;
+}
 
-.form-box{width:100%;max-width:420px;padding:40px;}
-.form-box h2{font-size:28px;margin-bottom:8px;}
-.form-box p{color:var(--muted);margin-bottom:30px;}
+/* ===== LADO DIREITO ===== */
+.right{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(180deg,#fff,#fafafa);
+}
 
-label{display:block;font-size:14px;margin-bottom:6px;}
+.card{
+  width:100%;
+  max-width:440px;
+  padding:44px;
+  border-radius:var(--radius);
+  background:rgba(255,255,255,.92);
+  box-shadow:0 25px 60px rgba(0,0,0,.08);
+  backdrop-filter:blur(8px);
+}
+
+.card h2{
+  font-size:28px;
+  margin-bottom:6px;
+}
+
+.card p{
+  color:var(--muted);
+  margin-bottom:26px;
+}
+
+.step{
+  font-size:13px;
+  font-weight:600;
+  color:var(--primary);
+  margin-bottom:18px;
+}
+
+label{
+  font-size:13px;
+  font-weight:600;
+  display:block;
+  margin-bottom:6px;
+}
 
 input{
   width:100%;
   padding:14px 16px;
-  border-radius:10px;
+  border-radius:12px;
   border:1px solid var(--border);
   margin-bottom:18px;
-  font-size:15px;
+  font-size:14px;
 }
 
-input:focus{outline:none;border-color:var(--primary);}
+input:focus{
+  outline:none;
+  border-color:var(--primary);
+}
 
 .forgot{
   display:block;
   text-align:right;
-  font-size:14px;
-  margin-top:-8px;
-  margin-bottom:20px;
+  font-size:13px;
+  margin-top:-10px;
+  margin-bottom:22px;
   color:var(--primary);
   text-decoration:none;
+  font-weight:600;
 }
 
 .btn{
   width:100%;
-  padding:14px;
+  padding:15px;
   border:none;
   border-radius:30px;
   font-size:16px;
-  font-weight:600;
+  font-weight:700;
   cursor:pointer;
+  background:var(--primary);
+  color:#fff;
 }
 
-.btn-primary{background:var(--primary);color:#fff;}
+.footer-links{
+  text-align:center;
+  margin-top:26px;
+  font-size:14px;
+}
 
-.divider{text-align:center;margin:30px 0;font-size:14px;color:var(--muted);}
-.links{text-align:center;font-size:14px;}
-.links a{display:block;margin-top:10px;color:var(--primary);text-decoration:none;font-weight:600;}
+.footer-links a{
+  display:block;
+  margin-top:10px;
+  color:var(--primary);
+  text-decoration:none;
+  font-weight:600;
+}
 
+/* ===== MOBILE ===== */
 @media(max-width:900px){
   body{grid-template-columns:1fr;}
   .left{display:none;}
@@ -111,17 +170,27 @@ input:focus{outline:none;border-color:var(--primary);}
 </head>
 <body>
 
+<!-- ESQUERDA -->
 <div class="left">
   <div class="left-content">
-    <h1>A gestão do seu salão<br>começa com um <span>login</span></h1>
-    <p>Entre na sua conta e tenha controle total do seu negócio.</p>
+    <h1>
+      A gestão do seu salão<br>
+      começa com um <span>login</span>
+    </h1>
+    <p>
+      Acesse sua conta e controle agendamentos,
+      clientes e profissionais em um só lugar.
+    </p>
   </div>
 </div>
 
+<!-- DIREITA -->
 <div class="right">
-  <div class="form-box">
-    <h2>Entrar na plataforma</h2>
-    <p>Use seu e-mail e senha para acessar.</p>
+  <div class="card">
+    <div class="step">Acesso à plataforma</div>
+
+    <h2>Entrar</h2>
+    <p>Use seu e-mail e senha para continuar</p>
 
     <form onsubmit="login(event)">
       <label>E-mail</label>
@@ -132,12 +201,10 @@ input:focus{outline:none;border-color:var(--primary);}
 
       <a href="#" class="forgot" onclick="resetPassword()">Esqueci minha senha</a>
 
-      <button class="btn btn-primary">Entrar</button>
+      <button id="btn" class="btn">Entrar</button>
     </form>
 
-    <div class="divider">Ainda não tem conta?</div>
-
-    <div class="links">
+    <div class="footer-links">
       <a href="cadastro.html">Cadastrar meu negócio</a>
       <a href="cliente.html">Entrar como cliente (agendar serviço)</a>
     </div>
@@ -145,38 +212,37 @@ input:focus{outline:none;border-color:var(--primary);}
 </div>
 
 <script>
-/* 🔑 CONFIGURAÇÃO SUPABASE */
-const SUPABASE_URL = "https://pagqbjtpodoobnnoypdf.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_cU1MtNtU1CfhmlNrmtsiug_6JA3ZBTY";
-
+/* SUPABASE */
 const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
+  "https://pagqbjtpodoobnnoypdf.supabase.co",
+  "sb_publishable_cU1MtNtU1CfhmlNrmtsiug_6JA3ZBTY"
 );
 
 /* LOGIN */
 async function login(e){
   e.preventDefault();
+  const btn = document.getElementById("btn");
+  btn.disabled = true;
+  btn.innerText = "Entrando...";
 
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email, password
-  });
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if(error){
     alert(error.message);
+    btn.disabled = false;
+    btn.innerText = "Entrar";
     return;
   }
 
-  // Redirecionamento padrão (depois pode ser por role)
   window.location.href = "loja.html";
 }
 
 /* RESET SENHA */
 async function resetPassword(){
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   if(!email) return alert("Informe seu e-mail.");
 
   const { error } = await supabase.auth.resetPasswordForEmail(email,{
