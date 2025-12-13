@@ -14,6 +14,8 @@
   --bg:#f6f7fb;
   --border:#e5e7eb;
   --radius:18px;
+  --danger:#c62828;
+  --success:#2e7d32;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
@@ -41,11 +43,13 @@ body{
   z-index:2;
   padding:80px;
 }
+
 .right{
   display:flex;
   align-items:center;
   justify-content:center;
 }
+
 .card{
   width:100%;
   max-width:460px;
@@ -53,6 +57,7 @@ body{
   box-shadow:0 20px 60px rgba(0,0,0,.08);
   border-radius:var(--radius);
 }
+
 input,select{
   width:100%;
   padding:14px;
@@ -60,6 +65,7 @@ input,select{
   border-radius:12px;
   border:1px solid var(--border);
 }
+
 button{
   width:100%;
   padding:15px;
@@ -69,6 +75,37 @@ button{
   color:#fff;
   font-weight:700;
   cursor:pointer;
+  position:relative;
+}
+
+button.loading{
+  pointer-events:none;
+  opacity:.8;
+}
+
+button.loading::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,.6);
+  border-radius:30px;
+}
+
+.error{
+  background:#ffe5e5;
+  color:var(--danger);
+  padding:12px;
+  border-radius:10px;
+  font-size:14px;
+  margin-bottom:14px;
+  display:none;
+}
+
+.success{
+  text-align:center;
+  color:var(--success);
+  font-weight:600;
+  display:none;
 }
 </style>
 </head>
@@ -84,7 +121,12 @@ button{
 
 <div class="right">
   <div class="card">
+
     <h2>Cadastrar negócio</h2>
+    <p style="color:#6b7280;margin-bottom:18px">Leva menos de 1 minuto</p>
+
+    <div id="errorBox" class="error"></div>
+    <div id="successBox" class="success">✅ Cadastro realizado com sucesso! Redirecionando…</div>
 
     <form onsubmit="register(event)">
       <input id="name" placeholder="Nome do responsável" required>
@@ -103,10 +145,11 @@ button{
       <input id="uf" placeholder="UF" maxlength="2" required>
 
       <input id="email" type="email" placeholder="E-mail" required>
-      <input id="password" type="password" placeholder="Senha" required>
+      <input id="password" type="password" placeholder="Senha" minlength="6" required>
 
-      <button>Criar conta</button>
+      <button id="btn">Criar conta</button>
     </form>
+
   </div>
 </div>
 
@@ -116,34 +159,72 @@ const supabase = window.supabase.createClient(
   "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
 
+const btn = document.getElementById("btn");
+const errorBox = document.getElementById("errorBox");
+const successBox = document.getElementById("successBox");
+
+function showError(msg){
+  errorBox.innerText = msg;
+  errorBox.style.display = "block";
+}
+
 async function register(e){
   e.preventDefault();
+  errorBox.style.display = "none";
+  btn.classList.add("loading");
+  btn.innerText = "Criando conta...";
 
-  const email = emailEl.value;
-  const password = passwordEl.value;
+  try{
+    const email = emailEl.value;
+    const password = passwordEl.value;
 
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  if(error) return alert(error.message);
+    /* 1️⃣ Auth */
+    const signup = await supabase.auth.signUp({ email, password });
+    if(signup.error) throw signup.error;
 
-  await supabase.auth.signInWithPassword({ email, password });
+    const login = await supabase.auth.signInWithPassword({ email, password });
+    if(login.error) throw login.error;
 
-  const user = (await supabase.auth.getUser()).data.user;
+    const user = login.data.user;
 
-  await supabase.from("profiles").update({
-    name: name.value,
-    whatsapp: whatsapp.value
-  }).eq("id", user.id);
+    /* 2️⃣ Profile */
+    const profile = await supabase
+      .from("profiles")
+      .update({
+        name: name.value,
+        whatsapp: whatsapp.value
+      })
+      .eq("id", user.id);
 
-  await supabase.from("businesses").insert({
-    owner_id: user.id,
-    name: business.value,
-    phone: whatsapp.value,
-    city: city.value,
-    uf: uf.value,
-    type: type.value
-  });
+    if(profile.error) throw profile.error;
 
-  window.location.href = "dashboard.html";
+    /* 3️⃣ Business */
+    const businessInsert = await supabase
+      .from("businesses")
+      .insert({
+        owner_id: user.id,
+        name: business.value,
+        phone: whatsapp.value,
+        city: city.value,
+        uf: uf.value,
+        type: type.value
+      });
+
+    if(businessInsert.error) throw businessInsert.error;
+
+    /* ✅ Sucesso */
+    successBox.style.display = "block";
+    btn.style.display = "none";
+
+    setTimeout(()=>{
+      window.location.href = "login.html";
+    },2000);
+
+  }catch(err){
+    showError(err.message || "Erro ao cadastrar. Tente novamente.");
+    btn.classList.remove("loading");
+    btn.innerText = "Criar conta";
+  }
 }
 </script>
 
