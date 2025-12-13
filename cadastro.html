@@ -2,262 +2,227 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Cadastrar negócio • AgendaBeauty</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Controle de Usuários</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
-  --primary:#ff6a00;
-  --bg:#f6f7fb;
-  --border:#e5e7eb;
-  --radius:18px;
-  --danger:#c62828;
-  --success:#2e7d32;
+*{
+  box-sizing:border-box;
+  font-family:Inter, sans-serif;
 }
-
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 
 body{
-  min-height:100vh;
-  display:grid;
-  grid-template-columns:1.2fr .8fr;
-}
-
-.left{
-  background:url("https://images.unsplash.com/photo-1600948836101-f9ffda59d250")
-  center/cover no-repeat;
-  position:relative;
-  color:#fff;
-}
-.left::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(120deg,rgba(0,0,0,.75),rgba(0,0,0,.3));
-}
-.left div{
-  position:relative;
-  z-index:2;
-  padding:80px;
-}
-
-.right{
+  margin:0;
   display:flex;
-  align-items:center;
+  height:100vh;
+  background:linear-gradient(135deg,#f4f7fc,#e9f0ff);
+  overflow:hidden;
+}
+
+/* LEFT */
+.left{
+  width:42%;
+  background:#ffffff;
+  padding:70px;
+  display:flex;
+  flex-direction:column;
   justify-content:center;
 }
 
-.card{
-  width:100%;
-  max-width:460px;
-  padding:44px;
-  box-shadow:0 20px 60px rgba(0,0,0,.08);
-  border-radius:var(--radius);
-}
-
-input,select{
-  width:100%;
-  padding:14px;
-  margin-bottom:14px;
-  border-radius:12px;
-  border:1px solid var(--border);
-}
-
-button{
-  width:100%;
-  padding:15px;
-  border:none;
-  border-radius:30px;
-  background:var(--primary);
-  color:#fff;
+.left h2{
+  color:#102a43;
+  font-size:26px;
+  margin-bottom:30px;
   font-weight:700;
+}
+
+.group{ margin-bottom:22px; }
+
+label{
+  display:block;
+  font-size:14px;
+  color:#5a6c86;
+  margin-bottom:6px;
+}
+
+input{
+  width:100%;
+  padding:14px 16px;
+  font-size:15px;
+  border-radius:10px;
+  border:1px solid #d8e0ef;
+  background:#f7faff;
+}
+
+input:focus{
+  outline:none;
+  border-color:#4c6ef5;
+  box-shadow:0 0 0 3px rgba(76,110,245,.15);
+}
+
+.btn{
+  margin-top:10px;
+  padding:15px;
+  font-size:16px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#4c6ef5,#364fc7);
+  color:white;
+  font-weight:600;
   cursor:pointer;
-  position:relative;
 }
 
-button.loading{
+/* Loading */
+.btn.loading{
   pointer-events:none;
-  opacity:.8;
+  opacity:.7;
 }
-
-button.loading::after{
-  content:"";
+.btn.loading::after{
+  content:"Salvando...";
   position:absolute;
   inset:0;
-  background:rgba(255,255,255,.6);
-  border-radius:30px;
+  background:rgba(54,79,199,.85);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
 }
 
-.error{
-  background:#ffe5e5;
-  color:var(--danger);
-  padding:12px;
-  border-radius:10px;
-  font-size:14px;
-  margin-bottom:14px;
-  display:none;
+/* RIGHT */
+.right{
+  width:58%;
+  padding:50px;
+  background:linear-gradient(180deg,#102a43,#0b1e39);
+  overflow-y:auto;
 }
 
-.success{
-  text-align:center;
-  color:var(--success);
-  font-weight:600;
-  display:none;
+.right h2{
+  color:#ffffff;
+  font-size:24px;
+  margin-bottom:20px;
+}
+
+.userList{
+  background:white;
+  border-radius:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,.15);
+  overflow:hidden;
+}
+
+.userRow{
+  padding:18px 24px;
+  border-bottom:1px solid #eef2f8;
+}
+
+.userRow:last-child{ border-bottom:none; }
+
+.userRow b{
+  display:block;
+  font-size:15px;
+  color:#102a43;
+}
+
+.userRow span{
+  font-size:13px;
+  color:#6b7c93;
 }
 </style>
 </head>
 
 <body>
 
+<!-- LEFT -->
 <div class="left">
-  <div>
-    <h1>Crie seu salão digital</h1>
-    <p>Agenda, clientes e controle em um só lugar.</p>
+  <h2>Novo Usuário</h2>
+
+  <div class="group">
+    <label>Nome completo</label>
+    <input id="nome">
   </div>
+
+  <div class="group">
+    <label>Email</label>
+    <input id="email" type="email">
+  </div>
+
+  <div class="group">
+    <label>Senha</label>
+    <input id="senha" type="password">
+  </div>
+
+  <button id="btnSalvar" class="btn" onclick="salvarUsuario()">
+    Cadastrar Usuário
+  </button>
 </div>
 
+<!-- RIGHT -->
 <div class="right">
-  <div class="card">
-
-    <h2>Cadastrar negócio</h2>
-    <p style="color:#6b7280;margin-bottom:18px">Leva menos de 1 minuto</p>
-
-    <div id="errorBox" class="error"></div>
-    <div id="successBox" class="success">
-      ✅ Cadastro realizado com sucesso! Redirecionando…
-    </div>
-
-    <form onsubmit="register(event)">
-      <input id="name" placeholder="Nome do responsável" required>
-      <input id="whatsapp" placeholder="WhatsApp" required>
-      <input id="business" placeholder="Nome do negócio" required>
-
-      <select id="type" required>
-        <option value="">Tipo do negócio</option>
-        <option>Salão de Beleza</option>
-        <option>Barbearia</option>
-        <option>Clínica de Estética</option>
-        <option>Studio</option>
-      </select>
-
-      <input id="city" placeholder="Cidade" required>
-      <input id="uf" placeholder="UF" maxlength="2" required>
-
-      <input id="password" type="password" placeholder="Senha" minlength="6" required>
-
-      <button id="btn">Criar conta</button>
-    </form>
-
-  </div>
+  <h2>Usuários Cadastrados</h2>
+  <div id="listaUsuarios" class="userList"></div>
 </div>
 
 <script>
-const supabase = window.supabase.createClient(
+const sb = supabase.createClient(
   "https://ssmsjryjwhnrbjyzklno.supabase.co",
   "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
+/* LISTAR */
+async function carregarUsuarios(){
+  const { data, error } = await sb
+    .from("usuarios")
+    .select("*")
+    .order("nome");
 
-const btn = document.getElementById("btn");
-const errorBox = document.getElementById("errorBox");
-const successBox = document.getElementById("successBox");
-
-function showError(msg){
-  errorBox.innerText = msg;
-  errorBox.style.display = "block";
-}
-
-async function register(e){
-  e.preventDefault();
-  errorBox.style.display = "none";
-
-  btn.classList.add("loading");
-  btn.innerText = "Criando conta...";
-
-  try{
-    // 🔎 PEGA OS ELEMENTOS CORRETAMENTE
-    const nameEl = document.getElementById("name");
-    const whatsappEl = document.getElementById("whatsapp");
-    const businessEl = document.getElementById("business");
-    const typeEl = document.getElementById("type");
-    const cityEl = document.getElementById("city");
-    const ufEl = document.getElementById("uf");
-    const passwordEl = document.getElementById("password");
-
-    const nameVal = nameEl.value.trim();
-    const whatsappVal = whatsappEl.value.replace(/\D/g,'');
-    const passwordVal = passwordEl.value;
-
-    if(!nameVal || !whatsappVal || !passwordVal){
-      throw new Error("Preencha todos os campos obrigatórios");
-    }
-
-    if(whatsappVal.length < 10){
-      throw new Error("WhatsApp inválido");
-    }
-
-    // 🔐 EMAIL TÉCNICO
-    const fakeEmail = `${whatsappVal}@agendabeauty.app`;
-
-    /* 1️⃣ AUTH */
-    const signup = await supabase.auth.signUp({
-      email: fakeEmail,
-      password: passwordVal
-    });
-    if(signup.error) throw signup.error;
-
-    /* 2️⃣ LOGIN */
-    const login = await supabase.auth.signInWithPassword({
-      email: fakeEmail,
-      password: passwordVal
-    });
-    if(login.error) throw login.error;
-
-    const user = login.data.user;
-
-    /* 3️⃣ PROFILE */
-    const profile = await supabase
-      .from("profiles")
-      .update({
-        name: nameVal,
-        whatsapp: whatsappVal
-      })
-      .eq("id", user.id);
-
-    if(profile.error) throw profile.error;
-
-    /* 4️⃣ BUSINESS */
-    const businessInsert = await supabase
-      .from("businesses")
-      .insert({
-        owner_id: user.id,
-        name: businessEl.value,
-        phone: whatsappVal,
-        city: cityEl.value,
-        uf: ufEl.value,
-        type: typeEl.value
-      });
-
-    if(businessInsert.error) throw businessInsert.error;
-
-    /* ✅ SUCESSO */
-    successBox.style.display = "block";
-    btn.style.display = "none";
-
-    setTimeout(()=>{
-      window.location.href = "login.html";
-    }, 2000);
-
-  }catch(err){
-    showError(err.message || "Erro ao cadastrar");
-    btn.classList.remove("loading");
-    btn.innerText = "Criar conta";
+  if(error){
+    alert("Erro ao carregar usuários");
+    return;
   }
-}
-</script>
 
+  listaUsuarios.innerHTML = data.map(u => `
+    <div class="userRow">
+      <b>${u.nome}</b>
+      <span>${u.email}</span>
+    </div>
+  `).join("");
+}
+
+/* CADASTRAR */
+async function salvarUsuario(){
+  const btn = document.getElementById("btnSalvar");
+  btn.classList.add("loading");
+
+  const nome = document.getElementById("nome").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value.trim();
+
+  if(!nome || !email || !senha){
+    alert("Preencha todos os campos");
+    btn.classList.remove("loading");
+    return;
+  }
+
+  const { error } = await sb
+    .from("usuarios")
+    .insert([{ nome, email, senha }]);
+
+  if(error){
+    alert("Erro ao salvar usuário");
+    btn.classList.remove("loading");
+    return;
+  }
+
+  nome.value = "";
+  email.value = "";
+  senha.value = "";
+
+  btn.classList.remove("loading");
+  carregarUsuarios();
+}
+
+carregarUsuarios();
+</script>
 
 </body>
 </html>
+
