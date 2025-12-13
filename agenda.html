@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
@@ -14,7 +15,6 @@
   --card:#ffffff;
   --border:#e5e7eb;
   --radius:18px;
-  --success:#16a34a;
   --danger:#dc2626;
   --holiday:#2563eb;
   --soft:#fff7ed;
@@ -60,7 +60,7 @@ body{background:var(--bg);padding:32px}
 
 .day{
   border:1px solid var(--border);
-  min-height:150px;
+  min-height:160px;
   padding:10px;
   border-radius:14px;
   background:#fff;
@@ -221,13 +221,62 @@ body{background:var(--bg);padding:32px}
 </div>
 
 <script>
-const feriados={
-  "01-01":"Confraternização","04-21":"Tiradentes","05-01":"Trabalho",
-  "09-07":"Independência","10-12":"Aparecida","11-02":"Finados",
-  "11-15":"República","12-25":"Natal"
-};
+/* ================= SUPABASE ================= */
+const supabase = window.supabase.createClient(
+  "https://ssmsjryjwhnrbjyzklno.supabase.co",
+  "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
+);
 
+/* TEMPORÁRIO: depois vem do login */
+const LOJA_ID = localStorage.getItem("loja_id") ||
+"00000000-0000-0000-0000-000000000001";
+
+/* ================= FERIADOS ================= */
+function calcularPascoa(ano){
+  const a=ano%19,b=Math.floor(ano/100),c=ano%100;
+  const d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25);
+  const g=Math.floor((b-f+1)/3);
+  const h=(19*a+b-d-g+15)%30;
+  const i=Math.floor(c/4),k=c%4;
+  const l=(32+2*e+2*i-h-k)%7;
+  const m=Math.floor((a+11*h+22*l)/451);
+  const mes=Math.floor((h+l-7*m+114)/31);
+  const dia=((h+l-7*m+114)%31)+1;
+  return new Date(ano,mes-1,dia);
+}
+
+function feriadosBrasil(ano){
+  const p=calcularPascoa(ano);
+  const f={};
+
+  const fixos={
+    "01-01":"Confraternização Universal",
+    "04-21":"Tiradentes",
+    "05-01":"Dia do Trabalho",
+    "09-07":"Independência",
+    "10-12":"Nossa Senhora Aparecida",
+    "11-02":"Finados",
+    "11-15":"Proclamação da República",
+    "12-25":"Natal"
+  };
+
+  Object.entries(fixos).forEach(([k,v])=>f[`${ano}-${k}`]=v);
+
+  const carnaval=new Date(p);carnaval.setDate(p.getDate()-47);
+  const sextaSanta=new Date(p);sextaSanta.setDate(p.getDate()-2);
+  const corpus=new Date(p);corpus.setDate(p.getDate()+60);
+
+  f[carnaval.toISOString().slice(0,10)]="Carnaval";
+  f[sextaSanta.toISOString().slice(0,10)]="Paixão de Cristo";
+  f[p.toISOString().slice(0,10)]="Páscoa";
+  f[corpus.toISOString().slice(0,10)]="Corpus Christi";
+
+  return f;
+}
+
+/* ================= AGENDA ================= */
 let agenda={},currentDate=new Date(),selectedDate="",selectedWeekDay=0;
+let feriadosAno=feriadosBrasil(currentDate.getFullYear());
 
 const daysEl=document.getElementById("days");
 const monthYearEl=document.getElementById("monthYear");
@@ -238,9 +287,12 @@ const horariosBox=document.getElementById("horariosBox");
 const fechadoEl=document.getElementById("fechado");
 const replicarEl=document.getElementById("replicar");
 
+/* ================= CALENDÁRIO ================= */
 function renderCalendar(){
   daysEl.innerHTML="";
   const y=currentDate.getFullYear(),m=currentDate.getMonth();
+  feriadosAno=feriadosBrasil(y);
+
   monthYearEl.innerText=currentDate.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
   const firstDay=new Date(y,m,1).getDay();
   const lastDate=new Date(y,m+1,0).getDate();
@@ -254,8 +306,8 @@ function renderCalendar(){
     el.onclick=()=>openDay(y,m,d);
     el.innerHTML=`<div class="day-number">${d}</div>`;
 
-    const mmdd=`${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    if(feriados[mmdd]) el.innerHTML+=`<div class="badge holiday">${feriados[mmdd]}</div>`;
+    if(feriadosAno[key])
+      el.innerHTML+=`<div class="badge holiday">${feriadosAno[key]}</div>`;
 
     if(agenda[key]){
       if(agenda[key].fechado){
@@ -263,7 +315,9 @@ function renderCalendar(){
       }else{
         const t=document.createElement("div");
         t.className="times";
-        agenda[key].horarios.forEach(h=>t.innerHTML+=`<div class="time-pill">${h.inicio} - ${h.fim}</div>`);
+        agenda[key].horarios.forEach(h=>
+          t.innerHTML+=`<div class="time-pill">${h.inicio} - ${h.fim}</div>`
+        );
         el.appendChild(t);
       }
     }
@@ -271,8 +325,12 @@ function renderCalendar(){
   }
 }
 
-function changeMonth(v){currentDate.setMonth(currentDate.getMonth()+v);renderCalendar();}
+function changeMonth(v){
+  currentDate.setMonth(currentDate.getMonth()+v);
+  renderCalendar();
+}
 
+/* ================= MODAL ================= */
 function openDay(y,m,d){
   selectedDate=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
   selectedWeekDay=new Date(y,m,d).getDay();
@@ -297,17 +355,22 @@ function toggleFechado(){
 function addHorario(i="",f=""){
   const div=document.createElement("div");
   div.className="horario";
-  div.innerHTML=`<input type="time" value="${i}"><input type="time" value="${f}"><button onclick="this.parentElement.remove()">✕</button>`;
+  div.innerHTML=`
+    <input type="time" value="${i}">
+    <input type="time" value="${f}">
+    <button onclick="this.parentElement.remove()">✕</button>`;
   horariosEl.appendChild(div);
 }
 
-function salvarAgenda(){
+/* ================= SALVAR ================= */
+async function salvarAgenda(){
   let slots=[];
   if(!fechadoEl.checked){
     document.querySelectorAll(".horario").forEach(h=>{
       const i=h.children[0].value,f=h.children[1].value;
       if(i&&f) slots.push({inicio:i,fim:f});
     });
+
     slots.sort((a,b)=>a.inicio.localeCompare(b.inicio));
     for(let x=1;x<slots.length;x++){
       if(slots[x].inicio<=slots[x-1].fim){
@@ -317,25 +380,42 @@ function salvarAgenda(){
     }
   }
 
-  const data={fechado:fechadoEl.checked,horarios:slots};
+  const base={loja_id:LOJA_ID,fechado:fechadoEl.checked,horarios:slots};
+  const registros=[];
 
   if(replicarEl.checked){
     const y=currentDate.getFullYear(),m=currentDate.getMonth();
     for(let d=1;d<=31;d++){
       const dt=new Date(y,m,d);
-      if(dt.getMonth()!==m) continue;
-      if(dt.getDay()===selectedWeekDay){
-        const k=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-        agenda[k]=JSON.parse(JSON.stringify(data));
+      if(dt.getMonth()===m && dt.getDay()===selectedWeekDay){
+        registros.push({...base,data:dt.toISOString().slice(0,10)});
       }
     }
-  }else agenda[selectedDate]=data;
+  }else registros.push({...base,data:selectedDate});
+
+  await supabase.from("agenda_loja")
+    .upsert(registros,{onConflict:"loja_id,data"});
 
   modal.style.display="none";
+  carregarAgenda();
+}
+
+/* ================= LOAD ================= */
+async function carregarAgenda(){
+  const {data}=await supabase
+    .from("agenda_loja")
+    .select("*")
+    .eq("loja_id",LOJA_ID);
+
+  agenda={};
+  data?.forEach(r=>{
+    agenda[r.data]={fechado:r.fechado,horarios:r.horarios||[]};
+  });
+
   renderCalendar();
 }
 
-renderCalendar();
+carregarAgenda();
 </script>
 
 </body>
