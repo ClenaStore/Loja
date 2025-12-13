@@ -17,11 +17,9 @@
   --radius:18px;
   --danger:#dc2626;
 }
-
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 body{background:var(--bg);padding:28px}
 
-/* HEADER */
 .header{
   max-width:1300px;
   margin:0 auto 20px;
@@ -32,7 +30,6 @@ body{background:var(--bg);padding:28px}
 .header h1{font-size:26px}
 .header span{color:var(--primary)}
 
-/* LAYOUT */
 .container{
   max-width:1300px;
   margin:auto;
@@ -41,7 +38,6 @@ body{background:var(--bg);padding:28px}
   gap:24px;
 }
 
-/* CARD */
 .card{
   background:var(--card);
   border-radius:var(--radius);
@@ -49,7 +45,6 @@ body{background:var(--bg);padding:28px}
   box-shadow:0 10px 30px rgba(0,0,0,.06);
 }
 
-/* FORM */
 .card h3{margin-bottom:16px}
 
 input,textarea,select{
@@ -76,10 +71,7 @@ input[type="file"]{display:none}
   object-fit:cover;
   border-radius:12px;
 }
-.upload span{
-  color:#6b7280;
-  font-size:14px;
-}
+.upload span{color:#6b7280;font-size:14px}
 
 button{
   padding:14px;
@@ -92,7 +84,6 @@ button{
   width:100%;
 }
 
-/* LIST */
 .list-header{
   display:flex;
   justify-content:space-between;
@@ -101,19 +92,11 @@ button{
   gap:12px;
 }
 
-.list-header input{
-  max-width:300px;
-}
-
-.mass-actions{
-  display:flex;
-  gap:10px;
-}
+.list-header input{max-width:300px}
 
 .mass-actions button{
   background:#fee2e2;
   color:var(--danger);
-  width:auto;
   padding:10px 16px;
   border-radius:12px;
 }
@@ -142,12 +125,9 @@ button{
   position:absolute;
   top:10px;
   left:10px;
-  transform:scale(1.2);
 }
 
-.item-body{
-  padding:14px;
-}
+.item-body{padding:14px}
 
 .badge{
   font-size:11px;
@@ -158,16 +138,7 @@ button{
   margin-bottom:6px;
 }
 
-.price{
-  font-weight:700;
-  margin-top:6px;
-}
-
-.actions{
-  display:flex;
-  justify-content:space-between;
-  margin-top:10px;
-}
+.price{font-weight:700;margin-top:6px}
 
 .actions span{
   font-size:13px;
@@ -199,7 +170,7 @@ button{
 
     <input id="preco" placeholder="Preço">
 
-    <input id="duracao" type="number" placeholder="Duração (min)" style="display:none">
+    <input id="duracao" type="number" placeholder="Duração (min)">
 
     <label class="upload" for="imagem">
       <img id="preview" style="display:none">
@@ -225,18 +196,27 @@ button{
 </div>
 
 <script>
+/* 🔐 PROTEÇÃO */
+const negocio = JSON.parse(localStorage.getItem("negocioLogado"));
+if(!negocio) location.href="login.html";
+
+const LOJA_ID = negocio.id;
+
 /* SUPABASE */
 const supabase = window.supabase.createClient(
   "https://ssmsjryjwhnrbjyzklno.supabase.co",
   "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
 
-const LOJA_ID = localStorage.getItem("loja_id") ||
-"00000000-0000-0000-0000-000000000001";
-
 let itens=[],editId=null;
 
-/* PREVIEW IMAGEM */
+/* TIPO */
+tipo.onchange=()=>{
+  duracao.style.display = tipo.value==="SERVICO" ? "block" : "none";
+};
+tipo.onchange();
+
+/* PREVIEW */
 imagem.onchange=()=>{
   const f=imagem.files[0];
   if(f){
@@ -246,7 +226,7 @@ imagem.onchange=()=>{
   }
 };
 
-/* MÁSCARA MOEDA */
+/* MÁSCARA */
 preco.oninput=e=>{
   let v=e.target.value.replace(/\D/g,'');
   v=(v/100).toLocaleString('pt-BR',{minimumFractionDigits:2});
@@ -327,14 +307,16 @@ function editar(id){
   const i=itens.find(x=>x.id===id);
   editId=id;
   tipo.value=i.tipo;
+  tipo.onchange();
   nome.value=i.nome;
   descricao.value=i.descricao;
   preco.value=i.preco.toLocaleString('pt-BR',{minimumFractionDigits:2});
   duracao.value=i.duracao_minutos||"";
   formTitle.innerText="Editar item";
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* EXCLUIR EM MASSA */
+/* EXCLUIR */
 async function excluirSelecionados(){
   const ids=[...document.querySelectorAll(".check:checked")].map(c=>c.value);
   if(!ids.length) return;
