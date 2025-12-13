@@ -14,15 +14,13 @@
   --bg:#f4f6f9;
   --card:#ffffff;
   --border:#e5e7eb;
-  --radius:14px;
+  --radius:16px;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --holiday:#2563eb;
 }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Inter;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 
 body{
   background:var(--bg);
@@ -34,21 +32,16 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:24px;
+  margin-bottom:20px;
 }
-.header h1{
-  font-size:22px;
-}
-.header span{
-  color:var(--primary);
-}
+.header h1{font-size:24px}
 
 /* CALENDAR */
 .calendar{
   background:var(--card);
   border-radius:var(--radius);
-  padding:24px;
-  max-width:900px;
+  padding:26px;
+  max-width:1100px;
   margin:auto;
 }
 
@@ -61,8 +54,10 @@ body{
 
 .calendar-header button{
   border:none;
-  background:none;
-  font-size:18px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 14px;
   cursor:pointer;
 }
 
@@ -74,26 +69,38 @@ body{
 .weekdays div{
   font-weight:600;
   text-align:center;
-  padding:10px 0;
+  padding:12px 0;
   color:#6b7280;
 }
 
 .days div{
-  text-align:center;
-  padding:14px 0;
-  border-radius:10px;
+  min-height:90px;
+  border:1px solid var(--border);
+  padding:6px;
   cursor:pointer;
-  margin:2px;
+  position:relative;
 }
 
-.days div:hover{
-  background:#fff4ec;
+.days div:hover{background:#fff7ed}
+
+.day-number{
+  font-weight:600;
 }
 
-.days .active{
-  background:var(--primary);
-  color:#fff;
+.marker{
+  position:absolute;
+  bottom:6px;
+  left:6px;
+  right:6px;
+  font-size:11px;
+  padding:4px;
+  border-radius:6px;
+  text-align:center;
 }
+
+.marker.open{background:#dcfce7;color:var(--success)}
+.marker.closed{background:#fee2e2;color:var(--danger)}
+.marker.holiday{background:#e0e7ff;color:var(--holiday)}
 
 /* MODAL */
 #modal{
@@ -109,19 +116,24 @@ body{
 .modal-box{
   background:#fff;
   padding:28px;
-  border-radius:16px;
+  border-radius:18px;
   width:100%;
-  max-width:420px;
+  max-width:460px;
 }
 
-.modal-box h3{
+.modal-box h3{margin-bottom:10px}
+
+.toggle{
+  display:flex;
+  align-items:center;
+  gap:10px;
   margin-bottom:14px;
 }
 
 .horario{
   display:flex;
   gap:10px;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 
 .horario input{
@@ -132,7 +144,7 @@ body{
 }
 
 .horario button{
-  background:#ffe5e5;
+  background:#fee2e2;
   border:none;
   border-radius:10px;
   padding:0 12px;
@@ -146,7 +158,15 @@ body{
   padding:10px;
   width:100%;
   cursor:pointer;
-  margin-top:10px;
+  margin-top:8px;
+}
+
+.replica{
+  margin-top:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:14px;
 }
 
 .save-btn{
@@ -156,7 +176,7 @@ body{
   border-radius:30px;
   padding:14px;
   width:100%;
-  margin-top:16px;
+  margin-top:18px;
   cursor:pointer;
 }
 </style>
@@ -165,13 +185,13 @@ body{
 <body>
 
 <div class="header">
-  <h1>Configurar <span>Agenda</span></h1>
+  <h1>Agenda <span style="color:var(--primary)">do Negócio</span></h1>
 </div>
 
 <div class="calendar">
   <div class="calendar-header">
     <button onclick="changeMonth(-1)">◀</button>
-    <h3 id="monthYear"></h3>
+    <h2 id="monthYear"></h2>
     <button onclick="changeMonth(1)">▶</button>
   </div>
 
@@ -188,98 +208,154 @@ body{
   <div class="modal-box">
     <h3 id="modalDate"></h3>
 
+    <div class="toggle">
+      <input type="checkbox" id="fechado">
+      <label for="fechado">Dia fechado</label>
+    </div>
+
     <div id="horarios"></div>
 
     <button class="add-btn" onclick="addHorario()">+ Adicionar horário</button>
-    <button class="save-btn" onclick="salvarAgenda()">Salvar agenda</button>
+
+    <div class="replica">
+      <input type="checkbox" id="replicar">
+      <label>Replicar para todas as <b>semanas do mês</b></label>
+    </div>
+
+    <button class="save-btn" onclick="salvarAgenda()">Salvar</button>
   </div>
 </div>
 
 <script>
-/* SUPABASE (já conectado) */
+/* SUPABASE (conectado, ainda não usando) */
 const supabase = window.supabase.createClient(
   "https://ssmsjryjwhnrbjyzklno.supabase.co",
   "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
 
-/* CALENDAR LOGIC */
+/* FERIADOS NACIONAIS (FIXOS) */
+const feriados = {
+  "01-01":"Confraternização Universal",
+  "04-21":"Tiradentes",
+  "05-01":"Dia do Trabalho",
+  "09-07":"Independência",
+  "10-12":"Nossa Senhora Aparecida",
+  "11-02":"Finados",
+  "11-15":"Proclamação da República",
+  "12-25":"Natal"
+};
+
+/* AGENDA EM MEMÓRIA (pronta p/ Supabase) */
+let agenda = {};
+
 let currentDate = new Date();
-let selectedDate = null;
+let selectedDate = "";
+let selectedWeekDay = 0;
 
 const daysEl = document.getElementById("days");
 const monthYearEl = document.getElementById("monthYear");
 const modal = document.getElementById("modal");
 const modalDate = document.getElementById("modalDate");
 const horariosEl = document.getElementById("horarios");
+const fechadoEl = document.getElementById("fechado");
+const replicarEl = document.getElementById("replicar");
 
 function renderCalendar(){
   daysEl.innerHTML = "";
-
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
+  const y = currentDate.getFullYear();
+  const m = currentDate.getMonth();
   monthYearEl.innerText =
     currentDate.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
 
-  const firstDay = new Date(year,month,1).getDay();
-  const lastDate = new Date(year,month+1,0).getDate();
+  const firstDay = new Date(y,m,1).getDay();
+  const lastDate = new Date(y,m+1,0).getDate();
 
-  for(let i=0;i<firstDay;i++){
-    daysEl.innerHTML += "<div></div>";
-  }
+  for(let i=0;i<firstDay;i++) daysEl.innerHTML += "<div></div>";
 
   for(let d=1; d<=lastDate; d++){
-    const day = document.createElement("div");
-    day.innerText = d;
-    day.onclick = ()=>openDay(year,month,d);
-    daysEl.appendChild(day);
+    const dateKey = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const el = document.createElement("div");
+
+    el.innerHTML = `<div class="day-number">${d}</div>`;
+    el.onclick = ()=>openDay(y,m,d);
+
+    const mmdd = `${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+
+    if(feriados[mmdd]){
+      el.innerHTML += `<div class="marker holiday">${feriados[mmdd]}</div>`;
+    }else if(agenda[dateKey]){
+      el.innerHTML += agenda[dateKey].fechado
+        ? `<div class="marker closed">Fechado</div>`
+        : `<div class="marker open">Horários definidos</div>`;
+    }
+
+    daysEl.appendChild(el);
   }
 }
 
-function changeMonth(step){
-  currentDate.setMonth(currentDate.getMonth()+step);
+function changeMonth(v){
+  currentDate.setMonth(currentDate.getMonth()+v);
   renderCalendar();
 }
 
 function openDay(y,m,d){
   selectedDate = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-  modalDate.innerText =
-    new Date(y,m,d).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"});
+  selectedWeekDay = new Date(y,m,d).getDay();
+  modalDate.innerText = new Date(y,m,d).toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"});
   horariosEl.innerHTML = "";
-  addHorario();
+  fechadoEl.checked = false;
+  replicarEl.checked = false;
+
+  if(agenda[selectedDate]){
+    fechadoEl.checked = agenda[selectedDate].fechado;
+    agenda[selectedDate].horarios.forEach(h=>addHorario(h.inicio,h.fim));
+  }else{
+    addHorario();
+  }
+
   modal.style.display = "flex";
 }
 
-function addHorario(){
+function addHorario(i="",f=""){
   const div = document.createElement("div");
-  div.className = "horario";
-  div.innerHTML = `
-    <input type="time">
-    <input type="time">
-    <button onclick="this.parentElement.remove()">✕</button>
-  `;
+  div.className="horario";
+  div.innerHTML=`
+    <input type="time" value="${i}">
+    <input type="time" value="${f}">
+    <button onclick="this.parentElement.remove()">✕</button>`;
   horariosEl.appendChild(div);
 }
 
 function salvarAgenda(){
   const horarios = [];
   document.querySelectorAll(".horario").forEach(h=>{
-    const inputs = h.querySelectorAll("input");
-    if(inputs[0].value && inputs[1].value){
-      horarios.push({
-        inicio: inputs[0].value,
-        fim: inputs[1].value
-      });
-    }
+    const i=h.children[0].value;
+    const f=h.children[1].value;
+    if(i&&f) horarios.push({inicio:i,fim:f});
   });
 
-  console.log({
-    data: selectedDate,
+  const baseData = {
+    fechado: fechadoEl.checked,
     horarios
-  });
+  };
 
-  alert("Agenda salva (estrutura pronta)");
-  modal.style.display = "none";
+  if(replicarEl.checked){
+    const y=currentDate.getFullYear(), m=currentDate.getMonth();
+    for(let d=1; d<=31; d++){
+      const dt=new Date(y,m,d);
+      if(dt.getMonth()!==m) continue;
+      if(dt.getDay()===selectedWeekDay){
+        const key=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        agenda[key]=JSON.parse(JSON.stringify(baseData));
+      }
+    }
+  }else{
+    agenda[selectedDate]=baseData;
+  }
+
+  console.log("AGENDA:",agenda);
+  modal.style.display="none";
+  renderCalendar();
 }
 
 renderCalendar();
