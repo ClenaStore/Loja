@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Cadastrar negócio • AgendaBeauty</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ==== MESMO CSS DO LOGIN ==== */
+:root{
+  --primary:#ff6a00;
+  --primary-dark:#e55d00;
+  --accent:#b8ff65;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --bg:#f6f7fb;
+  --border:#e5e7eb;
+  --radius:16px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+
+body{
+  height:100vh;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  background:#fff;
+}
+
+.left{
+  background:url("https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1600&q=80")
+    center/cover no-repeat;
+  position:relative;
+  color:#fff;
+}
+
+.left::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,.2));
+}
+
+.left-content{
+  position:relative;
+  z-index:2;
+  height:100%;
+  padding:60px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.left h1{font-size:42px;line-height:1.1;margin-bottom:18px;}
+.left h1 span{color:var(--primary);}
+.left p{font-size:18px;max-width:420px;opacity:.95;}
+
+.right{display:flex;align-items:center;justify-content:center;}
+
+.form-box{width:100%;max-width:420px;padding:40px;}
+.form-box h2{font-size:28px;margin-bottom:8px;}
+.form-box p{color:var(--muted);margin-bottom:30px;}
+
+label{display:block;font-size:14px;margin-bottom:6px;}
+
+input{
+  width:100%;
+  padding:14px 16px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  margin-bottom:18px;
+  font-size:15px;
+}
+
+input:focus{outline:none;border-color:var(--primary);}
+
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-primary{background:var(--primary);color:#fff;}
+
+.divider{text-align:center;margin:30px 0;font-size:14px;color:var(--muted);}
+.links{text-align:center;font-size:14px;}
+.links a{display:block;margin-top:10px;color:var(--primary);text-decoration:none;font-weight:600;}
+
+@media(max-width:900px){
+  body{grid-template-columns:1fr;}
+  .left{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- LADO ESQUERDO -->
+<div class="left">
+  <div class="left-content">
+    <h1>
+      Cadastre seu <br>
+      <span>negócio</span>
+    </h1>
+    <p>
+      Crie sua conta e comece agora a organizar seus agendamentos,
+      clientes e profissionais.
+    </p>
+  </div>
+</div>
+
+<!-- LADO DIREITO -->
+<div class="right">
+  <div class="form-box">
+    <h2>Cadastrar negócio</h2>
+    <p>Leva menos de 1 minuto.</p>
+
+    <form onsubmit="register(event)">
+      <label>Nome do responsável</label>
+      <input id="name" required>
+
+      <label>Nome do negócio</label>
+      <input id="business" required>
+
+      <label>E-mail</label>
+      <input id="email" type="email" required>
+
+      <label>Senha</label>
+      <input id="password" type="password" required>
+
+      <button class="btn btn-primary">Criar conta</button>
+    </form>
+
+    <div class="divider">Já tem conta?</div>
+
+    <div class="links">
+      <a href="login.html">Entrar na plataforma</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* 🔑 CONFIGURAÇÃO SUPABASE (MESMA DO LOGIN) */
+const SUPABASE_URL = "https://pagqbjtpodoobnnoypdf.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_cU1MtNtU1CfhmlNrmtsiug_6JA3ZBTY";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+/* CADASTRO */
+async function register(e){
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const business = document.getElementById("business").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  /* 1️⃣ CRIA USUÁRIO NO AUTH */
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  const userId = data.user.id;
+
+  /* 2️⃣ ATUALIZA PROFILE */
+  await supabase
+    .from("profiles")
+    .update({
+      name: name,
+      role: "business"
+    })
+    .eq("id", userId);
+
+  /* 3️⃣ CRIA NEGÓCIO */
+  await supabase
+    .from("businesses")
+    .insert({
+      owner_id: userId,
+      name: business
+    });
+
+  /* 4️⃣ LOGIN AUTOMÁTICO */
+  await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  window.location.href = "loja.html";
+}
+</script>
+
+</body>
+</html>

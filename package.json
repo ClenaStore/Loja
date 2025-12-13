@@ -1,9 +1,0 @@
-{
-"name": "bolao-backend",
-"private": true,
-"type": "module",
-"dependencies": {
-"mercadopago": "^2.1.0",
-"undici": "^6.19.8"
-}
-}
