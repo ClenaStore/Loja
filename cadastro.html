@@ -126,7 +126,9 @@ button.loading::after{
     <p style="color:#6b7280;margin-bottom:18px">Leva menos de 1 minuto</p>
 
     <div id="errorBox" class="error"></div>
-    <div id="successBox" class="success">✅ Cadastro realizado com sucesso! Redirecionando…</div>
+    <div id="successBox" class="success">
+      ✅ Cadastro realizado com sucesso! Redirecionando…
+    </div>
 
     <form onsubmit="register(event)">
       <input id="name" placeholder="Nome do responsável" required>
@@ -144,7 +146,6 @@ button.loading::after{
       <input id="city" placeholder="Cidade" required>
       <input id="uf" placeholder="UF" maxlength="2" required>
 
-      <input id="email" type="email" placeholder="E-mail" required>
       <input id="password" type="password" placeholder="Senha" minlength="6" required>
 
       <button id="btn">Criar conta</button>
@@ -171,40 +172,56 @@ function showError(msg){
 async function register(e){
   e.preventDefault();
   errorBox.style.display = "none";
+
   btn.classList.add("loading");
   btn.innerText = "Criando conta...";
 
   try{
-    const email = emailEl.value;
-    const password = passwordEl.value;
+    const nameVal = name.value.trim();
+    const whatsappVal = whatsapp.value.replace(/\D/g,'');
+    const passwordVal = password.value;
 
-    /* 1️⃣ Auth */
-    const signup = await supabase.auth.signUp({ email, password });
+    if(whatsappVal.length < 10){
+      throw new Error("WhatsApp inválido");
+    }
+
+    // 🔐 EMAIL TÉCNICO (INVISÍVEL)
+    const fakeEmail = `${whatsappVal}@agendabeauty.app`;
+
+    /* 1️⃣ AUTH */
+    const signup = await supabase.auth.signUp({
+      email: fakeEmail,
+      password: passwordVal
+    });
     if(signup.error) throw signup.error;
 
-    const login = await supabase.auth.signInWithPassword({ email, password });
+    /* 2️⃣ LOGIN */
+    const login = await supabase.auth.signInWithPassword({
+      email: fakeEmail,
+      password: passwordVal
+    });
     if(login.error) throw login.error;
 
     const user = login.data.user;
 
-    /* 2️⃣ Profile */
+    /* 3️⃣ PROFILE */
     const profile = await supabase
       .from("profiles")
       .update({
-        name: name.value,
-        whatsapp: whatsapp.value
+        name: nameVal,
+        whatsapp: whatsappVal
       })
       .eq("id", user.id);
 
     if(profile.error) throw profile.error;
 
-    /* 3️⃣ Business */
+    /* 4️⃣ BUSINESS */
     const businessInsert = await supabase
       .from("businesses")
       .insert({
         owner_id: user.id,
         name: business.value,
-        phone: whatsapp.value,
+        phone: whatsappVal,
         city: city.value,
         uf: uf.value,
         type: type.value
@@ -212,16 +229,16 @@ async function register(e){
 
     if(businessInsert.error) throw businessInsert.error;
 
-    /* ✅ Sucesso */
+    /* ✅ SUCESSO */
     successBox.style.display = "block";
     btn.style.display = "none";
 
     setTimeout(()=>{
       window.location.href = "login.html";
-    },2000);
+    }, 2000);
 
   }catch(err){
-    showError(err.message || "Erro ao cadastrar. Tente novamente.");
+    showError(err.message || "Erro ao cadastrar. Verifique os dados.");
     btn.classList.remove("loading");
     btn.innerText = "Criar conta";
   }
