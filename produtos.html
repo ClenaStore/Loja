@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Produtos & Serviços • AgendaBeauty</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --primary:#ff6a00;
+  --bg:#f4f6f9;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --radius:16px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
+
+body{background:var(--bg);padding:30px}
+
+.header{
+  max-width:1200px;
+  margin:0 auto 20px;
+}
+.header h1{font-size:26px}
+.header span{color:var(--primary)}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:24px;
+}
+
+/* FORM */
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+
+.card h3{margin-bottom:16px}
+
+input,textarea,select{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  margin-bottom:12px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:30px;
+  background:var(--primary);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* LIST */
+.list{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:16px;
+}
+
+.item{
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.item img{
+  width:100%;
+  height:140px;
+  object-fit:cover;
+}
+
+.item-body{
+  padding:12px;
+}
+
+.item-body h4{font-size:15px}
+.item-body small{color:#6b7280}
+
+.badge{
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#eaf1ff;
+  display:inline-block;
+  margin-bottom:6px;
+}
+
+.toggle{
+  margin-top:8px;
+  font-size:13px;
+  cursor:pointer;
+  color:var(--primary);
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>Produtos & <span>Serviços</span></h1>
+</div>
+
+<div class="container">
+
+  <!-- FORM -->
+  <div class="card">
+    <h3>Cadastrar item</h3>
+
+    <select id="tipo">
+      <option value="SERVICO">Serviço</option>
+      <option value="PRODUTO">Produto</option>
+    </select>
+
+    <input id="nome" placeholder="Nome">
+    <textarea id="descricao" placeholder="Descrição"></textarea>
+    <input id="preco" type="number" step="0.01" placeholder="Preço (R$)">
+    <input id="duracao" type="number" placeholder="Duração (min)" style="display:none">
+    <input id="imagem" type="file" accept="image/*">
+
+    <button onclick="salvar()">Salvar</button>
+  </div>
+
+  <!-- LIST -->
+  <div class="list">
+    <h3>Itens cadastrados</h3>
+    <div class="grid" id="lista"></div>
+  </div>
+
+</div>
+
+<script>
+/* SUPABASE */
+const supabase = window.supabase.createClient(
+  "https://ssmsjryjwhnrbjyzklno.supabase.co",
+  "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
+);
+
+/* IDENTIFICAÇÃO DA LOJA */
+const LOJA_ID = localStorage.getItem("loja_id") ||
+"00000000-0000-0000-0000-000000000001";
+
+const tipoEl=document.getElementById("tipo");
+const duracaoEl=document.getElementById("duracao");
+const listaEl=document.getElementById("lista");
+
+tipoEl.onchange=()=>duracaoEl.style.display=
+  tipoEl.value==="SERVICO"?"block":"none";
+
+/* SALVAR */
+async function salvar(){
+  const { data, error } = await supabase
+    .from("produtos_servicos")
+    .insert([{
+      loja_id: LOJA_ID,
+      tipo: tipoEl.value,
+      nome: nome.value,
+      descricao: descricao.value,
+      preco: preco.value,
+      duracao_minutos: tipoEl.value==="SERVICO"?duracao.value:null
+    }])
+    .select()
+    .single();
+
+  if(error){alert("Erro ao salvar");return;}
+
+  if(imagem.files.length){
+    const path=`${LOJA_ID}/${data.id}.jpg`;
+    await supabase.storage
+      .from("produtos")
+      .upload(path, imagem.files[0], { upsert:true });
+
+    const url = supabase.storage.from("produtos").getPublicUrl(path).data.publicUrl;
+    await supabase.from("produtos_servicos")
+      .update({ imagem_url:url })
+      .eq("id",data.id);
+  }
+
+  carregar();
+}
+
+/* LISTAR */
+async function carregar(){
+  const { data } = await supabase
+    .from("produtos_servicos")
+    .select("*")
+    .eq("loja_id",LOJA_ID)
+    .order("created_at",{ascending:false});
+
+  listaEl.innerHTML="";
+  data.forEach(i=>{
+    listaEl.innerHTML+=`
+      <div class="item">
+        ${i.imagem_url?`<img src="${i.imagem_url}">`:""}
+        <div class="item-body">
+          <span class="badge">${i.tipo}</span>
+          <h4>${i.nome}</h4>
+          <small>R$ ${Number(i.preco).toFixed(2)}</small>
+          ${i.duracao_minutos?`<div>${i.duracao_minutos} min</div>`:""}
+        </div>
+      </div>`;
+  });
+}
+
+carregar();
+</script>
+
+</body>
+</html>
