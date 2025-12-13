@@ -9,10 +9,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+/* ===== ESTILO PREMIUM ===== */
 :root{
   --primary:#ff6a00;
   --primary-dark:#e55d00;
-  --accent:#b8ff65;
   --bg:#f6f7fb;
   --text:#1f2937;
   --muted:#6b7280;
@@ -29,10 +29,9 @@ body{
   background:#fff;
 }
 
-/* LADO ESQUERDO */
 .left{
   background:url("https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1600&q=80")
-    center/cover no-repeat;
+  center/cover no-repeat;
   position:relative;
   color:#fff;
 }
@@ -41,7 +40,7 @@ body{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(120deg, rgba(0,0,0,.75), rgba(0,0,0,.25));
+  background:linear-gradient(120deg,rgba(0,0,0,.75),rgba(0,0,0,.25));
 }
 
 .left-content{
@@ -54,26 +53,14 @@ body{
   justify-content:center;
 }
 
-.left h1{
-  font-size:44px;
-  line-height:1.1;
-  margin-bottom:20px;
-}
-
+.left h1{font-size:44px;margin-bottom:20px;}
 .left h1 span{color:var(--primary);}
+.left p{font-size:18px;max-width:440px;}
 
-.left p{
-  font-size:18px;
-  max-width:440px;
-  opacity:.95;
-}
-
-/* LADO DIREITO */
 .right{
   display:flex;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(180deg,#fff,#fafafa);
 }
 
 .card{
@@ -81,54 +68,21 @@ body{
   max-width:460px;
   padding:44px;
   border-radius:var(--radius);
-  background:rgba(255,255,255,.92);
+  background:#fff;
   box-shadow:0 25px 60px rgba(0,0,0,.08);
-  backdrop-filter:blur(8px);
 }
 
-.card h2{
-  font-size:28px;
-  margin-bottom:6px;
-}
+label{font-size:13px;font-weight:600;margin-bottom:6px;display:block;}
 
-.card p{
-  color:var(--muted);
-  margin-bottom:26px;
-}
-
-.step{
-  font-size:13px;
-  font-weight:600;
-  color:var(--primary);
-  margin-bottom:18px;
-}
-
-label{
-  font-size:13px;
-  font-weight:600;
-  display:block;
-  margin-bottom:6px;
-}
-
-input, select{
+input,select{
   width:100%;
   padding:14px 16px;
   border-radius:12px;
   border:1px solid var(--border);
-  margin-bottom:18px;
-  font-size:14px;
+  margin-bottom:16px;
 }
 
-input:focus, select:focus{
-  outline:none;
-  border-color:var(--primary);
-}
-
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 
 .btn{
   width:100%;
@@ -140,56 +94,35 @@ input:focus, select:focus{
   cursor:pointer;
   background:var(--primary);
   color:#fff;
-  margin-top:10px;
 }
 
-.btn:disabled{
-  opacity:.7;
-  cursor:not-allowed;
-}
+.btn:disabled{opacity:.6;cursor:not-allowed;}
 
-.footer-links{
-  text-align:center;
-  margin-top:22px;
-}
-
-.footer-links a{
-  color:var(--primary);
-  text-decoration:none;
-  font-weight:600;
+.error{
+  background:#ffe5e5;
+  color:#b00020;
+  padding:10px 14px;
+  border-radius:10px;
+  margin-bottom:14px;
   font-size:14px;
-}
-
-/* MOBILE */
-@media(max-width:900px){
-  body{grid-template-columns:1fr;}
-  .left{display:none;}
 }
 </style>
 </head>
 <body>
 
-<!-- ESQUERDA -->
 <div class="left">
   <div class="left-content">
-    <h1>
-      Crie seu<br>
-      <span>salão digital</span>
-    </h1>
-    <p>
-      Profissionalize seus agendamentos, clientes e pagamentos
-      em uma única plataforma.
-    </p>
+    <h1>Crie seu <span>salão digital</span></h1>
+    <p>Gerencie agenda, clientes e pagamentos.</p>
   </div>
 </div>
 
-<!-- DIREITA -->
 <div class="right">
   <div class="card">
-    <div class="step">Passo 1 de 2</div>
-
     <h2>Cadastrar negócio</h2>
-    <p>Leva menos de 1 minuto 🚀</p>
+    <p style="color:#6b7280;margin-bottom:24px;">Leva menos de 1 minuto</p>
+
+    <div id="errorBox" class="error" style="display:none"></div>
 
     <form onsubmit="register(event)">
       <label>Nome do responsável</label>
@@ -229,10 +162,6 @@ input:focus, select:focus{
 
       <button id="btn" class="btn">Criar conta</button>
     </form>
-
-    <div class="footer-links">
-      <a href="login.html">Já tenho conta</a>
-    </div>
   </div>
 </div>
 
@@ -241,6 +170,14 @@ const supabase = window.supabase.createClient(
   "https://pagqbjtpodoobnnoypdf.supabase.co",
   "sb_publishable_cU1MtNtU1CfhmlNrmtsiug_6JA3ZBTY"
 );
+
+const errorBox = document.getElementById("errorBox");
+const btn = document.getElementById("btn");
+
+function showError(msg){
+  errorBox.innerText = msg;
+  errorBox.style.display = "block";
+}
 
 function upper(el){ el.value = el.value.toUpperCase(); }
 
@@ -252,31 +189,51 @@ document.getElementById("whatsapp").addEventListener("input", e=>{
 
 async function register(e){
   e.preventDefault();
-  const btn = document.getElementById("btn");
+  errorBox.style.display = "none";
   btn.disabled = true;
   btn.innerText = "Criando conta...";
 
-  const email = emailEl.value.trim();
-  const password = passwordEl.value;
+  const name = document.getElementById("name").value.trim();
+  const business = document.getElementById("business").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const whatsapp = document.getElementById("whatsapp").value.replace(/\D/g,'');
+  const city = document.getElementById("city").value;
+  const uf = document.getElementById("uf").value;
+  const type = document.getElementById("type").value;
 
   const { data, error } = await supabase.auth.signUp({ email, password });
-  if(error){ alert(error.message); btn.disabled=false; btn.innerText="Criar conta"; return; }
+  if(error){
+    showError(error.message);
+    btn.disabled=false; btn.innerText="Criar conta";
+    return;
+  }
 
   const uid = data.user.id;
 
-  await supabase.from("profiles").update({
-    name: name.value,
+  const profile = await supabase.from("profiles").update({
+    name,
     role:"business"
   }).eq("id", uid);
 
-  await supabase.from("businesses").insert({
+  if(profile.error){
+    showError(profile.error.message);
+    return;
+  }
+
+  const businessInsert = await supabase.from("businesses").insert({
     owner_id: uid,
-    name: business.value,
-    phone: whatsapp.value.replace(/\D/g,''),
-    city: city.value,
-    uf: uf.value,
-    type: type.value
+    name: business,
+    phone: whatsapp,
+    city,
+    uf,
+    type
   });
+
+  if(businessInsert.error){
+    showError(businessInsert.error.message);
+    return;
+  }
 
   await supabase.auth.signInWithPassword({ email, password });
   window.location.href = "loja.html";
