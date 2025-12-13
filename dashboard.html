@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard • AgendaBeauty</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --primary:#ff6a00;
+  --bg:#f6f7fb;
+  --dark:#0b1e39;
+  --sidebar:#0f2a44;
+  --text:#1f2937;
+  --muted:#6b7280;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter,sans-serif;
+}
+
+body{
+  display:flex;
+  height:100vh;
+  background:var(--bg);
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  background:var(--sidebar);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  transition:.25s;
+}
+
+.sidebar.collapsed{
+  width:72px;
+}
+
+.sidebar .logo{
+  padding:22px;
+  font-weight:700;
+  font-size:18px;
+  color:var(--primary);
+  white-space:nowrap;
+  overflow:hidden;
+}
+
+.menu{
+  flex:1;
+}
+
+.menu a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 22px;
+  color:#cfd8e3;
+  text-decoration:none;
+  font-size:14px;
+}
+
+.menu a:hover{
+  background:rgba(255,255,255,.08);
+}
+
+.sidebar.collapsed span{
+  display:none;
+}
+
+/* TOPBAR */
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+.topbar{
+  height:64px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.toggle{
+  cursor:pointer;
+  font-size:20px;
+}
+
+.business-name{
+  font-weight:600;
+  color:var(--text);
+}
+
+.logout{
+  background:none;
+  border:none;
+  color:var(--primary);
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* CONTENT */
+.content{
+  padding:40px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="logo">AgendaBeauty</div>
+
+  <div class="menu">
+    <a href="#"><span>Home</span></a>
+    <a href="#"><span>Agenda</span></a>
+    <a href="#"><span>Clientes</span></a>
+    <a href="#"><span>Financeiro</span></a>
+    <a href="#"><span>Configurações</span></a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="toggle" onclick="toggleSidebar()">☰</div>
+    <div class="business-name" id="businessName">Carregando…</div>
+    <button class="logout" onclick="sair()">Sair</button>
+  </div>
+
+  <div class="content">
+    <!-- HOME EM BRANCO POR ENQUANTO -->
+  </div>
+</div>
+
+<script>
+const supabase = supabase.createClient(
+  "https://ssmsjryjwhnrbjyzklno.supabase.co",
+  "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
+);
+
+/* PROTEÇÃO */
+(async ()=>{
+  const { data:{ user } } = await supabase.auth.getUser();
+  if(!user){
+    window.location.href = "login.html";
+    return;
+  }
+
+  /* BUSCA NEGÓCIO DO USUÁRIO */
+  const { data, error } = await supabase
+    .from("negocios")
+    .select("negocio")
+    .eq("user_id", user.id)
+    .single();
+
+  if(error){
+    document.getElementById("businessName").innerText = "Negócio não encontrado";
+    return;
+  }
+
+  document.getElementById("businessName").innerText = data.negocio;
+})();
+
+/* SIDEBAR */
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("collapsed");
+}
+
+/* LOGOUT */
+async function sair(){
+  await supabase.auth.signOut();
+  window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>
