@@ -6,126 +6,129 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://unpkg.com/phosphor-icons@1.4.2/src/css/icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
 <style>
 :root{
-  --orange:#ff6a00;
-  --orange-dark:#e85d00;
-  --blue1:#0b1e39;
-  --blue2:#102742;
-  --bg:#f5f7fb;
+  --primary:#ff6a00;
+  --primary-dark:#e55d00;
+  --bg:#f6f7fb;
+  --sidebar1:#0b1e39;
+  --sidebar2:#102a43;
   --text:#1f2937;
-  --radius:14px;
+  --muted:#6b7280;
+  --radius:16px;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 
 body{
-  display:grid;
-  grid-template-columns:260px 1fr;
-  height:100vh;
   background:var(--bg);
-  transition:.3s;
+  height:100vh;
+  display:flex;
 }
 
-/* ===== SIDEBAR ===== */
+/* ================= SIDEBAR ================= */
 .sidebar{
-  background:linear-gradient(180deg,var(--blue2),var(--blue1));
+  width:260px;
+  background:linear-gradient(180deg,var(--sidebar1),var(--sidebar2));
   color:#fff;
-  padding:18px;
   display:flex;
   flex-direction:column;
   transition:.3s;
 }
-
-.sidebar.collapsed{
-  width:80px;
-}
+.sidebar.collapsed{ width:78px; }
 
 .logo{
+  padding:22px;
   font-size:20px;
   font-weight:800;
-  color:var(--orange);
-  margin-bottom:30px;
-  text-align:center;
+  color:var(--primary);
+  white-space:nowrap;
 }
 
 .menu{
   flex:1;
+  padding:10px;
 }
 
 .menu-item{
-  margin-bottom:6px;
-}
-
-.menu-btn{
-  width:100%;
-  border:none;
-  background:none;
-  color:#cbd5e1;
   display:flex;
   align-items:center;
   gap:14px;
-  padding:12px 14px;
+  padding:14px;
   border-radius:12px;
   cursor:pointer;
-  transition:.2s;
-}
-
-.menu-btn i{
-  font-size:18px;
-  min-width:22px;
-  text-align:center;
-}
-
-.menu-btn span{
+  margin-bottom:6px;
+  transition:.25s;
   white-space:nowrap;
 }
-
-.menu-btn:hover{
+.menu-item:hover{
   background:rgba(255,255,255,.08);
-  color:#fff;
+}
+.menu-item.active{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
 }
 
-.menu-btn.active{
-  background:linear-gradient(135deg,var(--orange),var(--orange-dark));
-  color:#fff;
+.menu-item i{
+  font-size:20px;
+  min-width:20px;
 }
 
-.submenu{
+.sidebar.collapsed span{
   display:none;
-  margin-left:36px;
-  margin-top:6px;
 }
 
+/* SUBMENU */
+.submenu{
+  margin-left:36px;
+  display:none;
+}
 .submenu a{
   display:block;
-  padding:8px 0;
-  color:#cbd5e1;
+  padding:10px 14px;
   font-size:14px;
+  color:#d1d5db;
   text-decoration:none;
+  border-radius:10px;
 }
-
 .submenu a:hover{
-  color:#fff;
+  background:rgba(255,255,255,.08);
 }
 
-.sidebar.collapsed .menu-btn span,
-.sidebar.collapsed .submenu{
-  display:none;
+/* FOOTER */
+.sidebar-footer{
+  padding:16px;
+  border-top:1px solid rgba(255,255,255,.1);
+}
+.logout{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:12px;
+  border-radius:12px;
+  cursor:pointer;
+}
+.logout:hover{
+  background:rgba(255,255,255,.08);
 }
 
-/* ===== TOPBAR ===== */
+/* ================= MAIN ================= */
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+/* TOPBAR */
 .topbar{
   height:64px;
   background:#fff;
+  border-bottom:1px solid #e5e7eb;
   display:flex;
   align-items:center;
   justify-content:space-between;
   padding:0 24px;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
 }
 
 .toggle{
@@ -133,30 +136,18 @@ body{
   cursor:pointer;
 }
 
-.business{
-  font-weight:700;
-}
-
-.logout{
-  background:var(--orange);
-  color:#fff;
-  border:none;
-  padding:10px 18px;
-  border-radius:30px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-/* ===== MAIN ===== */
-.main{
+.user{
   display:flex;
-  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  font-weight:600;
 }
 
+/* CONTENT */
 .content{
   flex:1;
+  padding:0;
 }
-
 iframe{
   width:100%;
   height:100%;
@@ -168,111 +159,95 @@ iframe{
 
 <body>
 
-<!-- SIDEBAR -->
+<!-- ================= SIDEBAR ================= -->
 <aside class="sidebar" id="sidebar">
   <div class="logo">AgendaBeauty</div>
 
   <div class="menu">
 
-    <div class="menu-item">
-      <button class="menu-btn active" onclick="loadPage('pages/home.html', this)">
-        <i class="ph-house"></i><span>Home</span>
-      </button>
+    <div class="menu-item active" onclick="loadPage('home.html')">
+      <i class="ri-home-5-line"></i><span>Home</span>
     </div>
 
-    <div class="menu-item">
-      <button class="menu-btn" onclick="toggleSub(this)">
-        <i class="ph-calendar"></i><span>Agenda</span>
-      </button>
-      <div class="submenu">
-        <a href="#" onclick="loadPage('pages/agenda.html', this)">Minha agenda</a>
-        <a href="#" onclick="loadPage('pages/horarios.html', this)">Horários</a>
-      </div>
+    <div class="menu-item" onclick="toggleSub(this)">
+      <i class="ri-calendar-line"></i><span>Agenda</span>
+    </div>
+    <div class="submenu">
+      <a onclick="loadPage('agenda.html')">Minha agenda</a>
+      <a onclick="loadPage('horarios.html')">Horários</a>
     </div>
 
-    <div class="menu-item">
-      <button class="menu-btn" onclick="loadPage('pages/clientes.html', this)">
-        <i class="ph-users"></i><span>Clientes</span>
-      </button>
+    <div class="menu-item" onclick="toggleSub(this)">
+      <i class="ri-user-3-line"></i><span>Clientes</span>
+    </div>
+    <div class="submenu">
+      <a onclick="loadPage('clientes.html')">Todos os clientes</a>
+      <a onclick="loadPage('creditos.html')">Créditos</a>
     </div>
 
-    <div class="menu-item">
-      <button class="menu-btn" onclick="toggleSub(this)">
-        <i class="ph-currency-circle-dollar"></i><span>Financeiro</span>
-      </button>
-      <div class="submenu">
-        <a href="#" onclick="loadPage('pages/caixa.html', this)">Caixa</a>
-        <a href="#" onclick="loadPage('pages/despesas.html', this)">Despesas</a>
-      </div>
+    <div class="menu-item" onclick="toggleSub(this)">
+      <i class="ri-currency-line"></i><span>Financeiro</span>
+    </div>
+    <div class="submenu">
+      <a onclick="loadPage('caixa.html')">Caixa</a>
+      <a onclick="loadPage('despesas.html')">Despesas</a>
     </div>
 
-    <div class="menu-item">
-      <button class="menu-btn" onclick="loadPage('pages/configuracoes.html', this)">
-        <i class="ph-gear"></i><span>Configurações</span>
-      </button>
+    <div class="menu-item" onclick="loadPage('config.html')">
+      <i class="ri-settings-3-line"></i><span>Configurações</span>
     </div>
 
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="logout" onclick="logout()">
+      <i class="ri-logout-box-line"></i><span>Sair</span>
+    </div>
   </div>
 </aside>
 
-<!-- MAIN -->
+<!-- ================= MAIN ================= -->
 <div class="main">
-
   <div class="topbar">
-    <i class="ph-list toggle" onclick="toggleSidebar()"></i>
-    <div class="business" id="businessName">Carregando...</div>
-    <button class="logout" onclick="logout()">Sair</button>
+    <i class="ri-menu-line toggle" onclick="toggleMenu()"></i>
+    <div class="user" id="nomeNegocio"></div>
   </div>
 
   <div class="content">
-    <iframe id="frame" src="pages/home.html"></iframe>
+    <iframe id="frame" src=""></iframe>
   </div>
-
 </div>
 
 <script>
-const supabase = supabase.createClient(
-  "https://ssmsjryjwhnrbjyzklno.supabase.co",
-  "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
-);
-
-const sidebar = document.getElementById("sidebar");
-const frame = document.getElementById("frame");
-
-/* AUTH CHECK */
-(async()=>{
-  const { data:{ user } } = await supabase.auth.getUser();
-  if(!user) window.location.href = "login.html";
-
-  const { data } = await supabase
-    .from("negocios")
-    .select("negocio")
-    .eq("email", user.email)
-    .limit(1)
-    .single();
-
-  if(data) document.getElementById("businessName").innerText = data.negocio;
-})();
-
-/* SIDEBAR */
-function toggleSidebar(){
-  sidebar.classList.toggle("collapsed");
+/* 🔐 PROTEÇÃO */
+const negocio = JSON.parse(localStorage.getItem("negocioLogado"));
+if(!negocio){
+  window.location.href = "login.html";
 }
 
-function toggleSub(btn){
-  const sub = btn.nextElementSibling;
+/* NOME */
+document.getElementById("nomeNegocio").innerText = negocio.negocio;
+
+/* MENU */
+function toggleMenu(){
+  document.getElementById("sidebar").classList.toggle("collapsed");
+}
+
+function toggleSub(el){
+  const sub = el.nextElementSibling;
   sub.style.display = sub.style.display === "block" ? "none" : "block";
 }
 
-function loadPage(url, el){
-  frame.src = url;
-  document.querySelectorAll(".menu-btn").forEach(b=>b.classList.remove("active"));
-  if(el.classList.contains("menu-btn")) el.classList.add("active");
+/* LOAD IFRAME */
+function loadPage(page){
+  document.querySelectorAll(".menu-item").forEach(i=>i.classList.remove("active"));
+  event.currentTarget.classList.add("active");
+  document.getElementById("frame").src = page;
 }
 
 /* LOGOUT */
-async function logout(){
-  await supabase.auth.signOut();
+function logout(){
+  localStorage.removeItem("negocioLogado");
   window.location.href = "index.html";
 }
 </script>
