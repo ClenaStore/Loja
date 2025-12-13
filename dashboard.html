@@ -5,15 +5,16 @@
 <title>Dashboard • AgendaBeauty</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
   --primary:#ff6a00;
-  --bg:#f6f7fb;
+  --primary-soft:#ff8c33;
   --dark:#0b1e39;
-  --sidebar:#0f2a44;
+  --dark-2:#102a43;
+  --bg:#f4f6fb;
   --text:#1f2937;
   --muted:#6b7280;
 }
@@ -29,26 +30,27 @@ body{
   display:flex;
   height:100vh;
   background:var(--bg);
+  overflow:hidden;
 }
 
-/* SIDEBAR */
+/* ================= SIDEBAR ================= */
 .sidebar{
-  width:240px;
-  background:var(--sidebar);
+  width:260px;
+  background:linear-gradient(180deg,var(--dark),var(--dark-2));
   color:#fff;
   display:flex;
   flex-direction:column;
-  transition:.25s;
+  transition:.3s;
 }
 
 .sidebar.collapsed{
-  width:72px;
+  width:78px;
 }
 
-.sidebar .logo{
-  padding:22px;
-  font-weight:700;
-  font-size:18px;
+.logo{
+  padding:26px;
+  font-size:20px;
+  font-weight:800;
   color:var(--primary);
   white-space:nowrap;
   overflow:hidden;
@@ -56,56 +58,117 @@ body{
 
 .menu{
   flex:1;
+  padding:10px;
 }
 
-.menu a{
+.menu-item{
+  margin-bottom:6px;
+}
+
+.menu-btn{
+  width:100%;
+  background:none;
+  border:none;
+  color:#dbe3f1;
   display:flex;
   align-items:center;
-  gap:12px;
-  padding:14px 22px;
-  color:#cfd8e3;
-  text-decoration:none;
+  gap:14px;
+  padding:14px 18px;
+  border-radius:12px;
+  cursor:pointer;
   font-size:14px;
+  font-weight:500;
+  transition:.25s;
 }
 
-.menu a:hover{
+.menu-btn:hover{
   background:rgba(255,255,255,.08);
 }
 
-.sidebar.collapsed span{
-  display:none;
+.menu-btn.active{
+  background:linear-gradient(135deg,var(--primary),var(--primary-soft));
+  color:#fff;
+  box-shadow:0 6px 18px rgba(255,106,0,.35);
 }
 
-/* TOPBAR */
+.icon{
+  width:20px;
+  height:20px;
+  background:rgba(255,255,255,.35);
+  border-radius:6px;
+}
+
+/* SUBMENU */
+.submenu{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .3s ease;
+  padding-left:16px;
+}
+
+.submenu a{
+  display:block;
+  padding:10px 18px;
+  font-size:13px;
+  color:#cbd5e1;
+  text-decoration:none;
+  border-radius:10px;
+}
+
+.submenu a:hover{
+  background:rgba(255,255,255,.08);
+}
+
+.menu-item.open .submenu{
+  max-height:200px;
+}
+
+/* ================= MAIN ================= */
 .main{
   flex:1;
   display:flex;
   flex-direction:column;
 }
 
+/* TOPBAR */
 .topbar{
-  height:64px;
+  height:70px;
   background:#fff;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 24px;
-  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  padding:0 28px;
+  box-shadow:0 4px 18px rgba(0,0,0,.06);
 }
 
 .toggle{
+  font-size:22px;
   cursor:pointer;
-  font-size:20px;
-}
-
-.business-name{
-  font-weight:600;
   color:var(--text);
 }
 
+.business{
+  font-weight:600;
+  font-size:15px;
+  color:var(--text);
+}
+
+.user-area{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.avatar{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--primary-soft));
+}
+
 .logout{
-  background:none;
   border:none;
+  background:none;
   color:var(--primary);
   font-weight:600;
   cursor:pointer;
@@ -113,7 +176,7 @@ body{
 
 /* CONTENT */
 .content{
-  padding:40px;
+  padding:36px;
 }
 </style>
 </head>
@@ -125,25 +188,64 @@ body{
   <div class="logo">AgendaBeauty</div>
 
   <div class="menu">
-    <a href="#"><span>Home</span></a>
-    <a href="#"><span>Agenda</span></a>
-    <a href="#"><span>Clientes</span></a>
-    <a href="#"><span>Financeiro</span></a>
-    <a href="#"><span>Configurações</span></a>
+
+    <div class="menu-item">
+      <button class="menu-btn active">
+        <div class="icon"></div><span>Home</span>
+      </button>
+    </div>
+
+    <div class="menu-item">
+      <button class="menu-btn" onclick="toggleMenu(this)">
+        <div class="icon"></div><span>Agenda</span>
+      </button>
+      <div class="submenu">
+        <a href="#">Horários</a>
+        <a href="#">Profissionais</a>
+      </div>
+    </div>
+
+    <div class="menu-item">
+      <button class="menu-btn" onclick="toggleMenu(this)">
+        <div class="icon"></div><span>Clientes</span>
+      </button>
+      <div class="submenu">
+        <a href="#">Cadastro</a>
+        <a href="#">Histórico</a>
+      </div>
+    </div>
+
+    <div class="menu-item">
+      <button class="menu-btn">
+        <div class="icon"></div><span>Financeiro</span>
+      </button>
+    </div>
+
+    <div class="menu-item">
+      <button class="menu-btn">
+        <div class="icon"></div><span>Configurações</span>
+      </button>
+    </div>
+
   </div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
+
   <div class="topbar">
     <div class="toggle" onclick="toggleSidebar()">☰</div>
-    <div class="business-name" id="businessName">Carregando…</div>
-    <button class="logout" onclick="sair()">Sair</button>
+    <div class="business" id="businessName">Carregando…</div>
+    <div class="user-area">
+      <div class="avatar"></div>
+      <button class="logout" onclick="logout()">Sair</button>
+    </div>
   </div>
 
   <div class="content">
     <!-- HOME EM BRANCO POR ENQUANTO -->
   </div>
+
 </div>
 
 <script>
@@ -152,7 +254,7 @@ const supabase = supabase.createClient(
   "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
 
-/* PROTEÇÃO */
+/* PROTEÇÃO + DADOS */
 (async ()=>{
   const { data:{ user } } = await supabase.auth.getUser();
   if(!user){
@@ -160,19 +262,15 @@ const supabase = supabase.createClient(
     return;
   }
 
-  /* BUSCA NEGÓCIO DO USUÁRIO */
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("negocios")
     .select("negocio")
     .eq("user_id", user.id)
     .single();
 
-  if(error){
-    document.getElementById("businessName").innerText = "Negócio não encontrado";
-    return;
+  if(data){
+    document.getElementById("businessName").innerText = data.negocio;
   }
-
-  document.getElementById("businessName").innerText = data.negocio;
 })();
 
 /* SIDEBAR */
@@ -180,8 +278,13 @@ function toggleSidebar(){
   document.getElementById("sidebar").classList.toggle("collapsed");
 }
 
+/* SUBMENU */
+function toggleMenu(btn){
+  btn.parentElement.classList.toggle("open");
+}
+
 /* LOGOUT */
-async function sair(){
+async function logout(){
   await supabase.auth.signOut();
   window.location.href = "login.html";
 }
