@@ -220,8 +220,8 @@ button{
 
 <script>
 const supabase = window.supabase.createClient(
-  "https://ssmsjryjwhnrbjyzklno.supabase.co",
-  "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
+  "https://egxjgmzukjyyxmkukwub.supabase.co",
+  "sb_publishable_EWwdrLOUk6KDHZGLuh4uRg_QDRtLeFi"
 );
 
 const overlay = document.getElementById("overlay");
@@ -257,60 +257,51 @@ function showEmailError(show){
 
 async function cadastrar(e){
   e.preventDefault();
-
   errorBox.style.display = "none";
   showEmailError(false);
   overlay.style.display = "flex";
 
-  const payload = {
-    responsavel: responsavel.value.trim(),
-    whatsapp: whatsapp.value.replace(/\D/g,''),
-    negocio: negocio.value.trim(),
-    tipo: tipo.value,
-    cidade: cidade.value.trim(),
-    uf: uf.value.trim(),
-    email: email.value.trim().toLowerCase(),
-    senha: senha.value.trim()
-  };
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const senha = document.getElementById("senha").value.trim();
 
-  if(Object.values(payload).some(v => !v)){
-    showError("Preencha todos os campos");
+  /* 1️⃣ CRIA USUÁRIO NO AUTH */
+  const { data: authData, error: authError } = await supabase.auth.signUp({
+    email,
+    password: senha
+  });
+
+  if(authError){
     overlay.style.display = "none";
+    if(authError.message.toLowerCase().includes("already")){
+      showEmailError(true);
+    }else{
+      showError(authError.message);
+    }
     return;
   }
 
-  /* VERIFICA EMAIL */
-  const { data: existente, error: erroConsulta } = await supabase
-    .from("negocios")
-    .select("id")
-    .eq("email", payload.email)
-    .maybeSingle();
+  const userId = authData.user.id;
 
-  if(erroConsulta){
-    showError("Erro ao validar e-mail");
-    overlay.style.display = "none";
-    return;
-  }
-
-  if(existente){
-    overlay.style.display = "none";
-    showEmailError(true);
-    email.focus();
-    return;
-  }
-
-  /* INSERE */
-  const { error } = await supabase
-    .from("negocios")
-    .insert([payload]);
-
-  if(error){
-    showError("Erro ao cadastrar. Tente novamente.");
-    overlay.style.display = "none";
-    return;
-  }
+  /* 2️⃣ SALVA PERFIL */
+  const { error: profileError } = await supabase
+    .from("user_profile")
+    .insert([{
+      user_id: userId,
+      responsavel: responsavel.value.trim(),
+      whatsapp: whatsapp.value.replace(/\D/g,''),
+      negocio: negocio.value.trim(),
+      tipo: tipo.value,
+      cidade: cidade.value.trim(),
+      uf: uf.value.trim()
+    }]);
 
   overlay.style.display = "none";
+
+  if(profileError){
+    showError("Conta criada, mas erro ao salvar perfil.");
+    return;
+  }
+
   modal.style.display = "flex";
 }
 
@@ -318,6 +309,7 @@ function irLogin(){
   window.location.href = "login.html";
 }
 </script>
+
 
 </body>
 </html>
