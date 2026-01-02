@@ -15,14 +15,7 @@
   --radius:18px;
   --danger:#c62828;
 }
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Inter;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 body{
   min-height:100vh;
   display:grid;
@@ -55,7 +48,6 @@ body{
   align-items:center;
   justify-content:center;
 }
-
 .card{
   width:100%;
   max-width:460px;
@@ -64,12 +56,6 @@ body{
   border-radius:var(--radius);
   background:#fff;
 }
-
-.card small{
-  color:var(--primary);
-  font-weight:600;
-}
-
 input,select{
   width:100%;
   padding:14px;
@@ -78,12 +64,8 @@ input,select{
   border:1px solid var(--border);
   text-transform:uppercase;
 }
-
 input[type="email"],
-input[type="password"]{
-  text-transform:none;
-}
-
+input[type="password"]{ text-transform:none }
 button{
   width:100%;
   padding:15px;
@@ -105,8 +87,6 @@ button{
   margin-bottom:14px;
   display:none;
 }
-
-/* EMAIL INLINE ERROR */
 #emailError{
   display:none;
   color:var(--danger);
@@ -115,7 +95,7 @@ button{
 }
 
 /* OVERLAY */
-#overlay{
+#overlay,#modal{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.55);
@@ -124,49 +104,26 @@ button{
   justify-content:center;
   z-index:999;
 }
-#overlay div{
+#overlay div,
+.modal-box{
   background:#fff;
   padding:30px 40px;
   border-radius:16px;
-  font-weight:700;
-}
-
-/* MODAL */
-#modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:1000;
-}
-.modal-box{
-  background:#fff;
-  padding:36px;
-  border-radius:18px;
-  max-width:380px;
-  width:90%;
+  font-weight:600;
   text-align:center;
 }
-.modal-box button{
-  border-radius:25px;
-}
+.modal-box button{margin-top:20px}
 </style>
 </head>
 
 <body>
 
-<!-- OVERLAY -->
-<div id="overlay">
-  <div>Salvando cadastro…</div>
-</div>
+<div id="overlay"><div>Salvando cadastro…</div></div>
 
-<!-- MODAL -->
 <div id="modal">
   <div class="modal-box">
-    <h3>Cadastro realizado!</h3>
-    <p>Seu negócio foi cadastrado com sucesso.</p>
+    <h3>Cadastro realizado 🎉</h3>
+    <p>Agora você já pode acessar a plataforma.</p>
     <button onclick="irLogin()">Ir para login</button>
   </div>
 </div>
@@ -183,11 +140,8 @@ button{
 <div class="right">
   <div class="card">
 
-    <small>Acesso à plataforma</small>
-    <h2 style="margin:10px 0 6px">Cadastrar negócio</h2>
-    <p style="color:#6b7280;margin-bottom:18px">
-      Leva menos de 1 minuto
-    </p>
+    <h2>Cadastrar negócio</h2>
+    <p style="color:#6b7280;margin-bottom:18px">Leva menos de 1 minuto</p>
 
     <div id="errorBox" class="error"></div>
 
@@ -198,30 +152,29 @@ button{
 
       <select id="tipo" required>
         <option value="">Tipo do negócio</option>
-        <option value="SALAO DE BELEZA">Salão de Beleza</option>
+        <option value="SALAO">Salão</option>
         <option value="BARBEARIA">Barbearia</option>
-        <option value="CLINICA DE ESTETICA">Clínica de Estética</option>
-        <option value="STUDIO">Studio</option>
+        <option value="CLINICA">Clínica</option>
       </select>
 
       <input id="cidade" placeholder="Cidade" required>
       <input id="uf" placeholder="UF" maxlength="2" required>
 
       <input id="email" type="email" placeholder="E-mail" required>
-      <div id="emailError">Este e-mail já possui cadastro. Faça login.</div>
+      <div id="emailError">Este e-mail já possui cadastro.</div>
 
-      <input id="senha" type="password" placeholder="Senha" minlength="6" required>
+      <input id="senha" type="password" placeholder="Senha (mín. 6)" minlength="6" required>
 
       <button>Criar conta</button>
     </form>
-
   </div>
 </div>
 
 <script>
+/* 🔐 SUPABASE CLIENT (ÚNICO) */
 const supabase = window.supabase.createClient(
-  "https://egxjgmzukjyyxmkukwub.supabase.co",
-  "sb_publishable_EWwdrLOUk6KDHZGLuh4uRg_QDRtLeFi"
+  "https://ssmsjryjwhnrbjyzklno.supabase.co",
+  "sb_publishable_5Xe5sBRsp-6aLLvMwiTsCA_vRcPpNnV"
 );
 
 const overlay = document.getElementById("overlay");
@@ -229,7 +182,7 @@ const modal = document.getElementById("modal");
 const errorBox = document.getElementById("errorBox");
 const emailError = document.getElementById("emailError");
 
-/* WHATSAPP MASK */
+/* MASK */
 whatsapp.addEventListener("input", e=>{
   let v = e.target.value.replace(/\D/g,'').slice(0,11);
   v = v.replace(/^(\d{2})(\d)/,"($1) $2")
@@ -237,62 +190,51 @@ whatsapp.addEventListener("input", e=>{
   e.target.value = v;
 });
 
-/* UPPERCASE */
-document.querySelectorAll("input").forEach(el=>{
-  el.addEventListener("input", ()=>{
-    if(el.type !== "email" && el.type !== "password"){
-      el.value = el.value.toUpperCase();
-    }
-  });
-});
-
+/* ERRORS */
 function showError(msg){
   errorBox.innerText = msg;
   errorBox.style.display = "block";
 }
-
 function showEmailError(show){
   emailError.style.display = show ? "block" : "none";
 }
 
+/* CADASTRO */
 async function cadastrar(e){
   e.preventDefault();
   errorBox.style.display = "none";
   showEmailError(false);
   overlay.style.display = "flex";
 
-  const email = document.getElementById("email").value.trim().toLowerCase();
-  const senha = document.getElementById("senha").value.trim();
+  const email = emailInput.value = email.value.toLowerCase();
 
-  /* 1️⃣ CRIA USUÁRIO NO AUTH */
-  const { data: authData, error: authError } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
-    password: senha
+    password: senha.value
   });
 
-  if(authError){
+  if(error){
     overlay.style.display = "none";
-    if(authError.message.toLowerCase().includes("already")){
+    if(error.message.includes("already")){
       showEmailError(true);
     }else{
-      showError(authError.message);
+      showError(error.message);
     }
     return;
   }
 
-  const userId = authData.user.id;
+  const userId = data.user.id;
 
-  /* 2️⃣ SALVA PERFIL */
   const { error: profileError } = await supabase
     .from("user_profile")
     .insert([{
-      user_id: userId,
-      responsavel: responsavel.value.trim(),
-      whatsapp: whatsapp.value.replace(/\D/g,''),
-      negocio: negocio.value.trim(),
-      tipo: tipo.value,
-      cidade: cidade.value.trim(),
-      uf: uf.value.trim()
+      user_id:userId,
+      responsavel:responsavel.value,
+      whatsapp:whatsapp.value.replace(/\D/g,''),
+      negocio:negocio.value,
+      tipo:tipo.value,
+      cidade:cidade.value,
+      uf:uf.value
     }]);
 
   overlay.style.display = "none";
@@ -309,7 +251,6 @@ function irLogin(){
   window.location.href = "login.html";
 }
 </script>
-
 
 </body>
 </html>
